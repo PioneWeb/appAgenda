@@ -1,0 +1,145 @@
+<template>
+    <AppLayout title="Home">
+        <div class="py-6 px-4">
+            <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
+                <card-header :title="$t('Home')" :icon="HomeIcon" :tasti="tasti"></card-header>
+                <el-row :gutter="16">
+                    <el-col :span="5">
+                        <InfoCard :title="$t('Companies')" icon="Warning" linkIcon="ArrowRight" percent="24" :value="companies" subTitle="than yesterday"/>
+                    </el-col>
+                    <el-col :span="5">
+                        <InfoCard :title="$t('Users')" icon="Warning" linkIcon="ArrowRight" percent="12" :value="users" subTitle="than yesterday"/>
+                    </el-col>
+                    <el-col :span="5">
+                        <InfoCard :title="$t('Tickets')" icon="CaretTop" :percent="percentage" :value="tickets" subTitle="Tickets chiusi"/>
+                    </el-col>
+                    <el-col :span="5">
+                        <InfoCard :title="$t('Services')" icon="CaretTop" linkIcon="ArrowRight" :percent="azService" :value="service" subTitle="Servizi per"/>
+                    </el-col>
+                    <el-col :span="4">
+                        <InfoCard :title="$t('Tickets_types')" icon="CaretTop" linkIcon="ArrowRight" percent="16" :value="tipiTickets" subTitle="than yesterday"/>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="16" class="mt-10">
+<!--                    <el-col :span="6">-->
+<!--                        <el-progress type="dashboard" :percentage="percentage" :color="colors" width="210" />-->
+<!--&lt;!&ndash;                        <div>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <el-button-group>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <el-button :icon="Minus" @click="decrease()" />&ndash;&gt;-->
+<!--&lt;!&ndash;                                <el-button :icon="Plus" @click="increase()" />&ndash;&gt;-->
+<!--&lt;!&ndash;                            </el-button-group>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                    </el-col>-->
+
+<!--                    <el-col :span="6">-->
+<!--                        <el-progress type="dashboard" :percentage="percentage2" :color="colors" width="320" />-->
+<!--                    </el-col>-->
+
+<!--                    <el-col :span="12">-->
+<!--                        <el-progress :percentage="percentage2" :color="colors" :stroke-width="1" class="mb-10" />-->
+<!--                        <el-progress :percentage="percentage2" :color="colors" :stroke-width="3" class="mb-10" />-->
+<!--                        <el-progress :percentage="percentage2" :color="colors" :stroke-width="5" class="mb-10" />-->
+<!--                        <el-progress :percentage="percentage3" :color="colors" :stroke-width="1" class="mb-10" />-->
+<!--                        <el-progress :percentage="percentage3" :color="colors" :stroke-width="3" class="mb-10" />-->
+<!--                        <el-progress :percentage="percentage3" :color="colors" :stroke-width="5" class="mb-10" />-->
+<!--                    </el-col>-->
+                </el-row>
+
+                <el-row :gutter="16" class="mt-10">
+                    <el-col :span="24">
+                        <el-steps :active="2" finish-status="success" simple >
+                            <el-step title="Scrivere" :icon="Edit" />
+                            <el-step title="Uploadare" :icon="Upload" />
+                            <el-step title="Stampare" :icon="Printer" />
+                            <el-step title="Avanzare" :icon="CirclePlus" />
+                            <el-step title="Attenzione" :icon="Warning" />
+                            <el-step title="Eliminare" :icon="DeleteFilled" />
+                        </el-steps>
+                    </el-col>
+                </el-row>
+
+            </div>
+        </div>
+    </AppLayout>
+</template>
+
+<script setup>
+import AppLayout from '@/Layouts/AppLayout.vue';
+import {Edit, Warning, CirclePlus, DeleteFilled, Printer, CaretBottom, ArrowRight, CaretTop, Minus, Plus, Upload } from '@element-plus/icons-vue';
+import { HomeIcon } from '@heroicons/vue/24/solid';
+import CardHeader from "../Components/CardHeader.vue";
+import InfoCard from "../Components/InfoCard.vue";
+</script>
+
+<script>
+export default {
+    name: "Home",
+    props: {
+        companies: Object,
+        users: Object,
+        tickets: Object,
+        ticketClosed: Object,
+        service: Object,
+        aziendeService: Object,
+        tipiTickets: Object,
+    },
+    data() {
+        return {
+            percentage: 100*this.ticketClosed/this.tickets,
+            percentage2: 0,
+            percentage3: 0,
+            azService: this.aziendeService.length,
+            colors: [
+                { color: '#f56c6c', percentage: 20 },
+                { color: '#e6a23c', percentage: 40 },
+                { color: '#5cb87a', percentage: 60 },
+                { color: '#1989fa', percentage: 80 },
+                { color: '#6f7ad3', percentage: 100 },
+            ],
+            // tasti: [
+            //     { id: 4, name: 'Default', type: "default", icon:DeleteFilled, click: this.prova },
+            //     { id: 3, name: 'Stampa', type: "primary", icon:Printer, click:"prova()" },
+            //     { id: 2, name: 'Salva', type: "success", icon:Edit, click:"prova()" },
+            //     { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click:"prova()" },
+            //     { id: 3, name: 'Warning', type: "warning", icon:Printer, click:"prova()" },
+            //     { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled, click:"prova()" },
+            // ]
+        }
+    },
+    methods: {
+        prova() {
+            alert('ciao')
+        },
+        increase() {
+            this.percentage += 10
+            if (this.percentage > 100) {
+                this.percentage = 100
+            }
+        },
+        decrease() {
+            this.percentage -= 10
+            if (this.percentage < 0) {
+                this.percentage = 0
+            }
+        }
+    },
+    mounted() {
+        setInterval(() => {
+            this.percentage2 = (this.percentage2 % 100) + 1
+        }, 150)
+        setInterval(() => {
+            this.percentage3 = (this.percentage3 % 100) + 10
+        }, 1000)
+    }
+}
+</script>
+
+<style scoped>
+.demo-progress .el-progress--line {
+    margin-bottom: 15px;
+    width: 350px;
+}
+.demo-progress .el-progress--circle {
+    margin-right: 15px;
+}
+</style>

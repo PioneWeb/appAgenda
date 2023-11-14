@@ -1,0 +1,43 @@
+<template>
+    <div class="flex flex-wrap items-center justify-between my-2">
+        <div class="inline-flex items-center text-2xl h-16">
+            <component :is="icon" class="w-8 h-8 mr-4" /> {{ title }}
+        </div>
+
+        <div v-if="title!=='Home' && title!=='Tickets' && title!=='New Ticket'" class="inline-flex items-center text-2xl h-16">
+            <el-input v-model="search" size="small" @keyup="$emit('search',search)" :placeholder="$t('Type_to_search')" />
+        </div>
+
+        <div class="flex flex-wrap items-center justify-start gap-2">
+            <ActionButton :item="tasto" v-for="tasto in tasti">
+                <template #append></template>
+                <template #default></template>
+            </ActionButton>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import ActionButton from "./ActionButton.vue";
+</script>
+
+<script>
+
+export default {
+    name: "cardHeader",
+    emits:["search"],
+    props: {
+        title: String,
+        icon: String,
+        tasti: Array
+    },
+    data() {
+        return {
+            search: null
+        }
+    },
+    mounted() {
+        //console.log(this.tasti)
+    }
+}
+</script>
