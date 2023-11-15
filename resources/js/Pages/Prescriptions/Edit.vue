@@ -18,6 +18,31 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                         </template>
                     </el-page-header>
                     <el-divider content-position="left"></el-divider>
+
+                    <el-row :gutter="30" class="mb-5">
+                        <el-col :span="10">
+                            <el-form-item prop="doctor.name" label="Medico">
+                                <el-select v-model="ricetta.doctor_id" class="w-full" placeholder="" clearable filterable>
+                                    <el-option v-for="item in medici" :label="item.name" :key="item.id" :value="item.id"></el-option>
+                                </el-select>
+
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="10">
+                            <el-form-item prop="clinic.nome" label="Paziente">
+                                <el-select v-model="ricetta.patient_id" class="w-full" placeholder="" clearable filterable>
+                                    <el-option v-for="item in pazienti" :label="item.name" :key="item.id" :value="item.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-form-item prop="tipo" label="Tipo">
+                            <el-tag v-if="ricetta.tipo === 1" size="large" effect="dark" >Farmaci</el-tag>
+                            <el-tag v-if="ricetta.tipo === 2" size="large" effect="dark" type="warning">Analisi</el-tag>
+                            <el-tag v-if="ricetta.tipo === 3" size="large" effect="dark" type="info">Visite</el-tag>
+                        </el-form-item>
+
+                    </el-row>
+
                     <el-row :gutter="30" class="mb-5">
                         <el-col :span="10">
                             <el-form-item prop="farmaci" label="Farmaci">
@@ -30,28 +55,9 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                             </el-form-item>
                         </el-col>
                         <el-form-item prop="attivo" label="Stato">
-                            <el-tag v-if="ricetta.attiva === true" size="large" type="success">Richiesto il {{ moment(ricetta.created_at).format('DD MMMM YYYY') }}</el-tag>
-                            <el-tag v-else size="large" type="danger">Prescritto il {{ moment(ricetta.updated_at).format('DD MMMM YYYY') }}</el-tag>
+                            <el-tag v-if="ricetta.attiva === true" size="large" type="success" @click="prescrivi(ricetta.tipo,ricetta.attiva)">Richiesto il {{ moment(ricetta.created_at).format('DD MMMM YYYY') }}</el-tag>
+                            <el-tag v-else size="large" type="danger" @click="prescrivi(ricetta.tipo,ricetta.attiva)">Prescritto il {{ moment(ricetta.updated_at).format('DD MMMM YYYY') }}</el-tag>
                         </el-form-item>
-                    </el-row>
-
-                    <el-row :gutter="30" class="mb-5">
-                        <el-col :span="8">
-                            <el-form-item prop="doctor.name" label="Medico">
-                                <el-input v-model="ricetta.doctor.name" class="w-full" clearable placeholder="Medico"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item prop="patient.name" label="Paziente">
-                                <el-input v-model="ricetta.patient.name" class="w-full" clearable placeholder="Paziente"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-form-item prop="clinic.nome" label="Ambulatorio">
-                                <el-input v-model="ricetta.clinic.nome" class="w-full" clearable placeholder="Ambulatorio"></el-input>
-                            </el-form-item>
-                        </el-col>
-
                     </el-row>
 
 
@@ -69,10 +75,14 @@ export default {
     name: "Ricetta",
     props: {
         ricettaProp: Object,
+        mediciProp: Object,
+        pazientiProp: Object
     },
     data() {
         return {
             ricetta: {...this.ricettaProp},
+            medici: {...this.mediciProp},
+            pazienti: {...this.pazientiProp},
             tastiEditAzienda: [
                 { id: 2, name: 'Salva', type: "success", icon:Edit, click: this.save },
                 { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }
@@ -106,6 +116,29 @@ export default {
                 });
             })
         },
+        prescrivi(tp,at){
+            if(at===true){
+                ElMessageBox.confirm(
+                    "Attenzione stai per prescrivere la ricetta",
+                    'Attenzione',
+                    {
+                        confirmButtonText: 'OK',
+                        cancelButtonText: 'Annulla',
+                        type: 'warning',
+                    }
+                ).then(() => {
+                    ElMessage({
+                        type: 'success',
+                        message: 'La prescrizione è stata chiusa'
+                    });
+                });
+            }else{
+                ElMessage({
+                    type: 'warning',
+                    message: 'Prescrizione già chiusa'
+                });
+            }
+        },
         routeToList() {
             // this.leave = () => {
             //     return new Promise((resolve, reject) => {
@@ -122,5 +155,5 @@ export default {
 </script>
 
 <style scoped>
-
+.el-tag--dark{ width: 200px !important; font-size: 18px; }
 </style>

@@ -17,7 +17,6 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     <el-table-column type="selection" />
                     <el-table-column label="ID" prop="id" width="80" sortable />
                     <el-table-column label="medico" prop="doctor.name" sortable />
-                    <el-table-column label="paziente" prop="patient.name" sortable />
                     <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
                     <el-table-column label="tipo" prop="tipo" sortable  width="90">
                         <template #default="scope">

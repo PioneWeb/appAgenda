@@ -143,7 +143,11 @@ class User extends Authenticatable
     }
 
     public function medico(){
-        return $this->hasManyThrough(User::class,"doctor_id","id","id","doctor_id");
+        return $this->hasManyThrough(User::class,DoctorUsers::class,"user_id","id","id","doctor_id");
+    }
+
+    public function gruppo(){
+        return $this->hasMany(DoctorUsers::class);
     }
 
     public function tickets(){

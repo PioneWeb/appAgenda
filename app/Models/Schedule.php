@@ -16,7 +16,6 @@ class Schedule extends Model
      */
     protected $fillable = [
         "doctor_id",
-        "patient_id",
         "clinic_id",
         'tipo',
         'quantita',
@@ -24,7 +23,7 @@ class Schedule extends Model
         'giorno',
         'inizio',
         'attivo',
-        'cretaed_at',
+        'created_at',
         'updated_at'
     ];
 
@@ -37,7 +36,6 @@ class Schedule extends Model
     protected $casts = [
 
         "doctor_id" => 'int',
-        "patient_id" => 'int',
         "clinic_id" => 'int',
         'tipo' => 'int',
         'quantita' => 'int',
@@ -45,7 +43,7 @@ class Schedule extends Model
         'giorno' => 'int',
         'inizio' => 'string',
         'attivo' => 'int',
-        'cretaed_at' => 'date',
+        'created_at' => 'date',
         'updated_at' => 'date'
     ];
 

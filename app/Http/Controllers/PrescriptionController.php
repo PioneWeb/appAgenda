@@ -7,6 +7,7 @@ use App\Models\Prescription;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use stdClass;
 use Validator;
 
 class PrescriptionController extends Controller
@@ -73,13 +74,36 @@ class PrescriptionController extends Controller
         $user = auth()->user();
         if($user->can("user.list")) {
             /** @var Prescription $query */
-            $query = Prescription::query()->where('id',$id)->with(["doctor","patient","clinic"])->first();
+            $query = Prescription::query()->where('id',$id)->with(["doctor","patient"])->first();
+            $doctors = User::where('user_type_id',2)->get();
+            $patients = User::where('user_type_id',3)->get();
 
             return Inertia::render('Prescriptions/Edit', [
                 "ricettaProp" => $query,
+                "mediciProp" => $doctors,
+                "pazientiProp" => $patients
             ]);
         }
         abort(403,"Non disponi dei permessi necessari!");
+    }
+
+
+    // RENDER CREAZIONE
+    public function create()
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        if(!$user->can("user.edit")) {
+            abort(403,"Non disponi dei permessi necessari!");
+        }
+        $doctors = User::where('user_type_id',2)->get();
+        $patients = User::where('user_type_id',3)->get();
+
+        return Inertia::render('Prescriptions/Edit', [
+            "ricettaProp" => new stdClass(),
+            "mediciProp" => $doctors,
+            "pazientiProp" => $patients
+        ]);
     }
 
     /**

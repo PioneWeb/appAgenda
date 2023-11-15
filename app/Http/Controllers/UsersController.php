@@ -18,7 +18,7 @@ class UsersController extends Controller
         /** @var User $user */
         $user = auth()->user();
         /** @var User $query */
-        $clienti = User::all('*');
+        $clienti = User::with(["medico"]);
         if($user->can("user.list")) {
         return Inertia::render('Users/List', [
             "utenti" => $clienti,
@@ -85,7 +85,7 @@ class UsersController extends Controller
         }
 
         /** @var User $query */
-        $query = User::with(['user_type']);
+        $query = User::with(['user_type','medico','gruppo']);
 
         // RICERCHE CORRELATE
         if(!empty($search = $request->input("search"))) {

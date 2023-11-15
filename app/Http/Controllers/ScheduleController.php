@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clinics;
 use App\Models\Company;
 use App\Models\Prescription;
 use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use stdClass;
 
 class ScheduleController extends Controller
 {
@@ -43,9 +45,13 @@ class ScheduleController extends Controller
         if($user->can("user.list")) {
             /** @var Schedule $query */
             $query = Schedule::query()->where('id',$id)->with(["doctor","patient","clinic"])->first();
+            $doctors = User::where('user_type_id',2)->get();
+            $clinics = Clinics::all();
 
             return Inertia::render('Schedules/Edit', [
                 "orariProp" => $query,
+                "mediciProp" => $doctors,
+                "ambulatoriProp" => $clinics
             ]);
         }
         abort(403,"Non disponi dei permessi necessari!");
@@ -57,13 +63,15 @@ class ScheduleController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        /** @var Schedule[] $orari */
-        $orari = Schedule::with(["doctor","patient","clinic"])->get();
         if(!$user->can("user.edit")) {
             abort(403,"Non disponi dei permessi necessari!");
         }
+        $doctors = User::where('user_type_id',2)->get();
+        $clinics = Clinics::all();
             return Inertia::render('Schedules/Edit', [
-                "orariProp" => $orari
+                "orariProp" => new stdClass(),
+                "mediciProp" => $doctors,
+                "ambulatoriProp" => $clinics
             ]);
     }
 

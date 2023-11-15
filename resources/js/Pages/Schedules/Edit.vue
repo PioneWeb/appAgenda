@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import CardHeader from "../../Components/CardHeader.vue";
-import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element-plus/icons-vue';
+import {Edit} from '@element-plus/icons-vue';
 </script>
 
 <template>
@@ -20,33 +20,39 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     <el-divider content-position="left"></el-divider>
 
                     <el-row :gutter="30" class="mb-5">
-                        <el-col :span="8">
+                        <el-col :span="10">
                             <el-form-item prop="doctor.name" label="Medico">
-                                <el-input v-model="orario.doctor.name" class="w-full" clearable placeholder="Medico"></el-input>
+                                <el-select v-model="orario.doctor_id" class="w-full" placeholder="" clearable filterable>
+                                    <el-option v-for="item in medici" :label="item.name" :key="item.id" :value="item.id"></el-option>
+                                </el-select>
+
                             </el-form-item>
                         </el-col>
-                        <el-col :span="8">
-                            <el-form-item prop="patient.name" label="Paziente">
-                                <el-input v-model="orario.patient.name" class="w-full" clearable placeholder="Paziente"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
+                        <el-col :span="10">
                             <el-form-item prop="clinic.nome" label="Ambulatorio">
-                                <el-input v-model="orario.clinic.nome" class="w-full" clearable placeholder="Ambulatorio"></el-input>
+                                <el-select v-model="orario.clinic_id" class="w-full" placeholder="" clearable filterable>
+                                    <el-option v-for="item in ambulatori" :label="item.nome" :key="item.id" :value="item.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="4">
+                            <el-form-item prop="attivo" label="Stato">
+                                <el-tag v-if="orario.attivo === 1" size="large" type="success">ORARIO ATTIVO</el-tag>
+                                <el-tag v-else size="large" type="danger">ORARIO NON ATTIVO</el-tag>
                             </el-form-item>
                         </el-col>
 
                     </el-row>
 
                     <el-row :gutter="30" class="mb-5">
-                        <el-col :span="4">
+                        <el-col :span="6">
                             <el-form-item prop="giorno" label="Giorno">
                                 <el-select v-model="orario.giorno" class="w-full" placeholder="" clearable>
                                     <el-option v-for="item in giorni" :label="item.name" :value=item.id></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="4">
+                        <el-col :span="6">
                             <el-form-item prop="tipo" label="Tipo appuntamento">
                                 <el-select v-model="orario.tipo" class="w-full" placeholder="" clearable>
                                     <el-option v-for="item in tipi" :label="item.name" :value=item.id></el-option>
@@ -68,22 +74,17 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                                 <el-time-picker v-model="orario.inizio" value-format="HH:mm" format="HH:mm" class="w-full" clearable placeholder="Giorno"></el-time-picker>
                             </el-form-item>
                         </el-col>
-                        <el-form-item prop="attivo" label="Stato">
-                            <el-tag v-if="orario.attivo === 1" size="large" type="success">ORARIO ATTIVO</el-tag>
-                            <el-tag v-else size="large" type="danger">ORARIO NON ATTIVO</el-tag>
-                        </el-form-item>
                     </el-row>
                     <el-divider content-position="left"></el-divider>
                     <el-row :gutter="30" class="mb-5">
 
                         <el-card class="box-card">
                             <template #header>
-                                <div class="card-header">
-                                    <span>Appuntamenti del {{ giorni[orario.giorno].name }}</span>
-                                    &nbsp;&nbsp;&nbsp;
+                                <div v-if="orario.giorno" class="card-header text-lg ">
+                                    Orari {{ tipi[orario.tipo].name }} del {{ giorni[orario.giorno].name }}
                                 </div>
                             </template>
-                            <div v-for="orario in orario_calcolato" class="text item">{{ orario }}</div>
+                            <div v-for="orario in orario_calcolato" class="text-lg item text-center font-mono">{{ orario }}</div>
                         </el-card>
 
                     </el-row>
@@ -103,13 +104,16 @@ export default {
     name: "Orario",
     props: {
         orariProp: Object,
+        mediciProp: Object,
+        ambulatoriProp: Object
     },
     data() {
         return {
             orario: {...this.orariProp},
+            medici: {...this.mediciProp},
+            ambulatori: {...this.ambulatoriProp},
             tastiEditAzienda: [
                 { id: 2, name: 'Salva', type: "success", icon:Edit, click: this.save },
-                { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }
             ],
             orari: [],
             giorni:[
@@ -121,18 +125,22 @@ export default {
                 {id: 5, name: 'Venerdì'},
                 {id: 6, name: 'Sabato'},
             ],
-            tipi:[ {id: 0, name: 'Rappresentante'},{id: 1, name: 'Visita'},{id: 2, name: 'Vaccino'} ],
+            tipi:[ {id: 0, name: 'Informatori'},{id: 1, name: 'Visite'},{id: 2, name: 'Vaccini'} ],
         }
     },
     computed: {
         orario_calcolato() {
             let date = []
-            let ore = this.orario.inizio.split(':');
-            let data = new Date(2023, 0, 1, Number(ore[0]), Number(ore[1]), 0, 0);
-            for (let i=0; i<this.orario.quantita; i++){
-                date.push(this.prendiOrario(data));
-                data.setMinutes(data.getMinutes() + this.orario.minuti)
+            if(this.orario && this.orario.inizio && this.orario.quantita) {
+                let ore = this.orario.inizio.split(':');
+                let data = new Date(2023, 0, 1, Number(ore[0]), Number(ore[1]), 0, 0);
+                for (let i=0; i<this.orario.quantita; i++){
+                    const c = i < 9 ? "0" + (i+1) : i+1;
+                    date.push(c+' - '+this.prendiOrario(data));
+                    data.setMinutes(data.getMinutes() + this.orario.minuti)
+                }
             }
+
             return date
         }
     },
@@ -142,8 +150,7 @@ export default {
             const minuti = data.getMinutes();
             const oraFormattata = ora < 10 ? "0" + ora : ora;
             const minutiFormattati = minuti < 10 ? "0" + minuti : minuti;
-            const orario = `${oraFormattata}:${minutiFormattati}`;
-            return orario;
+            return `${oraFormattata}:${minutiFormattati}`;
         },
         save(){
             ElMessageBox.confirm(

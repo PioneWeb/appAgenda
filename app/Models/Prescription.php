@@ -36,7 +36,6 @@ class Prescription extends Model
 
         "doctor_id" => 'int',
         "patient_id" => 'int',
-        "clinic_id" => 'int',
         'farmaci' => 'string',
         'motivo' => 'string',
         'attiva' => 'boolean',
@@ -53,7 +52,4 @@ class Prescription extends Model
         return $this->belongsTo(User::class, 'patient_id','id');
     }
 
-    public function clinic(){
-        return $this->belongsTo(Clinics::class, 'clinic_id','id');
-    }
 }

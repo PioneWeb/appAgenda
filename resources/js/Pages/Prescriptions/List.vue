@@ -19,7 +19,13 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     <el-table-column label="paziente" prop="patient.name" sortable />
                     <el-table-column label="farmaci" prop="farmaci" sortable  />
                     <el-table-column label="motivo" prop="motivo" sortable />
-                    <el-table-column label="tipo" prop="tipo" sortable width="120" />
+                    <el-table-column label="tipo" prop="tipo" sortable width="120" >
+                        <template #default="scope">
+                            <el-tag v-if="scope.row.tipo === 1" effect="dark" size="small">Farmaci</el-tag>
+                            <el-tag v-if="scope.row.tipo === 2" effect="dark" size="small" type="warning">Analisi</el-tag>
+                            <el-tag v-if="scope.row.tipo === 3" effect="dark" size="small" type="info">Visite</el-tag>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="stato" prop="attiva" sortable  width="180">
                         <template #default="scope">
                             <el-tag v-if="scope.row.attiva === true" size="small" type="success">Richiesto {{ moment(scope.row.created_at).format('DD MMMM YYYY') }}</el-tag>
@@ -100,14 +106,14 @@ export default {
         handleClick(row,column,event){
             let col = column.property;
 
-            // switch (col) {
-            //     case 'accorpa':
-            //         break;
-            //     default:
-            //         this.$inertia.get(this.route('prescriptions.edit',{
-            //             id:row.id
-            //         }));
-            // }
+            switch (col) {
+                case 'accorpa':
+                    break;
+                default:
+                    this.$inertia.get(this.route('prescriptions.edit',{
+                        id:row.id
+                    }));
+            }
         },
         paginate() {
             this.tableLoading = true;

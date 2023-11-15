@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('doctor_id')->references("id")->on("users");
             $table->foreignId('patient_id')->references("id")->on("users");
-            $table->foreignId('clinic_id')->references("id")->on("clinics");
             $table->string('farmaci')->nullable();
             $table->string('motivo')->nullable();
             $table->boolean('attiva')->nullable();

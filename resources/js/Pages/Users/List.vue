@@ -13,6 +13,11 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                 <el-table :data="utenti" stripe style="width: 100%" @row-click="handleClick" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" />
                     <el-table-column label="ID" prop="id" width="80" sortable />
+                    <el-table-column label="medico" prop="doctor_id" sortable >
+                        <template #default="scope">
+                            {{ scope.row.medico?.name }}
+                        </template>
+                    </el-table-column>
                     <el-table-column label="nome" prop="name" sortable />
                     <el-table-column label="indirizzo" prop="indirizzo" sortable />
                     <el-table-column label="email" prop="email" sortable />
