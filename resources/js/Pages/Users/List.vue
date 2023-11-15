@@ -10,7 +10,7 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
         <div class="py-6 px-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
                 <card-header :title="$t('Users')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
-                <el-table :data="utenti" stripe style="width: 100%" @row-click="handleClick" @row-click="handleClick" @selection-change="handleSelectionChange">
+                <el-table :data="utenti" stripe style="width: 100%" @row-click="handleClick" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" />
                     <el-table-column label="ID" prop="id" width="80" sortable />
                     <el-table-column label="nome" prop="name" sortable />

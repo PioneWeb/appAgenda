@@ -142,6 +142,10 @@ class User extends Authenticatable
         return $this->belongsTo(Company::class);
     }
 
+    public function medico(){
+        return $this->hasManyThrough(User::class,"doctor_id","id","id","doctor_id");
+    }
+
     public function tickets(){
         return $this->hasManyThrough(Ticket::class,TicketUser::class,"user_id","id","id","ticket_id");
     }

@@ -41,5 +41,6 @@
     "Clinics" : "Ambulatori",
     "Prescriptions" : "Ricette",
     "Edit_clinics" : "Modifica ambulatorio",
-    "Edit_prescriptons" : "Modifica ricetta"
+    "Edit_prescriptons" : "Modifica ricetta",
+    "Schedules" : "Orari"
 }

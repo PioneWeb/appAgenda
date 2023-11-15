@@ -281,6 +281,9 @@
                             <el-menu-item index="2-4">
                                 <NavLink :href="route('prescriptions.list')" :active="route().current('prescriptions.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Ricette') }}</NavLink>
                             </el-menu-item>
+                            <el-menu-item index="2-5">
+                                <NavLink :href="route('schedules.list')" :active="route().current('schedules.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Orari') }}</NavLink>
+                            </el-menu-item>
                         </el-sub-menu>
 
 

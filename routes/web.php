@@ -69,4 +69,5 @@ Route::middleware([
     Route::prefix('/tipitickets')->group(fn () => Route::group([], __DIR__."/tipitickets/index.php"));
     Route::prefix('/clinics')->group(fn () => Route::group([], __DIR__."/clinics/index.php"));
     Route::prefix('/prescriptions')->group(fn () => Route::group([], __DIR__ . "/prescriptions/index.php"));
+    Route::prefix('/schedules')->group(fn () => Route::group([], __DIR__ . "/schedules/index.php"));
 });
