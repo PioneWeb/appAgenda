@@ -83,12 +83,6 @@ export default {
             this.search = val;
             this.paginate();
         },
-        creaUtente(){
-            axios.get(this.route('prescriptions.genera')).then(result => {
-                ElMessage({message: 'Creata nuova azienda.',type: 'success'});
-                this.$inertia.get(route("prescriptions.list"));
-            });
-        },
         create() {
             this.$inertia.get(this.route('prescriptions.create'));
         },

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Prescription;
 use App\Models\Schedule;
 use App\Models\User;
@@ -30,6 +31,40 @@ class ScheduleController extends Controller
         return Inertia::render('Schedules/List', [
             "orari" => $orari,
         ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        if($user->can("user.list")) {
+            /** @var Schedule $query */
+            $query = Schedule::query()->where('id',$id)->with(["doctor","patient","clinic"])->first();
+
+            return Inertia::render('Schedules/Edit', [
+                "orariProp" => $query,
+            ]);
+        }
+        abort(403,"Non disponi dei permessi necessari!");
+    }
+
+
+    // RENDER CREAZIONE
+    public function create()
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        /** @var Schedule[] $orari */
+        $orari = Schedule::with(["doctor","patient","clinic"])->get();
+        if(!$user->can("user.edit")) {
+            abort(403,"Non disponi dei permessi necessari!");
+        }
+            return Inertia::render('Schedules/Edit', [
+                "orariProp" => $orari
+            ]);
     }
 
     /**

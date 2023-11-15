@@ -11,7 +11,9 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
                 <card-header :title="$t('Schedules')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
 
-                <el-table :data="orari" stripe style="width: 100%" @row-click="handleClick" @selection-change="handleSelectionChange">
+                <el-table :data="orari" stripe style="width: 100%"
+                          @row-click="handleClick"
+                          @selection-change="handleSelectionChange">
                     <el-table-column type="selection" />
                     <el-table-column label="ID" prop="id" width="80" sortable />
                     <el-table-column label="medico" prop="doctor.name" sortable />
@@ -95,14 +97,8 @@ export default {
             this.search = val;
             this.paginate();
         },
-        creaUtente(){
-            axios.get(this.route('prescriptions.genera')).then(result => {
-                ElMessage({message: 'Creata nuova azienda.',type: 'success'});
-                this.$inertia.get(route("prescriptions.list"));
-            });
-        },
         create() {
-            this.$inertia.get(this.route('prescriptions.create'));
+            this.$inertia.get(this.route('schedules.create'));
         },
         prescrivi() {
             ElMessageBox.confirm(
@@ -118,14 +114,14 @@ export default {
         handleClick(row,column,event){
             let col = column.property;
 
-            // switch (col) {
-            //     case 'accorpa':
-            //         break;
-            //     default:
-            //         this.$inertia.get(this.route('prescriptions.edit',{
-            //             id:row.id
-            //         }));
-            // }
+            switch (col) {
+                case 'accorpa':
+                    break;
+                default:
+                    this.$inertia.get(this.route('schedules.edit',{
+                        id:row.id
+                    }));
+            }
         },
         paginate() {
             this.tableLoading = true;
