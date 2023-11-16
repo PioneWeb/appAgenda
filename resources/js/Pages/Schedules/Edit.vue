@@ -36,8 +36,8 @@ import {Edit} from '@element-plus/icons-vue';
                             </el-form-item>
                         </el-col>
                         <el-col :span="4">
-                            <el-form-item prop="attivo" label="Stato">
-                                <el-tag v-if="orario.attivo === 1" size="large" type="success">ORARIO ATTIVO</el-tag>
+                            <el-form-item prop="attivo" label="Stato" @click="attivaDisattiva(orario)">
+                                <el-tag v-if="!orario.id || orario.attivo === 1" size="large" type="success">ORARIO ATTIVO</el-tag>
                                 <el-tag v-else size="large" type="danger">ORARIO NON ATTIVO</el-tag>
                             </el-form-item>
                         </el-col>
@@ -145,6 +145,27 @@ export default {
         }
     },
     methods:{
+        attivaDisattiva(row){
+            let idOrario = row.id;
+            let attivo = row.attivo;
+            if(attivo===null) attivo=0
+            axios.post(this.route("schedules.sino"), {id:idOrario, attivo:attivo}).then(response => {
+                if(response.data.attivo===1){
+                    ElMessage({
+                        type: 'success',
+                        message: 'Orario attivato',
+                    });
+                }else{
+                    ElMessage({
+                        type: 'error',
+                        message: 'Orario disattivato',
+                    });
+                }
+                if(this.orario.id) {
+                    this.$inertia.get(route('schedules.edit', response.data.id));
+                }
+            });
+        },
         prendiOrario(data) {
             const ora = data.getHours();
             const minuti = data.getMinutes();
@@ -162,12 +183,12 @@ export default {
                     type: 'warning',
                 }
             ).then(() => {
-                axios.post(this.route("schedules.save"), this.ricetta).then(response => {
+                axios.post(this.route("schedules.save"), this.orario).then(response => {
                     ElMessage({
                         type: 'success',
                         message: 'Ambulatorio salvata con successo',
                     });
-                    if(!this.ricetta.id) {
+                    if(!this.orario.id) {
                         this.$inertia.get(route('schedules.edit', response.data.id));
                     }
                 });

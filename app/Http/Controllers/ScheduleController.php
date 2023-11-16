@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use stdClass;
+use Validator;
 
 class ScheduleController extends Controller
 {
@@ -111,4 +112,79 @@ class ScheduleController extends Controller
 
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function save(Request $request): \Illuminate\Http\JsonResponse
+    {
+        Validator::validate($request->all(), [
+            "id" => "nullable|integer|exists:prescriptions,id",
+            "doctor_id" => "nullable|integer|exists:users,id",
+            "clinic_id" => "nullable|integer|exists:clinics,id",
+            "tipo" => [ "nullable", "integer", "max:255" ],
+            "quantita" => [ "nullable", "integer", "max:255" ],
+            "minuti" => [ "nullable", "integer", "max:255" ],
+            "giorno" => [ "nullable", "integer"],
+            "inizio" => [ "nullable", "string", "max:5" ],
+            "attivo" => [ "nullable", "boolean" ]
+        ]);
+
+        /** @var User $user */
+        $user = auth()->user();
+        if(!$user->can("user.edit")) {
+            abort(403,"Non disponi dei permessi necessari!");
+        }
+        /** @var Schedule $ricetta */
+        $orario = Schedule::where("id",$request->input("id"))->first();
+        $oggOrario = [
+            'nome' => $request->input('nome'),
+            'doctor_id' => $request->input('doctor_id'),
+            'clinic_id' => $request->input('clinic_id'),
+            'tipo' => $request->input('tipo'),
+            'quantita' => $request->input('quantita'),
+            'minuti' => $request->input('minuti'),
+            'giorno' => $request->input('giorno'),
+            'inizio' => $request->input('inizio'),
+            'attivo' => $request->input('attivo') === null ? 1 : $request->input('attivo'),
+        ];
+
+        if(empty($request->input("id"))) {
+            $orario = Schedule::create($oggOrario);
+        } else {
+            $orario->update($oggOrario);
+        }
+        return response()->json([
+            "id" => $orario->id
+        ]);
+
+    }
+
+
+    /**
+     * Display the specified resource.
+     */
+    public function sino(Request $request)
+    {
+        Validator::validate($request->all(), [
+            "idOrario" => "nullable|integer|exists:prescriptions,id",
+            "attivo" => "required|boolean"
+        ]);
+
+        /** @var User $user */
+        $user = auth()->user();
+        if(!$user->can("user.edit")) {
+            abort(403,"Non disponi dei permessi necessari!");
+        }
+        /** @var Schedule $orario */
+        $orario = Schedule::where("id",$request->input("id"))->first();
+
+        $orario->update([
+            'attivo' => !$orario->attivo
+        ]);
+        return response()->json([
+            "id" => $orario->id,
+            "attivo" => $orario->attivo
+        ]);
+
+    }
 }

@@ -114,7 +114,6 @@ class PrescriptionController extends Controller
         Validator::validate($request->all(), [
             "id" => "nullable|integer|exists:prescriptions,id",
             "doctor_id" => "nullable|integer|exists:users,id",
-            "clinic_id" => "nullable|integer|exists:clinics,id",
             "patient_id" => "nullable|integer|exists:users,id",
             "farmaci" => [ "nullable", "string", "max:255" ],
             "motivo" => [ "nullable", "string", "max:255" ],
@@ -132,7 +131,6 @@ class PrescriptionController extends Controller
         $oggRicetta = [
             'nome' => $request->input('nome'),
             'doctor_id' => $request->input('doctor_id'),
-            'clinic_id' => $request->input('clinic_id'),
             'patient_id' => $request->input('patient_id'),
             'farmaci' => $request->input('farmaci'),
             'motivo' => $request->input('motivo'),

@@ -101,16 +101,38 @@
 
                     <el-row :gutter="30" class="mb-5">
 
-                        <el-col :span="24">
-                            <el-form-item v-if="user_type_id === 2" prop="a" label="segretaria">
-                                <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
+                        <el-col :span="24">{{}}
+                            <el-form-item v-if="utente.user_type_id === 2" prop="a" label="Lista pazienti">
+
+                                <el-table :data="utente.patients" stripe style="width: 100%">
+                                    <el-table-column prop="name" label="Nome" />
+                                    <el-table-column prop="email" label="Email" />
+                                    <el-table-column prop="indirizzo" label="Indirizzo" />
+                                    <el-table-column prop="localita" label="Località" />
+                                    <el-table-column prop="cap" label="Cap" width="80" />
+                                    <el-table-column prop="provincia" label="Provincia" width="90" />
+                                    <el-table-column prop="telefono" label="Telefono" width="120" />
+                                </el-table>
+
+<!--                                <el-pagination-->
+<!--                                    class="mt-6"-->
+<!--                                    v-model:currentPage="currentPage"-->
+<!--                                    :page-sizes="pageSizes"-->
+<!--                                    :page-size="pageSize"-->
+<!--                                    layout="total, sizes, prev, pager, next, jumper"-->
+<!--                                    :total="total"-->
+<!--                                    @size-change="handleSizeChange"-->
+<!--                                    @current-change="handleCurrentChange"-->
+<!--                                >-->
+<!--                                </el-pagination>-->
+
                             </el-form-item>
 
-                            <el-form-item v-if="user_type_id === 3" prop="a" label="segretaria">
-                                <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
+                            <el-form-item v-if="utente.user_type_id === 3" prop="a" label="medico">
+                                <el-button v-for="item in utente.medico" type="danger" plain disabled size="large">{{ item.name }}</el-button>
                             </el-form-item>
 
-                            <el-form-item v-if="user_type_id === 4" prop="a" label="segretaria">
+                            <el-form-item v-if="utente.user_type_id === 4" prop="a" label="segretaria di ">
                                 <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
                             </el-form-item>
                         </el-col>
@@ -129,11 +151,12 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import CardHeader from "../../Components/CardHeader.vue";
 import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete, Close, Check} from '@element-plus/icons-vue';
+import InfoCard from "../../Components/InfoCard.vue";
 </script>
 
 <script>
 import {ElMessage, ElMessageBox} from "element-plus";
-
+import {Edit, Warning, CirclePlus, DeleteFilled, Printer, CaretBottom, ArrowRight, CaretTop, Minus, Plus, Upload } from '@element-plus/icons-vue';
 export default {
     name: "Utenti",
     props: {
@@ -148,7 +171,16 @@ export default {
             tastiEditUtente: [
                 { id: 2, name: 'Salva', type: "success", icon:Edit, click: this.save },
                 { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }
-            ]
+            ],
+            // search: null,
+            // currentPage:1,
+            // pageSize: 5,
+            // sortingColumn: null,
+            // sortingOrder: null,
+            // pageSizes: [
+            //     5,
+            // ],
+            // total: 0
         }
     },
     methods:{
@@ -223,4 +255,48 @@ export default {
 
 <style scoped>
 .el-button{ font-size: 120%; width: 200px; height: 33px; }
+
+:global(h2#card-usage ~ .example .example-showcase) {
+     background-color: var(--el-fill-color) !important;
+ }
+
+.el-statistic {
+    --el-statistic-content-font-size: 28px;
+}
+
+.statistic-card {
+    height: 100%;
+    padding: 20px;
+    border-radius: 4px;
+    background-color: var(--el-bg-color-overlay);
+}
+
+.statistic-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--el-text-color-regular);
+    margin-top: 16px;
+}
+
+.statistic-footer .footer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.statistic-footer .footer-item span:last-child {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+}
+
+.green {
+    color: var(--el-color-success);
+}
+.red {
+    color: var(--el-color-error);
+}
 </style>

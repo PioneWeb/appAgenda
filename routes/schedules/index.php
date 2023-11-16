@@ -9,5 +9,6 @@ Route::get('/create', [ScheduleController::class, "create"])->name('schedules.cr
 Route::post("/paginate", [ScheduleController::class, "paginate"])->name('schedules.paginate');
 
 Route::post("/save", [ScheduleController::class, "save"])->name("schedules.save");
+Route::post("/sino", [ScheduleController::class, "sino"])->name("schedules.sino");
 
 

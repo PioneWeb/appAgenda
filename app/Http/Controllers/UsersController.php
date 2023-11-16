@@ -166,7 +166,7 @@ class UsersController extends Controller
         $user = auth()->user();
         if($user->can("user.list")) {
             /** @var User $query */
-            $query = User::query()->where('id',$id)->with(['tickets','user_type','medico.patients','teams'])->where('current_team_id',$user->current_team_id)->first();
+            $query = User::query()->where('id',$id)->with(['tickets','user_type','medico.patients','medico','patients','teams'])->where('current_team_id',$user->current_team_id)->first();
             /** @var Company $query */
             $aziende = Company::query()->get();
             return Inertia::render('Users/Edit', [
