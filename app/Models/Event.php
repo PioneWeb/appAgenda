@@ -38,7 +38,8 @@ class event extends Model
         "clinic_id" => 'int',
         'denominazione' => 'int',
         'quantita' => 'int',
-        'ora' => 'int',
+        'data' => 'date',
+        'ora' => 'datetime',
         'stato' => 'int',
         'created_at' => 'date',
         'updated_at' => 'date'

@@ -19,12 +19,14 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     <el-table-column label="medico" prop="doctor_id" sortable />
                     <el-table-column label="paziente" prop="patient_id" sortable />
                     <el-table-column label="ambulatorio" prop="clinic_id" sortable />
-
-                    <el-table-column label="data" prop="data" sortable width="90" />
+                    <el-table-column label="data" prop="data" sortable width="150" >
+                    <template #default="scope">
+                        {{ moment(scope.row.data).format('DD MMMM YYYY') }}
+                    </template>
+                    </el-table-column>
                     <el-table-column label="ora" prop="ora" sortable width="90" >
                         <template #default="scope">
-                            <el-tag v-if="scope.row.stato === 1" size="small" type="success">Attivo</el-tag>
-                            <el-tag v-else size="small" type="danger">Non attivo</el-tag>
+                            {{ moment(scope.row.ora).format('HH:mm') }}
                         </template>
                     </el-table-column>
 
