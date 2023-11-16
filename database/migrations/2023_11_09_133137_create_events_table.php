@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('doctor_id')->references("id")->on("users");
-            $table->foreignId('patient_id')->references("id")->on("users");
+            $table->foreignId('patient_id')->nullable()->references("id")->on("users");
             $table->foreignId('clinic_id')->references("id")->on("clinics");
             $table->string('denominazione')->nullable();
             $table->date('data')->nullable();

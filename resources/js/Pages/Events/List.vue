@@ -5,35 +5,25 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
 </script>
 
 <template>
-    <AppLayout title="Lista Ambulatori">
+    <AppLayout title="Lista Appuntamenti">
 
         <div class="py-6 px-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
-                <card-header :title="$t('Schedules')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
+                <card-header :title="$t('Events')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
 
-                <el-table :data="orari" stripe style="width: 100%"
+                <el-table :data="appuntamenti" stripe style="width: 100%"
                           @row-click="handleClick"
                           @selection-change="handleSelectionChange">
                     <el-table-column type="selection" />
                     <el-table-column label="ID" prop="id" width="80" sortable />
-                    <el-table-column label="medico" prop="doctor.name" sortable />
-                    <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
-                    <el-table-column label="tipo" prop="tipo" sortable  width="90">
+                    <el-table-column label="medico" prop="doctor_id" sortable />
+                    <el-table-column label="paziente" prop="patient_id" sortable />
+                    <el-table-column label="ambulatorio" prop="clinic_id" sortable />
+
+                    <el-table-column label="data" prop="data" sortable width="90" />
+                    <el-table-column label="ora" prop="ora" sortable width="90" >
                         <template #default="scope">
-                            {{ this.tipi[scope.row.tipo] }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="giorno" prop="giorno" sortable width="120">
-                        <template #default="scope">
-                            {{ this.giorni[scope.row.giorno] }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="Visite" prop="quantita" sortable width="90" />
-                    <el-table-column label="minuti" prop="minuti" sortable width="90" />
-                    <el-table-column label="inizio" prop="inizio" sortable width="120" />
-                    <el-table-column label="stato" prop="attivo" sortable  width="90">
-                        <template #default="scope">
-                            <el-tag v-if="scope.row.attivo === 1" size="small" type="success">Attivo</el-tag>
+                            <el-tag v-if="scope.row.stato === 1" size="small" type="success">Attivo</el-tag>
                             <el-tag v-else size="small" type="danger">Non attivo</el-tag>
                         </template>
                     </el-table-column>
@@ -63,13 +53,13 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
 import {ElMessage, ElMessageBox} from "element-plus";
 
 export default {
-    name: "Orari",
+    name: "Appuntamenti",
     props: {
-        orari: Object,
+        appuntamenti: Object,
     },
     data() {
         return {
-            orari: [],
+            appuntamenti: [],
             tasti: [
                 { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click: this.create },
                 { id: 2, name: 'Prescrivi', type: "success", icon:Edit, click: this.prescrivi },
@@ -97,7 +87,7 @@ export default {
             this.paginate();
         },
         create() {
-            this.$inertia.get(this.route('schedules.create'));
+            this.$inertia.get(this.route('events.create'));
         },
         prescrivi() {
             ElMessageBox.confirm(
@@ -117,26 +107,26 @@ export default {
                 case 'accorpa':
                     break;
                 default:
-                    this.$inertia.get(this.route('schedules.edit',{
+                    this.$inertia.get(this.route('events.edit',{
                         id:row.id
                     }));
             }
         },
         paginate() {
             this.tableLoading = true;
-            this.SessionStorage.setItem('ricette_list_search', JSON.stringify(this.search));
-            this.SessionStorage.setItem('ricette_list_order', this.sortingOrder);
-            this.SessionStorage.setItem('ricette_list_column', this.sortingColumn);
-            this.SessionStorage.setItem('ricette_list_page', this.currentPage, true);
-            this.SessionStorage.setItem('ricette_list_page_size', this.pageSize, true);
-            axios.post(route("schedules.paginate"),{
+            this.SessionStorage.setItem('appuntamenti_list_search', JSON.stringify(this.search));
+            this.SessionStorage.setItem('appuntamenti_list_order', this.sortingOrder);
+            this.SessionStorage.setItem('appuntamenti_list_column', this.sortingColumn);
+            this.SessionStorage.setItem('appuntamenti_list_page', this.currentPage, true);
+            this.SessionStorage.setItem('appuntamenti_list_page_size', this.pageSize, true);
+            axios.post(route("events.paginate"),{
                 pageSize: this.pageSize,
                 page: this.currentPage,
                 sort: this.sortingColumn,
                 order: this.sortingOrder,
                 search: this.search,
             }).then( result => {
-                this.orari = result.data.data;
+                this.appuntamenti = result.data.data;
                 this.total = result.data.total
             });
         },
@@ -154,11 +144,11 @@ export default {
         },
     },
     mounted() {
-        this.search = this.SessionStorage.getItem('ricette_list_search', this.search,true);
-        this.sortingOrder = this.SessionStorage.getItem('ricette_list_order', this.sortingOrder,false);
-        this.sortingColumn = this.SessionStorage.getItem('ricette_list_column', this.sortingColumn,false);
-        this.currentPage = this.SessionStorage.getItem('ricette_list_page', this.currentPage, true);
-        this.pageSize = this.SessionStorage.getItem('ricette_list_page_size', this.pageSize, true);
+        this.search = this.SessionStorage.getItem('appuntamenti_list_search', this.search,true);
+        this.sortingOrder = this.SessionStorage.getItem('appuntamenti_list_order', this.sortingOrder,false);
+        this.sortingColumn = this.SessionStorage.getItem('appuntamenti_list_column', this.sortingColumn,false);
+        this.currentPage = this.SessionStorage.getItem('appuntamenti_list_page', this.currentPage, true);
+        this.pageSize = this.SessionStorage.getItem('appuntamenti_list_page_size', this.pageSize, true);
         this.paginate();
     }
 }

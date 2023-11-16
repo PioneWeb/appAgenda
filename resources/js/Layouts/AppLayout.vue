@@ -250,7 +250,7 @@
 
             <el-row class="tac">
                 <el-col :span="3">
-                    <h5 class="mb-2 mx-12">Menu</h5>
+<!--                    <h5 class="mb-2 mx-12">Menu</h5>-->
                     <el-menu
                         default-active="2"
                         class="w-auto min-w-fit"
@@ -282,6 +282,9 @@
                             </el-menu-item>
                             <el-menu-item index="2-5">
                                 <NavLink :href="route('schedules.list')" :active="route().current('schedules.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Orari') }}</NavLink>
+                            </el-menu-item>
+                            <el-menu-item index="2-5">
+                                <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>
                             </el-menu-item>
                         </el-sub-menu>
 

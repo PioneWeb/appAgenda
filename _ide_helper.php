@@ -6533,7 +6533,8 @@
         {
                         /** @var \Illuminate\Support\Testing\Fakes\EventFake $instance */
                         return $instance->hasDispatched($event);
-        }
+        }public static function query(){
+}
 
     }
             /**
@@ -23033,7 +23034,8 @@ namespace  {
                                 return $instance->macroCall($method, $parameters);
             }
                     }
-            class Event extends \Illuminate\Support\Facades\Event {}
+            class Event extends \Illuminate\Support\Facades\Event {public static function all(string$string){
+}}
             class File extends \Illuminate\Support\Facades\File {}
             class Gate extends \Illuminate\Support\Facades\Gate {}
             class Hash extends \Illuminate\Support\Facades\Hash {}

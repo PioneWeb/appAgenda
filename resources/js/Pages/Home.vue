@@ -4,46 +4,26 @@
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
                 <card-header :title="$t('Home')" :icon="HomeIcon" :tasti="tasti"></card-header>
                 <el-row :gutter="16">
-                    <el-col :span="5">
+                    <el-col :span="4">
                         <InfoCard :title="$t('Companies')" icon="Warning" linkIcon="ArrowRight" percent="24" :value="companies" subTitle="than yesterday"/>
                     </el-col>
-                    <el-col :span="5">
+                    <el-col :span="4">
                         <InfoCard :title="$t('Users')" icon="Warning" linkIcon="ArrowRight" percent="12" :value="users" subTitle="than yesterday"/>
                     </el-col>
-                    <el-col :span="5">
-                        <InfoCard :title="$t('Tickets')" icon="CaretTop" :percent="percentage" :value="tickets" subTitle="Tickets chiusi"/>
-                    </el-col>
-                    <el-col :span="5">
-                        <InfoCard :title="$t('Services')" icon="CaretTop" linkIcon="ArrowRight" :percent="azService" :value="service" subTitle="Servizi per"/>
+                    <el-col :span="4">
+                        <InfoCard :title="$t('Clinics')" icon="CaretTop" :percent="0" :value="ambulatori" subTitle="Ambulatori"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Tickets_types')" icon="CaretTop" linkIcon="ArrowRight" percent="16" :value="tipiTickets" subTitle="than yesterday"/>
+                        <InfoCard :title="$t('Schedules')" icon="CaretTop" linkIcon="ArrowRight" :percent="0" :value="orari" subTitle="Orari"/>
+                    </el-col>
+                    <el-col :span="4">
+                        <InfoCard :title="$t('Prescriptions')" icon="CaretTop" linkIcon="ArrowRight" percent="0" :value="ricette" subTitle="than yesterday"/>
+                    </el-col>
+                    <el-col :span="4">
+                        <InfoCard :title="$t('Events')" icon="CaretTop" linkIcon="ArrowRight" percent="0" :value="appuntamenti" subTitle="than yesterday"/>
                     </el-col>
                 </el-row>
-                <el-row :gutter="16" class="mt-10">
-<!--                    <el-col :span="6">-->
-<!--                        <el-progress type="dashboard" :percentage="percentage" :color="colors" width="210" />-->
-<!--&lt;!&ndash;                        <div>&ndash;&gt;-->
-<!--&lt;!&ndash;                            <el-button-group>&ndash;&gt;-->
-<!--&lt;!&ndash;                                <el-button :icon="Minus" @click="decrease()" />&ndash;&gt;-->
-<!--&lt;!&ndash;                                <el-button :icon="Plus" @click="increase()" />&ndash;&gt;-->
-<!--&lt;!&ndash;                            </el-button-group>&ndash;&gt;-->
-<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
-<!--                    </el-col>-->
 
-<!--                    <el-col :span="6">-->
-<!--                        <el-progress type="dashboard" :percentage="percentage2" :color="colors" width="320" />-->
-<!--                    </el-col>-->
-
-<!--                    <el-col :span="12">-->
-<!--                        <el-progress :percentage="percentage2" :color="colors" :stroke-width="1" class="mb-10" />-->
-<!--                        <el-progress :percentage="percentage2" :color="colors" :stroke-width="3" class="mb-10" />-->
-<!--                        <el-progress :percentage="percentage2" :color="colors" :stroke-width="5" class="mb-10" />-->
-<!--                        <el-progress :percentage="percentage3" :color="colors" :stroke-width="1" class="mb-10" />-->
-<!--                        <el-progress :percentage="percentage3" :color="colors" :stroke-width="3" class="mb-10" />-->
-<!--                        <el-progress :percentage="percentage3" :color="colors" :stroke-width="5" class="mb-10" />-->
-<!--                    </el-col>-->
-                </el-row>
 
                 <el-row :gutter="16" class="mt-10">
                     <el-col :span="24">
@@ -77,18 +57,17 @@ export default {
     props: {
         companies: Object,
         users: Object,
-        tickets: Object,
-        ticketClosed: Object,
-        service: Object,
-        aziendeService: Object,
-        tipiTickets: Object,
+        ambulatori: Object,
+        orari: Object,
+        ricette: Object,
+        appuntamenti: Object,
     },
     data() {
         return {
-            percentage: 100*this.ticketClosed/this.tickets,
+            //percentage: 100*this.ticketClosed/this.tickets,
             percentage2: 0,
             percentage3: 0,
-            azService: this.aziendeService.length,
+            //azService: this.aziendeService.length,
             colors: [
                 { color: '#f56c6c', percentage: 20 },
                 { color: '#e6a23c', percentage: 40 },

@@ -34,7 +34,6 @@ class Schedule extends Model
      * @var array<string, string>
      */
     protected $casts = [
-
         "doctor_id" => 'int',
         "clinic_id" => 'int',
         'tipo' => 'int',
