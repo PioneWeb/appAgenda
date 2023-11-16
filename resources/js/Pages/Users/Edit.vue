@@ -100,11 +100,21 @@
                     </el-row>
 
                     <el-row :gutter="30" class="mb-5">
+
                         <el-col :span="24">
-                            <el-form-item prop="a" label="segretaria dei medici">
+                            <el-form-item v-if="user_type_id === 2" prop="a" label="segretaria">
+                                <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
+                            </el-form-item>
+
+                            <el-form-item v-if="user_type_id === 3" prop="a" label="segretaria">
+                                <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
+                            </el-form-item>
+
+                            <el-form-item v-if="user_type_id === 4" prop="a" label="segretaria">
                                 <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
                             </el-form-item>
                         </el-col>
+
                     </el-row>
 
                 </el-form>
