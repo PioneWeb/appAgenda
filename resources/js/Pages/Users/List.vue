@@ -13,15 +13,15 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                 <el-table :data="utenti" stripe style="width: 100%" @row-click="handleClick" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" />
                     <el-table-column label="ID" prop="id" width="80" sortable />
-                    <el-table-column label="medico" prop="doctor_id" sortable >
+                    <el-table-column label="gruppo" prop="doctor_id" sortable width="120">
                         <template #default="scope">
-                            {{ scope.row.medico?.name }}
+                            {{ scope.row.teams[0]?.name }}
                         </template>
                     </el-table-column>
                     <el-table-column label="nome" prop="name" sortable />
                     <el-table-column label="indirizzo" prop="indirizzo" sortable />
                     <el-table-column label="email" prop="email" sortable />
-                    <el-table-column label="verificata" prop="email_verified_at" sortable  width="120">
+                    <el-table-column label="verificata" prop="email_verified_at" sortable width="120">
                         <template #default="scope">
                             <div v-if="scope.row.email_verified_at===null"></div>
                             <div v-else>{{ moment(scope.row.email_verified_at).format('DD/MM/YYYY') }}</div>

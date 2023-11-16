@@ -78,9 +78,8 @@
                     </el-row>
 
                     <el-row :gutter="30" class="mb-5">
-
                         <el-col :span="4">
-                            <el-form-item prop="profile_photo_path" label="tipo utente">
+                            <el-form-item prop="user_type" label="tipo utente">
                                 <el-button v-if="utente.user_type.id === 2"  type="primary" plain disabled size="large">{{utente.user_type.descrizione}}</el-button>
                                 <el-button v-if="utente.user_type.id === 4"  type="success" plain disabled size="large">{{utente.user_type.descrizione}}</el-button>
                                 <el-button v-if="utente.user_type.id === 3"  type="warning" plain disabled size="large">{{utente.user_type.descrizione}}</el-button>
@@ -99,6 +98,15 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
+
+                    <el-row :gutter="30" class="mb-5">
+                        <el-col :span="24">
+                            <el-form-item prop="a" label="segretaria dei medici">
+                                <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
                 </el-form>
 
             </div>
