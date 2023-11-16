@@ -85,7 +85,7 @@ class UsersController extends Controller
         }
 
         /** @var User $query */
-        $query = User::with(['user_type','medico','gruppo']);
+        $query = User::with(['user_type','medico','medico.patients']);
 
         // RICERCHE CORRELATE
         if(!empty($search = $request->input("search"))) {

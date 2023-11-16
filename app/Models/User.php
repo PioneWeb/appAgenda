@@ -2,20 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
-use App\Models\Company;
-use App\Models\UserType;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Permission\Models\Permission;
@@ -86,10 +87,11 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasRoles;
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
+    use HasRoles;
+    use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -138,23 +140,33 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function company(){
+    public function company(): BelongsTo
+    {
         return $this->belongsTo(Company::class);
     }
 
-    public function medico(){
+
+    public function medico(): HasManyThrough
+    {
         return $this->hasManyThrough(User::class,DoctorUsers::class,"user_id","id","id","doctor_id");
     }
 
-    public function gruppo(){
-        return $this->hasMany(DoctorUsers::class);
+    public function patients(): HasManyThrough
+    {
+        return $this->hasManyThrough(User::class, DoctorUsers::class,'doctor_id','id','id','user_id');
+    }
+
+    private function doctor_user(): HasOne
+    {
+        return $this->hasOne(DoctorUsers::where('user_id',$this->id));
     }
 
     public function tickets(){
         return $this->hasManyThrough(Ticket::class,TicketUser::class,"user_id","id","id","ticket_id");
     }
 
-    public function user_type(){
+    public function user_type(): BelongsTo
+    {
         return $this->belongsTo(UserType::class);
     }
 

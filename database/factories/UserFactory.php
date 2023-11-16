@@ -8,7 +8,7 @@ use App\Models\User;
 use Closure;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Laravel\Jetstream\Features;
+use App\Models\Features;
 
 class UserFactory extends Factory
 {

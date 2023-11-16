@@ -20,7 +20,15 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'photo' => ['nullable', 'mimes:jpg,jpeg,png,svg', 'max:1024'],
+            'nome' => ['required', 'string', 'max:255'],
+            'cognome' => ['required', 'string', 'max:255'],
+            'indirizzo' => ['required', 'string', 'max:255'],
+            'telefono' => ['required', 'string', 'max:255'],
+            'cellulare' => ['required', 'string', 'max:255'],
+            'ragione_sociale' => ['required', 'string', 'max:255'],
+            'p_iva' => ['required', 'string', 'max:11'],
+            'c_fiscale' => ['required', 'string', 'max:16'],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
@@ -34,6 +42,14 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
+                'nome' => $input['nome'],
+                'cognome' => $input['cognome'],
+                'indirizzo' => $input['indirizzo'],
+                'telefono' => $input['telefono'],
+                'cellulare' => $input['cellulare'],
+                'ragione_sociale' => $input['ragione_sociale'],
+                'p_iva' => $input['p_iva'],
+                'c_fiscale' => $input['c_fiscale'],
             ])->save();
         }
     }
@@ -48,6 +64,14 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         $user->forceFill([
             'name' => $input['name'],
             'email' => $input['email'],
+            'nome' => $input['nome'],
+            'cognome' => $input['cognome'],
+            'indirizzo' => $input['indirizzo'],
+            'telefono' => $input['telefono'],
+            'cellulare' => $input['cellulare'],
+            'ragione_sociale' => $input['ragione_sociale'],
+            'p_iva' => $input['p_iva'],
+            'c_fiscale' => $input['c_fiscale'],
             'email_verified_at' => null,
         ])->save();
 
