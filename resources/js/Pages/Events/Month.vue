@@ -5,11 +5,11 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
 </script>
 
 <template>
-    <AppLayout title="Lista Appuntamenti">
+    <AppLayout title="Lista Appuntamenti Mese">
 
         <div class="py-6 px-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
-                <card-header :title="$t('Events')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
+                <card-header :title="$t('EventsMonth')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
 
                 <el-table :data="appuntamenti" stripe style="width: 100%"
                           @row-click="handleClick"
@@ -25,9 +25,9 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     </el-table-column>
                     <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
                     <el-table-column label="data" prop="data" sortable width="150" >
-                    <template #default="scope">
-                        {{ moment(scope.row.data).format('DD MMMM YYYY') }}
-                    </template>
+                        <template #default="scope">
+                            {{ moment(scope.row.data).format('DD MMMM YYYY') }}
+                        </template>
                     </el-table-column>
                     <el-table-column label="ora" prop="ora" sortable width="90" >
                         <template #default="scope">
@@ -58,12 +58,11 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
 
 <script>
 import {ElMessage, ElMessageBox} from "element-plus";
-import moment from "moment/moment";
 
 export default {
-    name: "Appuntamenti",
+    name: "Appuntamenti Mese",
     props: {
-        appuntamenti: Object,
+        appuntamentiProp: Object,
     },
     data() {
         return {
@@ -94,7 +93,7 @@ export default {
     methods:{
         searchTable(val){
             this.search = val;
-            this.paginate();
+            //this.paginate();
         },
         create() {
             this.$inertia.get(this.route('events.create'));
@@ -121,76 +120,25 @@ export default {
             //     }
             // )
             this.$inertia.get(this.route('events.list',{
-                data:'2023-11-20'
+                tp:1
             }));
         },
         giorno() {
-            axios.post(route("events.day"),{
-                pageSize: this.pageSize,
-                page: this.currentPage,
-                sort: this.sortingColumn,
-                order: this.sortingOrder,
-                search: this.search,
-                data:'2023-11-16',
-                doctor_id: 2,
-                clinic_id: 2
-            }).then( result => {
-                this.appuntamenti = result.data.data;
-                this.total = result.data.total
-            });
+            this.$inertia.get(this.route('events.day',{
+                tp:2
+            }));
         },
         settimana() {
-            let st = this.getWeekStartEndDates('2023-11-16');
-            let a = moment(st[0]._d).format('YYYY-MM-DD')
-            let b = moment(st[1]._d).format('YYYY-MM-DD');
-            axios.post(route("events.week"),{
-                pageSize: this.pageSize,
-                page: this.currentPage,
-                sort: this.sortingColumn,
-                order: this.sortingOrder,
-                search: this.search,
-                inizio: a,
-                fine: b,
-                doctor_id: 2,
-                clinic_id: 2
-            }).then( result => {
-                this.appuntamenti = result.data.data;
-                this.total = result.data.total
-            });
+            this.$inertia.get(this.route('events.week',{
+                tp:3
+            }));
         },
         mese() {
-
             this.$inertia.get(this.route('events.month',{
-                id: 2,
-                ms: 11,
-                cl: 2
-            }));
-            // axios.post(route("events.month"),{
-            //     pageSize: this.pageSize,
-            //     page: this.currentPage,
-            //     sort: this.sortingColumn,
-            //     order: this.sortingOrder,
-            //     search: this.search,
-            //     mese:'11',
-            //     doctor_id: 2,
-            //     clinic_id: 2
-            // }).then( result => {
-            //     this.appuntamenti = result.data.data;
-            //     this.total = result.data.total
-            // });
-        },
-        getWeekStartEndDates(date) {
-            // Ottieni il giorno della settimana della data specificata
-            const dayOfWeek = moment(date).day();
-
-            // Calcola la data di inizio settimana
-            const weekStart = moment(date).subtract(dayOfWeek - 1, "days");
-
-            // Calcola la data di fine settimana
-            const weekEnd = moment(date).add(7 - dayOfWeek, "days");
-
-            // Restituisci le date di inizio e fine settimana
-            return [weekStart, weekEnd];
+            id: 2,
+            ms: 11,
+            cl: 2
+        }));
         },
         handleClick(row,column,event){
             let col = column.property;
@@ -224,11 +172,11 @@ export default {
         },
         handleSizeChange(val) {
             this.pageSize = val;
-            this.paginate();
+            //this.paginate();
         },
         handleCurrentChange(val) {
             this.currentPage = val;
-            this.paginate();
+            //this.paginate();
         },
         handleSelectionChange(selectedRows) {
             const ids = selectedRows.map((row) => row.id);
@@ -241,7 +189,8 @@ export default {
         this.sortingColumn = this.SessionStorage.getItem('appuntamenti_list_column', this.sortingColumn,false);
         this.currentPage = this.SessionStorage.getItem('appuntamenti_list_page', this.currentPage, true);
         this.pageSize = this.SessionStorage.getItem('appuntamenti_list_page_size', this.pageSize, true);
-        this.paginate();
+        //this.paginate();
+        this.appuntamenti = this.appuntamentiProp;
     }
 }
 </script>

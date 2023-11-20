@@ -37,11 +37,25 @@ class event extends Model
         "patient_id" => 'int',
         "clinic_id" => 'int',
         'denominazione' => 'int',
-        'quantita' => 'int',
         'data' => 'date',
         'ora' => 'datetime',
         'stato' => 'int',
         'created_at' => 'date',
         'updated_at' => 'date'
     ];
+
+
+
+    public function doctor(){
+        return $this->belongsTo(User::class, 'doctor_id','id');
+    }
+
+    public function patient(){
+        return $this->belongsTo(User::class, 'patient_id','id');
+    }
+
+    public function clinic(){
+        return $this->belongsTo(Clinics::class, 'clinic_id','id');
+    }
+
 }

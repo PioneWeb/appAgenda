@@ -44,5 +44,8 @@
     "Edit_prescriptons" : "Modifica ricetta",
     "Schedules" : "Orari",
     "Edit_schedules" : "Modifica orario",
-    "Events" : "Appuntamenti"
+    "Events" : "Appuntamenti",
+    "EventsMonth" : "Appuntamenti Mese",
+    "EventsWeek" : "Appuntamenti Settimana",
+    "EventsDay" : "Appuntamenti Giorno"
 }

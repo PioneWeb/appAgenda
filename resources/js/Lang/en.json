@@ -44,5 +44,8 @@
     "Edit_prescriptons" : "Edit prescriptons",
     "Schedules" : "Schedules",
     "Edit_schedules" : "Edit schedules",
-    "Events" : "Events"
+    "Events" : "Events",
+    "EventsMonth" : "Events Month",
+    "EventsWeek" : "Events Week",
+    "EventsDay" : "Events Day"
 }
