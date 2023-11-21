@@ -13,6 +13,6 @@ Route::post("/paginate", [EventController::class, "paginate"])->name('events.pag
 Route::post("/save", [EventController::class, "save"])->name("events.save");
 
 
-Route::post('/day', [EventController::class, "day"])->name('events.day');
-Route::post('/week', [EventController::class, "week"])->name('events.week');
+Route::get('/day/{dt}/{id}/{cl}', [EventController::class, "day"])->name('events.day');
+Route::get('/week/{inizio}/{fine}/{id}/{cl}', [EventController::class, "week"])->name('events.week');
 Route::get('/month/{id}/{ms}/{cl}', [EventController::class, "month"])->name('events.month');

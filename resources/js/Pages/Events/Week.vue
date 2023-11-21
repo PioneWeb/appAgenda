@@ -6,6 +6,30 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
 
 <template>
     <AppLayout title="Lista Appuntamenti Settimana">
+        <el-card class="box-card mt-2 mx-4">
+            <el-form :model="form" :inline="true" class="demo-form-inline">
+                <el-form-item label="Ambulatorio" >
+                    <el-select v-model="ambulatorio" class="m-0" placeholder="Select">
+                        <el-option
+                            v-for="item in ambulatori"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Medico">
+                    <el-select v-model="medico" class="m-0" placeholder="Select">
+                        <el-option
+                            v-for="item in medici"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
+                </el-form-item>
+            </el-form>
+        </el-card>
 
         <div class="py-6 px-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
@@ -58,15 +82,20 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
 
 <script>
 import {ElMessage, ElMessageBox} from "element-plus";
+import moment from "moment";
 
 export default {
     name: "Appuntamenti",
     props: {
         appuntamenti: Object,
+        ambulatoriProp: Object,
+        mediciProp:Object
     },
     data() {
         return {
             appuntamenti: [],
+            ambulatori: [],
+            medici: [],
             tasti: [
                 { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click: this.create },
                 { id: 2, name: 'Lista', type: "success", icon:Edit, click: this.lista },
@@ -110,33 +139,49 @@ export default {
             )
         },
         lista() {
-            // ElMessageBox.confirm(
-            //     "Attenzione stai per fare ",
-            //     'Attenzione',
-            //     {
-            //         confirmButtonText: 'OK',
-            //         cancelButtonText: 'Annulla',
-            //         type: 'warning',
-            //     }
-            // )
             this.$inertia.get(this.route('events.list',{
-                tp:1
+                data: moment().format('YYYY-MM-DD')
             }));
         },
         giorno() {
-            this.$inertia.get(this.route('events.day',{
-                tp:2
-            }));
+            this.filter = [{
+                tp: 1,
+                dt: moment().format('YYYY-MM-DD'),
+                id: 2,
+                cl: 1,
+            }]
+            this.paginate();
         },
         settimana() {
-            this.$inertia.get(this.route('events.week',{
-                tp:3
-            }));
+            this.filter = [{
+                tp: 2,
+                dt: moment().format('YYYY-MM-DD'),
+                id: 2,
+                cl: 1,
+            }]
+            this.paginate();
         },
         mese() {
-            this.$inertia.get(this.route('events.month',{
-                tp:4
-            }));
+            this.filter = [{
+                tp: 3,
+                dt: moment().format('YYYY-MM-DD'),
+                id: 2,
+                cl: 1,
+            }]
+            this.paginate();
+        },
+        getWeekStartEndDates(date) {
+            // Ottieni il giorno della settimana della data specificata
+            const dayOfWeek = moment(date).day();
+
+            // Calcola la data di inizio settimana
+            const weekStart = moment(date).subtract(dayOfWeek - 1, "days");
+
+            // Calcola la data di fine settimana
+            const weekEnd = moment(date).add(7 - dayOfWeek, "days");
+
+            // Restituisci le date di inizio e fine settimana
+            return [weekStart, weekEnd];
         },
         handleClick(row,column,event){
             let col = column.property;
@@ -187,7 +232,8 @@ export default {
         this.sortingColumn = this.SessionStorage.getItem('appuntamenti_list_column', this.sortingColumn,false);
         this.currentPage = this.SessionStorage.getItem('appuntamenti_list_page', this.currentPage, true);
         this.pageSize = this.SessionStorage.getItem('appuntamenti_list_page_size', this.pageSize, true);
-        this.paginate();
+        this.ambulatori = this.ambulatoriProp;
+        this.medici = this.mediciProp;
     }
 }
 </script>

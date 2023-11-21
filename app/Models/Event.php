@@ -36,7 +36,7 @@ class event extends Model
         "doctor_id" => 'int',
         "patient_id" => 'int',
         "clinic_id" => 'int',
-        'denominazione' => 'int',
+        'denominazione' => 'string',
         'data' => 'date',
         'ora' => 'datetime',
         'stato' => 'int',

@@ -1,13 +1,16 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import CardHeader from "../../Components/CardHeader.vue";
-import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element-plus/icons-vue';
+import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete, Calendar} from '@element-plus/icons-vue';
+import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
 </script>
 
 <template>
     <AppLayout title="Lista Appuntamenti">
 
-        <div class="py-6 px-4">
+    <testata-appuntamenti :medici="medici" :ambulatori="ambulatori"></testata-appuntamenti>
+
+        <div class="p-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
                 <card-header :title="$t('Events')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
 
@@ -20,13 +23,13 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     <el-table-column label="paziente" prop="patient.name" sortable >
                         <template #default="scope">
                             <el-tag v-if="scope.row.patient !== null" size="small">{{scope.row.patient.name}}</el-tag>
-                            <el-tag v-if="scope.row.patient === null" size="small" type="danger">Appuntamento telefonico</el-tag>
+                            <el-tag v-if="scope.row.patient === null" size="small" type="danger">{{ scope.row.denominazione }}</el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
                     <el-table-column label="data" prop="data" sortable width="150" >
                     <template #default="scope">
-                        {{ moment(scope.row.data).format('DD MMMM YYYY') }}
+                        {{ moment(scope.row.data).format('DD MMM YYYY') }}
                     </template>
                     </el-table-column>
                     <el-table-column label="ora" prop="ora" sortable width="90" >
@@ -64,16 +67,41 @@ export default {
     name: "Appuntamenti",
     props: {
         appuntamenti: Object,
+        ambulatori: Object,
+        medici:Object
     },
     data() {
         return {
+            filter: {},
             appuntamenti: [],
+            options: [
+                {
+                    value: 'Option1',
+                    label: 'Option1',
+                },
+                {
+                    value: 'Option2',
+                    label: 'Option2',
+                },
+                {
+                    value: 'Option3',
+                    label: 'Option3',
+                },
+                {
+                    value: 'Option4',
+                    label: 'Option4',
+                },
+                {
+                    value: 'Option5',
+                    label: 'Option5',
+                },
+            ],
             tasti: [
                 { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click: this.create },
-                { id: 2, name: 'Lista', type: "success", icon:Edit, click: this.lista },
-                { id: 3, name: 'Giorno', type: "success", icon:Edit, click: this.giorno },
-                { id: 4, name: 'Settimana', type: "success", icon:Edit, click: this.settimana },
-                { id: 5, name: 'Mese', type: "primary", icon:Edit, click: this.mese },
+                { id: 2, name: 'Lista', type: "success", icon:Calendar, click: this.lista },
+                { id: 3, name: 'Giorno', type: "success", icon:Calendar, click: this.giorno },
+                { id: 4, name: 'Settimana', type: "success", icon:Calendar, click: this.settimana },
+                { id: 5, name: 'Mese', type: "primary", icon:Calendar, click: this.mese },
                 { id: 6, name: 'Stampa', type: "primary", icon:Printer }
             ],
             giorni:['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
@@ -111,84 +139,44 @@ export default {
             )
         },
         lista() {
-            // ElMessageBox.confirm(
-            //     "Attenzione stai per fare ",
-            //     'Attenzione',
-            //     {
-            //         confirmButtonText: 'OK',
-            //         cancelButtonText: 'Annulla',
-            //         type: 'warning',
-            //     }
-            // )
             this.$inertia.get(this.route('events.list',{
-                data:'2023-11-20'
+                data: moment().format('YYYY-MM-DD')
             }));
         },
         giorno() {
-            axios.post(route("events.day"),{
-                pageSize: this.pageSize,
-                page: this.currentPage,
-                sort: this.sortingColumn,
-                order: this.sortingOrder,
-                search: this.search,
-                data:'2023-11-16',
-                doctor_id: 2,
-                clinic_id: 2
-            }).then( result => {
-                this.appuntamenti = result.data.data;
-                this.total = result.data.total
-            });
+            this.filter = [{
+                tp: 1,
+                dt: moment().format('YYYY-MM-DD'),
+                id: 2,
+                cl: 1,
+            }]
+            this.paginate();
         },
         settimana() {
-            let st = this.getWeekStartEndDates('2023-11-16');
-            let a = moment(st[0]._d).format('YYYY-MM-DD')
-            let b = moment(st[1]._d).format('YYYY-MM-DD');
-            axios.post(route("events.week"),{
-                pageSize: this.pageSize,
-                page: this.currentPage,
-                sort: this.sortingColumn,
-                order: this.sortingOrder,
-                search: this.search,
-                inizio: a,
-                fine: b,
-                doctor_id: 2,
-                clinic_id: 2
-            }).then( result => {
-                this.appuntamenti = result.data.data;
-                this.total = result.data.total
-            });
+            this.filter = [{
+                tp: 2,
+                dt: moment().format('YYYY-MM-DD'),
+                id: 2,
+                cl: 1,
+            }]
+            this.paginate();
         },
         mese() {
-
-            this.$inertia.get(this.route('events.month',{
+            this.filter = [{
+                tp: 3,
+                dt: moment().format('YYYY-MM-DD'),
                 id: 2,
-                ms: 11,
-                cl: 2
-            }));
-            // axios.post(route("events.month"),{
-            //     pageSize: this.pageSize,
-            //     page: this.currentPage,
-            //     sort: this.sortingColumn,
-            //     order: this.sortingOrder,
-            //     search: this.search,
-            //     mese:'11',
-            //     doctor_id: 2,
-            //     clinic_id: 2
-            // }).then( result => {
-            //     this.appuntamenti = result.data.data;
-            //     this.total = result.data.total
-            // });
+                cl: 1,
+            }]
+            this.paginate();
         },
         getWeekStartEndDates(date) {
             // Ottieni il giorno della settimana della data specificata
             const dayOfWeek = moment(date).day();
-
             // Calcola la data di inizio settimana
             const weekStart = moment(date).subtract(dayOfWeek - 1, "days");
-
             // Calcola la data di fine settimana
             const weekEnd = moment(date).add(7 - dayOfWeek, "days");
-
             // Restituisci le date di inizio e fine settimana
             return [weekStart, weekEnd];
         },
@@ -217,7 +205,9 @@ export default {
                 sort: this.sortingColumn,
                 order: this.sortingOrder,
                 search: this.search,
+                filter: this.filter,
             }).then( result => {
+                console.log(result)
                 this.appuntamenti = result.data.data;
                 this.total = result.data.total
             });
@@ -247,5 +237,7 @@ export default {
 </script>
 
 <style scoped>
-
+.el-form-item {
+    margin-bottom: 0px;
+}
 </style>
