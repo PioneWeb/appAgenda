@@ -124,7 +124,7 @@ export default {
         },
         handleSelectionChange(selectedRows) {
             const ids = selectedRows.map((row) => row.id);
-            console.log('ID ',ids);
+            //console.log('ID ',ids);
 
         },
     },

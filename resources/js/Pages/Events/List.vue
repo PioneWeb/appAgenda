@@ -3,54 +3,26 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import CardHeader from "../../Components/CardHeader.vue";
 import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete, Calendar} from '@element-plus/icons-vue';
 import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
+import CorpoLista from "../../Components/CorpoLista.vue";
+import CorpoDay from "../../Components/CorpoDay.vue";
+import CorpoWeek from "../../Components/CorpoWeek.vue";
+import CorpoMonth from "../../Components/CorpoMonth.vue";
+
 </script>
 
 <template>
     <AppLayout title="Lista Appuntamenti">
 
-    <testata-appuntamenti :medici="medici" :ambulatori="ambulatori"></testata-appuntamenti>
+        <testata-appuntamenti :medici="medici" :ambulatori="ambulatori" @cambiaMedico="this.controllaMedico" @cambiaAmbulatorio="this.controllaAmbulatorio"></testata-appuntamenti>
 
         <div class="p-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
                 <card-header :title="$t('Events')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
 
-                <el-table :data="appuntamenti" stripe style="width: 100%"
-                          @row-click="handleClick"
-                          @selection-change="handleSelectionChange">
-                    <el-table-column type="selection" />
-                    <el-table-column label="ID" prop="id" width="80" sortable />
-                    <el-table-column label="medico" prop="doctor.name" sortable />
-                    <el-table-column label="paziente" prop="patient.name" sortable >
-                        <template #default="scope">
-                            <el-tag v-if="scope.row.patient !== null" size="small">{{scope.row.patient.name}}</el-tag>
-                            <el-tag v-if="scope.row.patient === null" size="small" type="danger">{{ scope.row.denominazione }}</el-tag>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
-                    <el-table-column label="data" prop="data" sortable width="150" >
-                    <template #default="scope">
-                        {{ moment(scope.row.data).format('DD MMM YYYY') }}
-                    </template>
-                    </el-table-column>
-                    <el-table-column label="ora" prop="ora" sortable width="90" >
-                        <template #default="scope">
-                            {{ moment(scope.row.ora).format('HH:mm') }}
-                        </template>
-                    </el-table-column>
-
-                </el-table>
-
-                <el-pagination
-                    class="mt-6"
-                    v-model:currentPage="currentPage"
-                    :page-sizes="pageSizes"
-                    :page-size="pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                >
-                </el-pagination>
+                <CorpoLista v-if="filter.tp === 0" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori" :total="total"></CorpoLista>
+                <CorpoDay v-if="filter.tp === 1" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoDay>
+                <CorpoWeek v-if="filter.tp === 2" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoWeek>
+                <CorpoMonth v-if="filter.tp === 3" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoMonth>
 
             </div>
         </div>
@@ -66,13 +38,17 @@ import moment from "moment/moment";
 export default {
     name: "Appuntamenti",
     props: {
-        appuntamenti: Object,
         ambulatori: Object,
-        medici:Object
+        medici: Object
     },
     data() {
         return {
-            filter: {},
+            filter: {
+                tp: 0,
+                medico: null,
+                ambulatorio: null,
+                dt: moment().format('YYYY-MM-DD')
+            },
             appuntamenti: [],
             options: [
                 {
@@ -106,7 +82,6 @@ export default {
             ],
             giorni:['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
             tipi:['Rappresentante','Visita','Vaccino'],
-            search: null,
             currentPage:1,
             pageSize: 12,
             sortingColumn: null,
@@ -116,12 +91,20 @@ export default {
                 20,
                 100
             ],
-            total: 0
+            total: null
         }
     },
     methods:{
+        controllaMedico(val){
+            this.filter.medico = val;
+            this.paginate();
+        },
+        controllaAmbulatorio(val){
+            this.filter.ambulatorio = val;
+            this.paginate();
+        },
         searchTable(val){
-            this.search = val;
+            this.filter.search = val;
             this.paginate();
         },
         create() {
@@ -139,47 +122,31 @@ export default {
             )
         },
         lista() {
-            this.$inertia.get(this.route('events.list',{
-                data: moment().format('YYYY-MM-DD')
-            }));
+            this.filter.tp = 0;
+            this.paginate();
         },
         giorno() {
-            this.filter = [{
-                tp: 1,
-                dt: moment().format('YYYY-MM-DD'),
-                id: 2,
-                cl: 1,
-            }]
+            this.filter.tp = 1;
             this.paginate();
         },
         settimana() {
-            this.filter = [{
-                tp: 2,
-                dt: moment().format('YYYY-MM-DD'),
-                id: 2,
-                cl: 1,
-            }]
+            this.filter.tp = 2;
             this.paginate();
         },
         mese() {
-            this.filter = [{
-                tp: 3,
-                dt: moment().format('YYYY-MM-DD'),
-                id: 2,
-                cl: 1,
-            }]
+            this.filter.tp = 3;
             this.paginate();
         },
-        getWeekStartEndDates(date) {
-            // Ottieni il giorno della settimana della data specificata
-            const dayOfWeek = moment(date).day();
-            // Calcola la data di inizio settimana
-            const weekStart = moment(date).subtract(dayOfWeek - 1, "days");
-            // Calcola la data di fine settimana
-            const weekEnd = moment(date).add(7 - dayOfWeek, "days");
-            // Restituisci le date di inizio e fine settimana
-            return [weekStart, weekEnd];
-        },
+        // getWeekStartEndDates(date) {
+        //     // Ottieni il giorno della settimana della data specificata
+        //     const dayOfWeek = moment(date).day();
+        //     // Calcola la data di inizio settimana
+        //     const weekStart = moment(date).subtract(dayOfWeek - 1, "days");
+        //     // Calcola la data di fine settimana
+        //     const weekEnd = moment(date).add(7 - dayOfWeek, "days");
+        //     // Restituisci le date di inizio e fine settimana
+        //     return [weekStart, weekEnd];
+        // },
         handleClick(row,column,event){
             let col = column.property;
 
@@ -194,20 +161,19 @@ export default {
         },
         paginate() {
             this.tableLoading = true;
-            this.SessionStorage.setItem('appuntamenti_list_search', JSON.stringify(this.search));
+            this.SessionStorage.setItem('appuntamenti_list_filter', this.filter,true);
             this.SessionStorage.setItem('appuntamenti_list_order', this.sortingOrder);
             this.SessionStorage.setItem('appuntamenti_list_column', this.sortingColumn);
-            this.SessionStorage.setItem('appuntamenti_list_page', this.currentPage, true);
-            this.SessionStorage.setItem('appuntamenti_list_page_size', this.pageSize, true);
+            this.SessionStorage.setItem('appuntamenti_list_page', this.currentPage);
+            this.SessionStorage.setItem('appuntamenti_list_page_size', this.pageSize);
             axios.post(route("events.paginate"),{
                 pageSize: this.pageSize,
                 page: this.currentPage,
                 sort: this.sortingColumn,
                 order: this.sortingOrder,
-                search: this.search,
-                filter: this.filter,
+                filter: this.filter
             }).then( result => {
-                console.log(result)
+
                 this.appuntamenti = result.data.data;
                 this.total = result.data.total
             });
@@ -222,15 +188,14 @@ export default {
         },
         handleSelectionChange(selectedRows) {
             const ids = selectedRows.map((row) => row.id);
-            console.log('ID ',ids);
         },
     },
-    mounted() {
-        this.search = this.SessionStorage.getItem('appuntamenti_list_search', this.search,true);
+    created() {
+        this.filter = this.SessionStorage.getItem('appuntamenti_list_filter', this.filter,true);
         this.sortingOrder = this.SessionStorage.getItem('appuntamenti_list_order', this.sortingOrder,false);
         this.sortingColumn = this.SessionStorage.getItem('appuntamenti_list_column', this.sortingColumn,false);
-        this.currentPage = this.SessionStorage.getItem('appuntamenti_list_page', this.currentPage, true);
-        this.pageSize = this.SessionStorage.getItem('appuntamenti_list_page_size', this.pageSize, true);
+        this.currentPage = this.SessionStorage.getItem('appuntamenti_list_page', this.currentPage, false);
+        this.pageSize = this.SessionStorage.getItem('appuntamenti_list_page_size', this.pageSize, false);
         this.paginate();
     }
 }
