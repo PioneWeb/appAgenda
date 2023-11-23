@@ -13,7 +13,7 @@ import CorpoMonth from "../../Components/CorpoMonth.vue";
 <template>
     <AppLayout title="Lista Appuntamenti">
 
-        <testata-appuntamenti :medici="medici" :ambulatori="ambulatori" @cambiaMedico="this.controllaMedico" @cambiaAmbulatorio="this.controllaAmbulatorio"></testata-appuntamenti>
+        <testata-appuntamenti :medici="medici" :ambulatori="ambulatori" :filter="filter" @cambiaMedico="this.controllaMedico" @cambiaAmbulatorio="this.controllaAmbulatorio" @cambiaData="this.controllaData"></testata-appuntamenti>
 
         <div class="p-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
@@ -47,7 +47,8 @@ export default {
                 tp: 0,
                 medico: null,
                 ambulatorio: null,
-                dt: moment().format('YYYY-MM-DD')
+                data: moment().format('YYYY-MM-DD'),
+                search: null
             },
             appuntamenti: [],
             options: [
@@ -102,6 +103,12 @@ export default {
         controllaAmbulatorio(val){
             this.filter.ambulatorio = val;
             this.paginate();
+        },
+        controllaData(val){
+            console.log('DATA ',val)
+            this.filter.data = moment(val).format('YYYY-MM-DD');
+            this.paginate();
+            console.log('DATAX ',this.filter.data)
         },
         searchTable(val){
             this.filter.search = val;
@@ -173,7 +180,7 @@ export default {
                 order: this.sortingOrder,
                 filter: this.filter
             }).then( result => {
-
+                console.log(result)
                 this.appuntamenti = result.data.data;
                 this.total = result.data.total
             });
@@ -190,7 +197,7 @@ export default {
             const ids = selectedRows.map((row) => row.id);
         },
     },
-    created() {
+    mounted() {
         this.filter = this.SessionStorage.getItem('appuntamenti_list_filter', this.filter,true);
         this.sortingOrder = this.SessionStorage.getItem('appuntamenti_list_order', this.sortingOrder,false);
         this.sortingColumn = this.SessionStorage.getItem('appuntamenti_list_column', this.sortingColumn,false);

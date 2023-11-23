@@ -74,13 +74,13 @@ class EventController extends Controller
         $this->validate($request,[
             "page" => "required|int|min:1",
             "pageSize" => "required|int|min:1",
-            "search" => "nullable|string",
             "sort" => "nullable|string",
             "order" => "nullable|string|in:ascending,descending",
             "filter.tp" => "nullable|int",
             "filter.dt" => "nullable|date",
-            "filter.id" => "nullable|int",
-            "filter.cl" => "nullable|int",
+            "filter.medico" => "nullable|array",
+            "filter.ambulatorio" => "nullable|array",
+            "filter.search" => "nullable|string",
         ]);;
 
         $filter = $request->input("filter");
@@ -96,9 +96,14 @@ class EventController extends Controller
         $query = Event::query();
         $query->with(['patient','doctor','clinic']);
 
-        $now = Carbon::parse($filter['dt']);
-        $weekStartDate = $now->startOfWeek()->format('Y-m-d H:i');
-        $weekEndDate = $now->endOfWeek()->format('Y-m-d H:i');
+        logger('data1 ', [$filter['data']]);
+        $filter['data'] === 'Invalid date' ? Carbon::now()->format('Y-m-d') : $filter['data'];
+        logger('data2 ', [$filter['data']]);
+        $now = Carbon::parse(Carbon::parse($filter['data'])->format('Y-m-d'));
+
+        $weekStartDate = $now->startOfWeek()->format('Y-m-d');
+        $weekEndDate = $now->endOfWeek()->format('Y-m-d');
+
 
         if(!empty($filter['medico'])){
             $query->whereIn("doctor_id", $filter['medico']);
@@ -106,27 +111,34 @@ class EventController extends Controller
         if(!empty($filter['ambulatorio'])) {
             $query->whereIn("clinic_id", $filter['ambulatorio']);
         }
+
+        if($filter['tp'] === 0) {
+            $query->whereDate("data", $filter['data']);
+        }
         if($filter['tp'] === 1) {
-            $query->where("data", $filter['dt']);
+            $query->whereDate("data", $filter['data']);
         }
         if($filter['tp'] === 2) {
-            $query->where("data",">=",$weekStartDate)
-                ->where("data", "<=" ,$weekEndDate);
+            $query->whereDate("data",">=",$weekStartDate)
+                ->whereDate("data", "<=" ,$weekEndDate);
         }
         if($filter['tp'] === 3) {
             $query->whereMonth("data", $now->month);
         }
 
-//        echo($query->toSql());
-//        return;
-
         // RICERCHE CORRELATE
         if(!empty($search = $filter['search'])) {
             $query->where(function($query2) use ($search) {
-                $query2->where("data", "like", '%'.$search.'%')
+                $query2->whereDate("data", "like", '%'.$search.'%')
                     ->orWhere("denominazione", "like", '%'.$search.'%');
             });
         }
+//        logger('request data ', [Carbon::parse($filter['data'])]);
+//        logger('data ', [$now]);
+//        logger('inizio',[$weekStartDate]);
+//        logger('fine',[$weekEndDate]);
+//        logger($query->toSql());
+
         // PAGINAZIONE
         return $query->paginate($request->input("pageSize"));
 

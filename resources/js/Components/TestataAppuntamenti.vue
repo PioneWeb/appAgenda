@@ -2,9 +2,9 @@
     <el-form :model="form" :inline="true" class="demo-form-inline">
         <div class="bg-slate-800 h-14 m-4 rounded-lg">
             <el-row :gutter="24">
-                <el-col :span="6" class="m-1 p-2">
-                    <el-form-item label="Ambulatorio" >
-                        <el-select v-model="filter.ambulatorio" class="m-0" placeholder="Select" multiple @change="$emit('cambiaAmbulatorio',filter.ambulatorio)">
+                <el-col :span="9" class="m-1 p-2">
+                    <el-form-item label="Ambulatorio" class="w-full">
+                        <el-select v-model="filter.ambulatorio" class="m-0 w-full" placeholder="Select" multiple @change="$emit('cambiaAmbulatorio',filter.ambulatorio)">
                             <el-option
                                 v-for="item in ambulatori"
                                 :key="item.value"
@@ -14,9 +14,9 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8" class="m-1 p-2">
-                    <el-form-item label="Medico">
-                        <el-select v-model="filter.medico" class="m-0" placeholder="Select" multiple @change="$emit('cambiaMedico',filter.medico)">
+                <el-col :span="9" class="m-1 p-2">
+                    <el-form-item label="Medico" class="w-full">
+                        <el-select v-model="filter.medico" class="m-0 w-full" placeholder="Select" multiple @change="$emit('cambiaMedico',filter.medico)">
                             <el-option
                                 v-for="item in medici"
                                 :key="item.key"
@@ -26,13 +26,13 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6" class="m-1 p-2">
+                <el-col :span="4" class="m-1 p-2">
                     <el-form-item label="Data">
                         <el-date-picker
-                            v-model="filter.dt"
+                            v-model="filter.data"
                             type="date"
                             placeholder="Pick a day"
-                            size="small"
+                            @change="$emit('cambiaData',filter.data)"
                         />
                     </el-form-item>
                 </el-col>
@@ -42,18 +42,14 @@
 </template>
 
 <script>
+
 export default {
     name: "header appuntamenti",
-    emits:["cambiaMedico","cambiaAmbulatorio"],
+    emits:["cambiaMedico","cambiaAmbulatorio","cambiaData"],
     props: {
         ambulatori: Object,
         medici: Object,
-        filter: Object
+        filter: Object,
     },
-    data() {
-        return {
-            filter:['ambulatorio','medico','dt']
-        };
-    }
 }
 </script>
