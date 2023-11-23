@@ -106,7 +106,7 @@ export default {
         },
         controllaData(val){
             console.log('DATA ',val)
-            this.filter.data = moment(val).format('YYYY-MM-DD');
+            val === null ? this.filter.data = null : this.filter.data = moment(val).format('YYYY-MM-DD');
             this.paginate();
             console.log('DATAX ',this.filter.data)
         },

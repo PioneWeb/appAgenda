@@ -95,10 +95,8 @@ class EventController extends Controller
         /** @var Event $query */
         $query = Event::query();
         $query->with(['patient','doctor','clinic']);
-
-        logger('data1 ', [$filter['data']]);
-        $filter['data'] === 'Invalid date' ? Carbon::now()->format('Y-m-d') : $filter['data'];
-        logger('data2 ', [$filter['data']]);
+        $lst = $filter['data'];
+        $filter['data'] === null ? $filter['data'] = Carbon::now()->format('Y-m-d') : $filter['data'];
         $now = Carbon::parse(Carbon::parse($filter['data'])->format('Y-m-d'));
 
         $weekStartDate = $now->startOfWeek()->format('Y-m-d');
@@ -113,7 +111,9 @@ class EventController extends Controller
         }
 
         if($filter['tp'] === 0) {
+            if($lst !== null){
             $query->whereDate("data", $filter['data']);
+            }
         }
         if($filter['tp'] === 1) {
             $query->whereDate("data", $filter['data']);

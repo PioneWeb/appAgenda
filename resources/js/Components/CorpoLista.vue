@@ -12,8 +12,8 @@ import {AlarmClock, Check, Close, Cloudy, Delete, Edit, Phone} from "@element-pl
         <el-table-column label="medico" prop="doctor.name" sortable />
         <el-table-column label="paziente" prop="patient.name" sortable >
             <template #default="scope">
-                <el-tag v-if="scope.row.patient !== null" size="small">{{scope.row.patient.name}}</el-tag>
-                <el-tag v-if="scope.row.patient === null" size="small" type="danger">{{ scope.row.denominazione }}</el-tag>
+                <el-tag v-if="scope.row.patient !== null" size="small" type="danger">{{scope.row.patient.name}}</el-tag>
+                <el-tag v-if="scope.row.patient === null" size="small">{{ scope.row.denominazione }}</el-tag>
             </template>
         </el-table-column>
         <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
@@ -31,7 +31,7 @@ import {AlarmClock, Check, Close, Cloudy, Delete, Edit, Phone} from "@element-pl
             <template #default="scope">
                 <el-icon class="m-1" color="green"><Edit /></el-icon>
                 <el-icon v-if="scope.row.patient_id === null" class="m-1" color="blue"><Phone /></el-icon>
-                <el-icon v-else class="m-1" color="blue"><Cloudy /></el-icon>
+                <el-icon v-else class="m-1" color="red"><Cloudy /></el-icon>
                 <el-icon class="m-1" color="red"><Delete /></el-icon>
                 <el-icon v-if="scope.row.stato === 1" color="green"><Check /></el-icon>
                 <el-icon v-if="scope.row.stato === 2" color="yellow"><Close /></el-icon>
