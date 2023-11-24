@@ -28,6 +28,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction'
 import itLocale from '@fullcalendar/core/locales/it';
+import multiMonthPlugin from '@fullcalendar/multimonth'
 export default {
     name: "corpo lista",
     props: {
@@ -41,7 +42,7 @@ export default {
     data() {
         return {
             calendarOptions: {
-                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
+                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, multiMonthPlugin],
                 initialView: 'dayGridMonth',
                 contentHeight: 680,
                 contentWidth: 'auto',
@@ -51,21 +52,21 @@ export default {
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,multiMonth'
                 },
                 dayMaxEventRows: true,
                 timeGrid: {
                     dayMaxEventRows: 1 // adjust to 6 only for timeGridWeek/timeGridDay
                 },
-                minTime: "08:00",
-                maxTime: "18:00",
+                slotMinTime: "08:00:00",
+                slotMaxTime: "18:00:00",
                 eventColor: '#2c3e50',
                 locale: itLocale,
                 droppable: true,
                 editable: true,
                 events: [
-                    {title: 'Paolo Rossi', date: '2023-11-24', start:'2023-11-24 12:00:00',end:'2023-11-24 12:15:00',  textColor: '#AAF'},
-                    {title: 'Nome Cognome', date: '2023-11-23', start:'2023-11-23 12:00:00',end:'2023-11-23 12:15:00', textColor: '#FAA'}
+                    {title: 'Paolo Rossi', date: '2023-11-24', start:'2023-11-24 12:00:00',end:'2023-11-24 12:30:00',  textColor: '#AAF'},
+                    {title: 'Nome Cognome', date: '2023-11-23', start:'2023-11-23 12:00:00',end:'2023-11-23 12:30:00', textColor: '#FAA'}
                 ]
             },
         }
