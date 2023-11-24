@@ -47,5 +47,10 @@
     "Events" : "Events",
     "EventsMonth" : "Events Month",
     "EventsWeek" : "Events Week",
-    "EventsDay" : "Events Day"
+    "EventsDay" : "Events Day",
+    "Previous_Year" : "Previous_Year",
+    "Previous_Month":"Previous_Month",
+    "today" : "today",
+    "Next_Month" : "Next_Month",
+    "Next_Year" : "Next_Year"
 }

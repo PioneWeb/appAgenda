@@ -47,5 +47,10 @@
     "Events" : "Appuntamenti",
     "EventsMonth" : "Appuntamenti Mese",
     "EventsWeek" : "Appuntamenti Settimana",
-    "EventsDay" : "Appuntamenti Giorno"
+    "EventsDay" : "Appuntamenti Giorno",
+    "Previous_Year" : "Anno precedente",
+    "Previous_Month":"Mese precedente",
+    "today" : "Oggi",
+    "Next_Month" : "Mese prossimo",
+    "Next_Year" : "Anno prossimo"
 }

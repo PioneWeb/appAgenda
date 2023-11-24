@@ -11,7 +11,7 @@ import {Check, Close, AlarmClock, Phone, Edit, Printer, Cloudy, Delete, Calendar
                 <el-button type="primary" class="mr-3.5 float-right" >Bottone</el-button>
             </div>
         </template>
-        <div v-for="item in appuntamenti" :key="item" class="flex">
+        <div v-if="appuntamenti.length>0" v-for="item in appuntamenti" :key="item" class="flex">
             <div class="h-10 w-1/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm text-center ">{{ moment(item.data).format('D/M/Y')  }}</div>
             <div class="h-10 w-1/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm text-center ">{{ moment(item.ora).format('HH:mm')  }}</div>
             <div class="h-10 w-1/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm text-center ">{{ item.clinic.nome  }}</div>
@@ -31,6 +31,7 @@ import {Check, Close, AlarmClock, Phone, Edit, Printer, Cloudy, Delete, Calendar
             </div>
 
         </div>
+        <div v-else class="text-red-400">Non ci sono appuntamenti per la settimana dal {{ moment(dataini).format('D/M/Y') }} al {{ moment(datafin).format('D/M/Y') }}</div>
     </el-card>
 </template>
 

@@ -4,37 +4,30 @@ import {Check, Close, AlarmClock, Phone, Edit, Printer, Cloudy, Delete, Calendar
 </script>
 
 <template>
-    <el-card class="box-card">
-        <template #header>
-            <div class="card-header">
-                <span>Appuntamenti del mese di {{ moment(appuntamenti.data).format('MMMM') }}</span>
-                <el-button type="primary" class="mr-3.5 float-right" >Bottone</el-button>
-            </div>
-        </template>
-        <div v-for="item in appuntamenti" :key="item" class="flex">
-            <div class="h-10 w-1/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm text-center ">{{ moment(item.data).format('D/M/Y')  }}</div>
-            <div class="h-10 w-1/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm text-center ">{{ moment(item.ora).format('HH:mm')  }}</div>
-            <div class="h-10 w-1/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm text-center ">{{ item.clinic.nome  }}</div>
-            <div v-if="item.patient !== null" class="h-10 w-2/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm ">{{ item.patient.name }}</div>
-            <div v-if="item.patient === null" class="h-10 w-2/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm ">{{ item.denominazione }}</div>
+<!--    <el-card class="box-card">-->
+<!--        <template #header>-->
+<!--            <div class="card-header">-->
+<!--                <span>Appuntamenti del mese di {{ moment(appuntamenti.data).format('MMMM') }}</span>-->
+<!--                <el-button type="primary" class="mr-3.5 float-right" >Bottone</el-button>-->
+<!--            </div>-->
+<!--        </template>-->
+            <el-col :span="22" class="">
+                <FullCalendar :options="calendarOptions" />
+            </el-col>
 
-            <div class="h-10 w-6/12 p-2 m-2.5 border-gray-600 text-gray-500 border rounded-md text-sm text-center "></div>
+            <div v-if="appuntamenti.length>0" class="flex"></div>
+        <div v-else class="text-red-400">Non ci sono appuntamenti per oggi {{ moment(appuntamenti.data).format('D MMM Y') }}</div>
 
-            <div class="h-10 w-1/12 p-2 m-2.5 border-gray-600 border rounded-md text-center">
-                <el-icon class="m-1" color="green"><Edit /></el-icon>
-                <el-icon v-if="item.patient_id === null" class="m-1" color="blue"><Phone /></el-icon>
-                <el-icon v-else class="m-1" color="blue"><Cloudy /></el-icon>
-                <el-icon class="m-1" color="red"><Delete /></el-icon>
-                <el-icon v-if="item.stato === 1" color="green"><Check /></el-icon>
-                <el-icon v-if="item.stato === 2" color="yellow"><Close /></el-icon>
-                <el-icon v-if="item.stato === 3" color="red"><AlarmClock /></el-icon>
-            </div>
-
-        </div>
-    </el-card>
+<!--    </el-card>-->
 </template>
 
 <script>
+import FullCalendar from "@fullcalendar/vue3";
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction'
+import itLocale from '@fullcalendar/core/locales/it';
 export default {
     name: "corpo lista",
     props: {
@@ -42,12 +35,40 @@ export default {
         medici: Object,
         appuntamenti: Object
     },
+    components: {
+        FullCalendar // make the <FullCalendar> tag available
+    },
     data() {
         return {
+            calendarOptions: {
+                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
+                initialView: 'dayGridMonth',
+                contentHeight: 680,
+                contentWidth: 'auto',
+                dateClick: this.handleDateClick,
+                datesSet: this.handleMonthChange,
+                scrollTimeReset: false,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                dayMaxEventRows: true,
+                timeGrid: {
+                    dayMaxEventRows: 1 // adjust to 6 only for timeGridWeek/timeGridDay
+                },
+                minTime: "08:00",
+                maxTime: "18:00",
+                eventColor: '#2c3e50',
+                locale: itLocale,
+                droppable: true,
+                editable: true,
+                events: [
+                    {title: 'Paolo Rossi', date: '2023-11-24', start:'2023-11-24 12:00:00',end:'2023-11-24 12:15:00',  textColor: '#AAF'},
+                    {title: 'Nome Cognome', date: '2023-11-23', start:'2023-11-23 12:00:00',end:'2023-11-23 12:15:00', textColor: '#FAA'}
+                ]
+            },
         }
-    },
-    methods:{
-
     }
 }
 </script>

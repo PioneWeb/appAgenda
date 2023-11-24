@@ -102,7 +102,6 @@ class EventController extends Controller
         $weekStartDate = $now->startOfWeek()->format('Y-m-d');
         $weekEndDate = $now->endOfWeek()->format('Y-m-d');
 
-
         if(!empty($filter['medico'])){
             $query->whereIn("doctor_id", $filter['medico']);
         }
@@ -123,7 +122,7 @@ class EventController extends Controller
                 ->whereDate("data", "<=" ,$weekEndDate);
         }
         if($filter['tp'] === 3) {
-            $query->whereMonth("data", $now->month);
+            $query->whereMonth("data", $now->month)->whereYear("data", $now->year);
         }
 
         // RICERCHE CORRELATE

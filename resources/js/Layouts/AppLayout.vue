@@ -259,7 +259,6 @@
                         @select="handleSelect"
                     >
                         <el-menu-item index="1">
-
                             <NavLink :href="route('home')" :active="route().current('home')"><el-icon><HomeIcon /></el-icon> {{ $t('Home') }}</NavLink>
                         </el-menu-item>
 
@@ -287,7 +286,6 @@
                                 <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>
                             </el-menu-item>
                         </el-sub-menu>
-
 
                         <el-sub-menu index="3">
                             <template #title>

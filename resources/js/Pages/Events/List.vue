@@ -13,7 +13,7 @@ import CorpoMonth from "../../Components/CorpoMonth.vue";
 <template>
     <AppLayout title="Lista Appuntamenti">
 
-        <testata-appuntamenti :medici="medici" :ambulatori="ambulatori" :filter="filter" @cambiaMedico="this.controllaMedico" @cambiaAmbulatorio="this.controllaAmbulatorio" @cambiaData="this.controllaData"></testata-appuntamenti>
+        <testata-appuntamenti v-if="filter.tp !== 3" :medici="medici" :ambulatori="ambulatori" :filter="filter" @cambiaMedico="this.controllaMedico" @cambiaAmbulatorio="this.controllaAmbulatorio" @cambiaData="this.controllaData"></testata-appuntamenti>
 
         <div class="p-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
@@ -105,10 +105,10 @@ export default {
             this.paginate();
         },
         controllaData(val){
-            console.log('DATA ',val)
+            //console.log('DATA ',val)
             val === null ? this.filter.data = null : this.filter.data = moment(val).format('YYYY-MM-DD');
             this.paginate();
-            console.log('DATAX ',this.filter.data)
+            //console.log('DATAX ',this.filter.data)
         },
         searchTable(val){
             this.filter.search = val;
