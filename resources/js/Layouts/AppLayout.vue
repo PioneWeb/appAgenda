@@ -276,6 +276,14 @@
                             <el-menu-item index="2-3">
                                 <NavLink :href="route('clinics.list')" :active="route().current('clinics.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Ambulatori') }}</NavLink>
                             </el-menu-item>
+                        </el-sub-menu>
+
+                        <el-sub-menu index="3">
+                            <template #title>
+                                <el-icon><Operation /></el-icon>
+                                <span>{{ $t('Operation') }}</span>
+                            </template>
+
                             <el-menu-item index="2-4">
                                 <NavLink :href="route('prescriptions.list')" :active="route().current('prescriptions.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Ricette') }}</NavLink>
                             </el-menu-item>
@@ -285,34 +293,21 @@
                             <el-menu-item index="2-5">
                                 <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>
                             </el-menu-item>
-                        </el-sub-menu>
 
-                        <el-sub-menu index="3">
-                            <template #title>
-                                <el-icon><Operation /></el-icon>
-                                <span>{{ $t('Operation') }}</span>
-                            </template>
-
-                            <el-menu-item index="4">
-                                <NavLink :href="route('tickets.list')" :active="route().current('tickets.list')"><el-icon><Menu /></el-icon> {{ $t('Tickets') }}</NavLink>
-                            </el-menu-item>
-
-<!--                            <el-menu-item index="6">-->
-<!--                                <el-icon><Menu /></el-icon>-->
-<!--                                <NavLink :href="route('tickets.list')" :active="route().current('tickets.list')">{{ $t('Events') }}</NavLink>-->
+<!--                            <el-menu-item index="4">-->
+<!--                                <NavLink :href="route('tickets.list')" :active="route().current('tickets.list')"><el-icon><Menu /></el-icon> {{ $t('Tickets') }}</NavLink>-->
 <!--                            </el-menu-item>-->
 
-                            <el-menu-item index="4-1-1">
-                                <NavLink :href="route('services.list')" :active="route().current('services.list')"><el-icon><Document /></el-icon> {{ $t('Services') }}</NavLink>
-                            </el-menu-item>
-                            <el-menu-item index="4-1-2">
-                                <NavLink :href="route('tipitickets.list')" :active="route().current('tipitickets.list')"><el-icon><CreditCard /></el-icon> {{ $t('Tickets_types') }}</NavLink>
-                            </el-menu-item>
+<!--                            <el-menu-item index="4-1-1">-->
+<!--                                <NavLink :href="route('services.list')" :active="route().current('services.list')"><el-icon><Document /></el-icon> {{ $t('Services') }}</NavLink>-->
+<!--                            </el-menu-item>-->
+<!--                            <el-menu-item index="4-1-2">-->
+<!--                                <NavLink :href="route('tipitickets.list')" :active="route().current('tipitickets.list')"><el-icon><CreditCard /></el-icon> {{ $t('Tickets_types') }}</NavLink>-->
+<!--                            </el-menu-item>-->
 
                         </el-sub-menu>
 
                         <el-menu-item index="5">
-
                             <NavLink :href="route('dashboard')" :active="route().current('dashboard')"><el-icon><setting /></el-icon> {{ $t('Dashboard') }}</NavLink>
                         </el-menu-item>
 

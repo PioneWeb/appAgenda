@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Company;
+use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
 use Faker\Factory;
@@ -169,9 +170,12 @@ class UsersController extends Controller
             $query = User::query()->where('id',$id)->with(['tickets','user_type','medico.patients','medico','patients','teams'])->where('current_team_id',$user->current_team_id)->first();
             /** @var Company $query */
             $aziende = Company::query()->get();
+            /** @var Team $query */
+            $team = Team::query()->get();
             return Inertia::render('Users/Edit', [
                 "utenteProp" => $query,
-                "aziendeProp" => $aziende
+                "aziendeProp" => $aziende,
+                "teamProp" => $team
             ]);
         }
         abort(403,"Non disponi dei permessi necessari!");

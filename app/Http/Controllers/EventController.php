@@ -111,29 +111,29 @@ class EventController extends Controller
 
         if($filter['tp'] === 0) {
             if($lst !== null){
-            $query->whereDate("data", $filter['data']);
+            $query->whereDate("start", $filter['data']);
             }
         }
         if($filter['tp'] === 1) {
-            $query->whereDate("data", $filter['data']);
+            $query->whereDate("start", $filter['data']);
         }
         if($filter['tp'] === 2) {
-            $query->whereDate("data",">=",$weekStartDate)
-                ->whereDate("data", "<=" ,$weekEndDate);
+            $query->whereDate("start",">=",$weekStartDate)
+                ->whereDate("start", "<=" ,$weekEndDate);
         }
         if($filter['tp'] === 3) {
-            $query->whereMonth("data", $now->month)->whereYear("data", $now->year);
+            $query->whereMonth("start", $now->month)->whereYear("start", $now->year);
         }
 
         // RICERCHE CORRELATE
         if(!empty($search = $filter['search'])) {
             $query->where(function($query2) use ($search) {
-                $query2->whereDate("data", "like", '%'.$search.'%')
+                $query2->whereDate("start", "like", '%'.$search.'%')
                     ->orWhere("denominazione", "like", '%'.$search.'%');
             });
         }
-//        logger('request data ', [Carbon::parse($filter['data'])]);
-//        logger('data ', [$now]);
+//        logger('request start ', [Carbon::parse($filter['start'])]);
+//        logger('start ', [$now]);
 //        logger('inizio',[$weekStartDate]);
 //        logger('fine',[$weekEndDate]);
 //        logger($query->toSql());

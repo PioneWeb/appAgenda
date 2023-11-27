@@ -1,7 +1,17 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import CardHeader from "../../Components/CardHeader.vue";
-import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete, Calendar} from '@element-plus/icons-vue';
+import {
+    CirclePlus,
+    DeleteFilled,
+    Edit,
+    Printer,
+    Setting,
+    Delete,
+    Calendar,
+    AlarmClock,
+    Close, Check, Phone, Cloudy
+} from '@element-plus/icons-vue';
 import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
 import CorpoLista from "../../Components/CorpoLista.vue";
 import CorpoDay from "../../Components/CorpoDay.vue";
@@ -19,7 +29,57 @@ import CorpoMonth from "../../Components/CorpoMonth.vue";
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
                 <card-header :title="$t('Events')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
 
-                <CorpoLista v-if="filter.tp === 0" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori" :total="total"></CorpoLista>
+                <div v-if="filter.tp === 0">
+                    <el-table :data="appuntamenti" stripe style="width: 100%"
+                              @row-click="handleClick"
+                              @selection-change="handleSelectionChange">
+                        <el-table-column type="selection" />
+                        <el-table-column label="ID" prop="id" width="80" sortable />
+                        <el-table-column label="medico" prop="doctor.name" sortable />
+                        <el-table-column label="paziente" prop="patient.name" sortable >
+                            <template #default="scope">
+                                <el-tag v-if="scope.row.patient !== null" size="small" type="danger">{{scope.row.patient.name}}</el-tag>
+                                <el-tag v-if="scope.row.patient === null" size="small">{{ scope.row.denominazione }}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
+                        <el-table-column label="data" prop="data" sortable width="150" >
+                            <template #default="scope">
+                                {{ moment(scope.row.data).format('DD MMM YYYY') }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="ora" prop="ora" sortable width="90" >
+                            <template #default="scope">
+                                {{ moment(scope.row.ora).format('HH:mm') }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="azioni" prop="" sortable width="120" >
+                            <template #default="scope">
+                                <el-icon class="m-1" color="green"><Edit /></el-icon>
+                                <el-icon v-if="scope.row.patient_id === null" class="m-1" color="blue"><Phone /></el-icon>
+                                <el-icon v-else class="m-1" color="red"><Cloudy /></el-icon>
+                                <el-icon class="m-1" color="red"><Delete /></el-icon>
+                                <el-icon v-if="scope.row.stato === 1" color="green"><Check /></el-icon>
+                                <el-icon v-if="scope.row.stato === 2" color="yellow"><Close /></el-icon>
+                                <el-icon v-if="scope.row.stato === 3" color="red"><AlarmClock /></el-icon>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+
+                    <el-pagination
+                        class="mt-6"
+                        v-model:currentPage="currentPage"
+                        :page-sizes="pageSizes"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                    >
+                    </el-pagination>
+                </div>
+
                 <CorpoDay v-if="filter.tp === 1" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoDay>
                 <CorpoWeek v-if="filter.tp === 2" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoWeek>
                 <CorpoMonth v-if="filter.tp === 3" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoMonth>

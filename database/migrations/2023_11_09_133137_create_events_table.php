@@ -17,8 +17,14 @@ return new class extends Migration
             $table->foreignId('patient_id')->nullable()->references("id")->on("users");
             $table->foreignId('clinic_id')->references("id")->on("clinics");
             $table->string('denominazione')->nullable();
-            $table->date('data')->nullable();
-            $table->time('ora')->nullable();
+
+            $table->string("title")->nullable();
+            $table->dateTime("start")->nullable();
+            $table->dateTime("end")->nullable();
+
+//            $table->date('data')->nullable();
+//            $table->time('ora')->nullable();
+
             $table->integer('stato')->nullable();
             $table->timestamps();
         });

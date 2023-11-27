@@ -85,10 +85,17 @@
                                 <el-button v-if="utente.user_type.id === 3"  type="warning" plain disabled size="large">{{utente.user_type.descrizione}}</el-button>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="8">
+                        <el-col :span="6">
                             <el-form-item prop="company_id" label="Azienda">
                                 <el-select v-model="utente.company_id" class="w-full" placeholder="" clearable>
                                     <el-option v-for="item in aziende" :label="item.ragione_sociale" :value=item.id></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item prop="current_team_id" label="Team">
+                                <el-select v-model="utente.current_team_id" class="w-full" placeholder="" clearable>
+                                    <el-option v-for="item in team" :label="item.name" :value=item.id></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
@@ -101,7 +108,7 @@
 
                     <el-row :gutter="30" class="mb-5">
 
-                        <el-col :span="24">{{}}
+                        <el-col :span="24">
                             <el-form-item v-if="utente.user_type_id === 2" prop="a" label="Lista pazienti">
 
                                 <el-table :data="utente.patients" stripe style="width: 100%">
@@ -162,25 +169,27 @@ export default {
     props: {
         utenteProp: Object,
         aziendeProp: Object,
+        teamProp: Object,
         idAzienda: null
     },
     data() {
         return {
             utente: {...this.utenteProp},
             aziende: {...this.aziendeProp},
+            team: {...this.teamProp},
             tastiEditUtente: [
                 { id: 2, name: 'Salva', type: "success", icon:Edit, click: this.save },
                 { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }
             ],
-            // search: null,
-            // currentPage:1,
-            // pageSize: 5,
-            // sortingColumn: null,
-            // sortingOrder: null,
-            // pageSizes: [
-            //     5,
-            // ],
-            // total: 0
+            search: null,
+            currentPage:1,
+            pageSize: 5,
+            sortingColumn: null,
+            sortingOrder: null,
+            pageSizes: [
+                5,
+            ],
+            total: 0
         }
     },
     methods:{

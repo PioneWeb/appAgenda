@@ -42,7 +42,7 @@ export default {
     data() {
         return {
             calendarOptions: {
-                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, multiMonthPlugin],
+                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, /*multiMonthPlugin*/],
                 initialView: 'dayGridMonth',
                 contentHeight: 680,
                 contentWidth: 'auto',

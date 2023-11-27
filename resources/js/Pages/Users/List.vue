@@ -126,6 +126,7 @@ export default {
                 order: this.sortingOrder,
                 search: this.search,
             }).then( result => {
+                console.log(result)
                 this.utenti = result.data.data;
                 this.total = result.data.total
             });
