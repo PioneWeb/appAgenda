@@ -17,3 +17,6 @@ Route::post("/paginate", [EventController::class, "paginate"])->name('events.pag
 Route::post("/save", [EventController::class, "save"])->name("events.save");
 
 
+//Route::post('/saveEvent', [EventController::class, "saveEvent"])->name('note.saveEvent');
+Route::post('/update/{id}', [EventController::class, "update"])->name('events.update');
+//Route::delete('/delete/{id}', [EventController::class, "destroy"])->name('note.delete');

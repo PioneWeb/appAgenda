@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\Event;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -130,12 +131,30 @@ class EventController extends Controller
 
     }
 
+
     /**
      * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function update(Request $request, event $event)
+    public function update(Request $request, $id)
     {
-        //ricordati di mettere il nome del paziente anche nella denominazione
+        /** @var User $user */
+        $user = auth()->user();
+        $evento = Event::where("id",$id);
+        $evento->update([
+            "doctor_id" => $request->input("doctor_id"),
+            "patient_id" => $request->input("patient_id"),
+            "clinic_id" => $request->input("clinic_id"),
+            "title" => $request->input("title"),
+            "start" => $request->input("start"),
+            "end" => $request->input("end"),
+            "stato" => $request->input("stato")
+        ]);
+        return response()->json(
+            $evento->with("doctor","patient","clinic")->first()
+        );
     }
 
     /**

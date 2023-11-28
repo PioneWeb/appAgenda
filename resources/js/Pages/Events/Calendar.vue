@@ -33,9 +33,11 @@ import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
+
 import interactionPlugin from '@fullcalendar/interaction'
 import itLocale from '@fullcalendar/core/locales/it';
 import multiMonthPlugin from '@fullcalendar/multimonth'
+import EventService from "eventservice";
 export default {
     name: "corpo lista",
     emits:["paginate"],
@@ -63,6 +65,9 @@ export default {
                 initialView: 'listWeek',
                 dateClick: this.handleDateClick,
                 datesSet: this.handleMonthChange,
+                eventClick: this.handleEventClick,
+                eventDrop: this.handleDrop,
+                eventResize: this.handleDrag,
                 scrollTimeReset: false,
                 headerToolbar: {
                     left: 'prev,next today',
@@ -87,6 +92,9 @@ export default {
                 initialView: 'list',
                 dateClick: this.handleDateClick,
                 datesSet: this.handleMonthChange,
+                eventClick: this.handleEventClick,
+                eventDrop: this.handleDrop,
+                eventResize: this.handleDrag,
                 scrollTimeReset: false,
                 headerToolbar: {
                     left: 'prev,next today',
@@ -115,6 +123,79 @@ export default {
             this.filter.start = payload.startStr
             this.filter.end = payload.endStr
             this.paginate()
+        },
+        handleEventClick(clickInfo) {
+            console.log(clickInfo)
+            // let evento = this.calendarOptions.events.find(x => {
+            //     return String(x.id) === String(clickInfo.event._def.publicId);
+            // });
+            // this.visible = true;
+            // this.formEvento = {
+            //     id: evento.id,
+            //     title: evento.title,
+            //     start: this.moment(evento.start).format("YYYY/MM/DD HH:mm"),
+            //     nota: evento.nota.nota,
+            //     color: evento.nota.color,
+            //     end: this.moment(evento.end).format("YYYY/MM/DD HH:mm")
+            // }
+        },
+        handleDrop(dropInfo) {
+            console.log(dropInfo)
+            let index = this.calendarOptions.events.map(x => {
+                return parseInt(x.id);
+            }).indexOf(parseInt(dropInfo.event._def.publicId));
+            axios.post(route("events.update", {
+                id: parseInt(dropInfo.event._def.publicId)
+            }), {
+                id: this.user_id,
+                title: dropInfo.event._def.title,
+                start: this.moment(this.calendarOptions.events[index].start)
+                    .add(dropInfo.delta.milliseconds,"ms")
+                    .add(dropInfo.delta.months, 'M')
+                    .add(dropInfo.delta.years, 'y')
+                    .add(dropInfo.delta.days, 'd').format("YYYY/MM/DD HH:mm"),
+                end: this.moment(this.calendarOptions.events[index].end)
+                    .add(dropInfo.delta.milliseconds,"ms")
+                    .add(dropInfo.delta.months, 'M')
+                    .add(dropInfo.delta.years, 'y')
+                    .add(dropInfo.delta.days, 'd').format("YYYY/MM/DD HH:mm"),
+                doctor_id: dropInfo.event._def.extendedProps.doctor_id,
+                patient_id: dropInfo.event._def.extendedProps.patient_id,
+                clinic_id: dropInfo.event._def.extendedProps.clinic_id
+            }).then(result => {
+                this.calendarOptions.events[index] = result.data;
+                ElMessage({
+                    type: 'success',
+                    message: 'Evento modificato con successo',
+                });
+            })
+        },
+        handleDrag(info) {
+            console.log(info)
+            // let index = this.calendarOptions.events.map(x => {
+            //     return parseInt(x.id);
+            // }).indexOf(parseInt(info.event._def.publicId));
+            // axios.post(route("events.update", {
+            //     id: parseInt(info.event._def.publicId)
+            // }), {
+            //     id: this.user_id,
+            //     title: info.event._def.title,
+            //     start: this.moment(this.calendarOptions.events[index].start).format("YYYY/MM/DD HH:mm"),
+            //     end: this.moment(this.calendarOptions.events[index].end)
+            //         .add(info.endDelta.milliseconds,"ms")
+            //         .add(info.endDelta.months, 'M')
+            //         .add(info.endDelta.years, 'y')
+            //         .add(info.endDelta.days, 'd').format("YYYY/MM/DD HH:mm"),
+            //     nota: info.event._def.extendedProps.nota.nota,
+            //     color: info.event._def.extendedProps.nota.color
+            // }).then(result => {
+            //     result.data.color = result.data.nota.color
+            //     this.calendarOptions.events[index] = result.data;
+            //     ElMessage({
+            //         type: 'success',
+            //         message: 'Evento modificato con successo',
+            //     });
+            // })
         },
         controllaMedico(val) {
             this.filter.medico = val;
