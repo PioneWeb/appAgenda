@@ -127,7 +127,7 @@ class EventController extends Controller
         }
 
         // PAGINAZIONE
-        return $query->get();
+        return response()->json($query->get());
 
     }
 

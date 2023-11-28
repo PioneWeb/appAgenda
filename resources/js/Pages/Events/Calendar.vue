@@ -199,9 +199,11 @@ export default {
         },
         controllaMedico(val) {
             this.filter.medico = val;
+            this.paginate();
         },
         controllaAmbulatorio(val) {
             this.filter.ambulatorio = val;
+            this.paginate();
         },
         paginate() {
             axios.post(route("events.paginate"),{
@@ -209,9 +211,12 @@ export default {
                 order: this.sortingOrder,
                 filter: this.filter
             }).then( result => {
-                this.appuntamenti = result.data.data;
+                this.appuntamenti = result.data;
             });
         },
+    },
+    created() {
+        this.paginate();
     }
 }
 </script>
