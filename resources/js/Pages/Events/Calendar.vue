@@ -17,7 +17,7 @@ import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
         <div class="p-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
                 <card-header :title="$t('Events')" :icon="Edit" :tasti="tasti" @search="this.searchTable" nascondi-search></card-header>
-                <FullCalendar class="hidden lg:flex h-[70vh]" :options="calendarOptions" />
+                <FullCalendar ref="calendario" class="hidden lg:flex h-[70vh]" :options="calendarOptions" />
                 <FullCalendar class="flex lg:hidden h-[70vh]" :options="mobileCalendar" />
             </div>
         </div>
@@ -44,14 +44,15 @@ export default {
     props: {
         ambulatori: Object,
         medici: Object,
-        appuntamenti: Object,
-        filter: Object
+        filter: Object,
+        appuntamenti: Object
     },
     components: {
         FullCalendar // make the <FullCalendar> tag available
     },
     data() {
         return {
+            appuntamenti: [],
             filter: {
                 tp: 0,
                 medico: null,
@@ -140,7 +141,6 @@ export default {
             // }
         },
         handleDrop(dropInfo) {
-            console.log(dropInfo)
             let index = this.calendarOptions.events.map(x => {
                 return parseInt(x.id);
             }).indexOf(parseInt(dropInfo.event._def.publicId));
@@ -172,30 +172,30 @@ export default {
         },
         handleDrag(info) {
             console.log(info)
-            // let index = this.calendarOptions.events.map(x => {
-            //     return parseInt(x.id);
-            // }).indexOf(parseInt(info.event._def.publicId));
-            // axios.post(route("events.update", {
-            //     id: parseInt(info.event._def.publicId)
-            // }), {
-            //     id: this.user_id,
-            //     title: info.event._def.title,
-            //     start: this.moment(this.calendarOptions.events[index].start).format("YYYY/MM/DD HH:mm"),
-            //     end: this.moment(this.calendarOptions.events[index].end)
-            //         .add(info.endDelta.milliseconds,"ms")
-            //         .add(info.endDelta.months, 'M')
-            //         .add(info.endDelta.years, 'y')
-            //         .add(info.endDelta.days, 'd').format("YYYY/MM/DD HH:mm"),
-            //     nota: info.event._def.extendedProps.nota.nota,
-            //     color: info.event._def.extendedProps.nota.color
-            // }).then(result => {
-            //     result.data.color = result.data.nota.color
-            //     this.calendarOptions.events[index] = result.data;
-            //     ElMessage({
-            //         type: 'success',
-            //         message: 'Evento modificato con successo',
-            //     });
-            // })
+            let index = this.calendarOptions.events.map(x => {
+                return parseInt(x.id);
+            }).indexOf(parseInt(info.event._def.publicId));
+            axios.post(route("events.update", {
+                id: parseInt(info.event._def.publicId)
+            }), {
+                id: this.user_id,
+                title: info.event._def.title,
+                start: this.moment(this.calendarOptions.events[index].start).format("YYYY/MM/DD HH:mm"),
+                end: this.moment(this.calendarOptions.events[index].end)
+                    .add(info.endDelta.milliseconds,"ms")
+                    .add(info.endDelta.months, 'M')
+                    .add(info.endDelta.years, 'y')
+                    .add(info.endDelta.days, 'd').format("YYYY/MM/DD HH:mm"),
+                doctor_id: info.event._def.extendedProps.doctor_id,
+                patient_id: info.event._def.extendedProps.patient_id,
+                clinic_id: info.event._def.extendedProps.clinic_id
+            }).then(result => {
+                this.calendarOptions.events[index] = result.data;
+                ElMessage({
+                    type: 'success',
+                    message: 'Evento modificato con successo',
+                });
+            })
         },
         controllaMedico(val) {
             this.filter.medico = val;
@@ -209,7 +209,6 @@ export default {
                 order: this.sortingOrder,
                 filter: this.filter
             }).then( result => {
-                console.log(result.data.data)
                 this.appuntamenti = result.data.data;
             });
         },
