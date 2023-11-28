@@ -35,10 +35,15 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <el-form-item prop="tipo" label="Tipo">
+                        <el-form-item v-if="ricetta.length>0" prop="tipo" label="Tipo">
                             <el-tag v-if="ricetta.tipo === 1" size="large" effect="dark" >Farmaci</el-tag>
                             <el-tag v-if="ricetta.tipo === 2" size="large" effect="dark" type="warning">Analisi</el-tag>
                             <el-tag v-if="ricetta.tipo === 3" size="large" effect="dark" type="info">Visite</el-tag>
+                        </el-form-item>
+                        <el-form-item v-else>
+                            <el-select v-model="ricetta.tipo" class="w-full" placeholder="" clearable filterable>
+                                <el-option v-for="item in tipiRicetta" :label="item.name" :key="item.id" :value="item.id"></el-option>
+                            </el-select>
                         </el-form-item>
 
                     </el-row>
@@ -83,6 +88,11 @@ export default {
             ricetta: {...this.ricettaProp},
             medici: {...this.mediciProp},
             pazienti: {...this.pazientiProp},
+            tipiRicetta:['Visite','Farmaci','Analisi'
+                { id: 1, name: 'Farmaci' },
+                { id: 2, name: 'Farmaci' },
+                { id: 3, name: 'Farmaci' },
+            ],
             tastiEditAzienda: [
                 { id: 2, name: 'Salva', type: "success", icon:Edit, click: this.save },
                 { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }

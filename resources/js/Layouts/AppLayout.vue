@@ -290,8 +290,11 @@
                             <el-menu-item index="2-5">
                                 <NavLink :href="route('schedules.list')" :active="route().current('schedules.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Orari') }}</NavLink>
                             </el-menu-item>
-                            <el-menu-item index="2-5">
+<!--                            <el-menu-item index="2-5">
                                 <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>
+                            </el-menu-item>-->
+                            <el-menu-item index="2-5">
+                                <NavLink :href="route('events.calendar')" :active="route().current('events.calendar')"><el-icon><Calendar /></el-icon> {{ $t('Calendar') }}</NavLink>
                             </el-menu-item>
 
 <!--                            <el-menu-item index="4">-->
@@ -342,7 +345,7 @@ import 'element-plus/es/components/message-box/style/css';
 import 'element-plus/es/components/notification/style/css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 import 'element-plus/es/components/drawer/style/css';
-import { HomeFilled, Setting, Document, Location, Menu, User, Sunny, Moon, Operation, CreditCard, Money, Edit } from '@element-plus/icons-vue';
+import { HomeFilled, Setting, Document, Location, Menu, User, Sunny, Moon, Operation, CreditCard, Money, Edit, Calendar } from '@element-plus/icons-vue';
 import { BeakerIcon, BuildingOfficeIcon, UsersIcon, UserIcon, SunIcon, MoonIcon, HomeIcon } from '@heroicons/vue/24/solid';
 
 // import { BeakerIcon, GlobeEuropeAfricaIcon, SunIcon, MoonIcon, HomeIcon } from '@heroicons/vue/24/outline';

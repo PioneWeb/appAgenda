@@ -13,7 +13,6 @@ import {
     Close, Check, Phone, Cloudy
 } from '@element-plus/icons-vue';
 import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
-import CorpoLista from "../../Components/CorpoLista.vue";
 import CorpoDay from "../../Components/CorpoDay.vue";
 import CorpoWeek from "../../Components/CorpoWeek.vue";
 import CorpoMonth from "../../Components/CorpoMonth.vue";
@@ -23,7 +22,7 @@ import CorpoMonth from "../../Components/CorpoMonth.vue";
 <template>
     <AppLayout title="Lista Appuntamenti">
 
-        <testata-appuntamenti v-if="filter.tp !== 3" :medici="medici" :ambulatori="ambulatori" :filter="filter" @cambiaMedico="this.controllaMedico" @cambiaAmbulatorio="this.controllaAmbulatorio" @cambiaData="this.controllaData"></testata-appuntamenti>
+        <testata-appuntamenti v-if="filter.tp !== 11" :medici="medici" :ambulatori="ambulatori" :filter="filter" @cambiaMedico="this.controllaMedico" @cambiaAmbulatorio="this.controllaAmbulatorio" @cambiaData="this.controllaData"></testata-appuntamenti>
 
         <div class="p-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
@@ -80,9 +79,9 @@ import CorpoMonth from "../../Components/CorpoMonth.vue";
                     </el-pagination>
                 </div>
 
-                <CorpoDay v-if="filter.tp === 1" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoDay>
-                <CorpoWeek v-if="filter.tp === 2" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoWeek>
-                <CorpoMonth v-if="filter.tp === 3" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoMonth>
+                <CorpoDay v-if="filter.tp === 1 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoDay>
+                <CorpoWeek v-if="filter.tp === 2 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoWeek>
+                <CorpoMonth v-if="filter.tp === 3 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoMonth>
 
             </div>
         </div>
@@ -136,9 +135,9 @@ export default {
             tasti: [
                 { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click: this.create },
                 { id: 2, name: 'Lista', type: "success", icon:Calendar, click: this.lista },
-                { id: 3, name: 'Giorno', type: "success", icon:Calendar, click: this.giorno },
+         /*       { id: 3, name: 'Giorno', type: "success", icon:Calendar, click: this.giorno },
                 { id: 4, name: 'Settimana', type: "success", icon:Calendar, click: this.settimana },
-                { id: 5, name: 'Mese', type: "primary", icon:Calendar, click: this.mese },
+                { id: 5, name: 'Mese', type: "primary", icon:Calendar, click: this.mese },*/
                 { id: 6, name: 'Stampa', type: "primary", icon:Printer }
             ],
             giorni:['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
@@ -152,7 +151,8 @@ export default {
                 20,
                 100
             ],
-            total: null
+            total: null,
+            tableLoading: true
         }
     },
     methods:{
@@ -240,9 +240,10 @@ export default {
                 order: this.sortingOrder,
                 filter: this.filter
             }).then( result => {
-                console.log(result)
+                console.log(result.data.data)
                 this.appuntamenti = result.data.data;
-                this.total = result.data.total
+                this.total = result.data.total;
+                this.tableLoading = false;
             });
         },
         handleSizeChange(val) {
@@ -257,7 +258,7 @@ export default {
             const ids = selectedRows.map((row) => row.id);
         },
     },
-    mounted() {
+    created() {
         this.filter = this.SessionStorage.getItem('appuntamenti_list_filter', this.filter,true);
         this.sortingOrder = this.SessionStorage.getItem('appuntamenti_list_order', this.sortingOrder,false);
         this.sortingColumn = this.SessionStorage.getItem('appuntamenti_list_column', this.sortingColumn,false);

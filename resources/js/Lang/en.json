@@ -52,5 +52,6 @@
     "Previous_Month":"Previous_Month",
     "today" : "today",
     "Next_Month" : "Next_Month",
-    "Next_Year" : "Next_Year"
+    "Next_Year" : "Next_Year",
+    "Calendar": "Calendar"
 }

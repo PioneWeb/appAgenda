@@ -2,7 +2,7 @@
     <AppLayout title="Home">
         <div class="py-6 px-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
-                <card-header :title="$t('Home')" :icon="HomeIcon" :tasti="tasti"></card-header>
+                <card-header :title="$t('Home')" :icon="HomeIcon" :tasti="tasti" nascondi-search></card-header>
                 <el-row :gutter="16">
                     <el-col :span="4">
                         <InfoCard :title="$t('Companies')" icon="Warning" linkIcon="ArrowRight" percent="24" :value="companies" subTitle="than yesterday"/>

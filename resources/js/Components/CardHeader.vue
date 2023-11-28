@@ -4,7 +4,7 @@
             <component :is="icon" class="w-8 h-8 mr-4" /> {{ title }}
         </div>
 
-        <div v-if="title!=='Home' && title!=='Tickets' && title!=='New Ticket'" class="inline-flex items-center text-2xl h-16">
+        <div v-if="!nascondiSearch" class="inline-flex items-center text-2xl h-16">
             <el-input v-model="search" size="small" @keyup="$emit('search',search)" :placeholder="$t('Type_to_search')" />
         </div>
 
@@ -29,7 +29,11 @@ export default {
     props: {
         title: String,
         icon: String,
-        tasti: Array
+        tasti: Array,
+        nascondiSearch: {
+          type: Boolean,
+          default: false
+        }
     },
     data() {
         return {

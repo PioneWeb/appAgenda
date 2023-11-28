@@ -35,6 +35,30 @@ class EventController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function calendar()
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        /** @var Clinics $ambulatori */
+        $ambulatori = Clinics::all('id AS value','nome AS label');
+        /** @var User $medici */
+        $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();
+        /** @var Event $appuntamenti */
+        $appuntamenti = Event::all();
+//        if(!$user->can("company.list")) {
+//            abort(403,"Non disponi dei permessi necessari!");
+//        }
+        return Inertia::render('Events/Calendar', [
+            "ambulatori" => $ambulatori,
+            "medici" => $medici,
+            "appuntamenti" => $appuntamenti
+        ]);
+    }
+
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -72,12 +96,9 @@ class EventController extends Controller
     public function paginate(Request $request)
     {
         $this->validate($request,[
-            "page" => "required|int|min:1",
-            "pageSize" => "required|int|min:1",
             "sort" => "nullable|string",
             "order" => "nullable|string|in:ascending,descending",
             "filter.tp" => "nullable|int",
-            "filter.dt" => "nullable|date",
             "filter.medico" => "nullable|array",
             "filter.ambulatorio" => "nullable|array",
             "filter.search" => "nullable|string",
@@ -94,13 +115,8 @@ class EventController extends Controller
 
         /** @var Event $query */
         $query = Event::query();
-        $query->with(['patient','doctor','clinic']);
-        $lst = $filter['data'];
-        $filter['data'] === null ? $filter['data'] = Carbon::now()->format('Y-m-d') : $filter['data'];
-        $now = Carbon::parse(Carbon::parse($filter['data'])->format('Y-m-d'));
-
-        $weekStartDate = $now->startOfWeek()->format('Y-m-d');
-        $weekEndDate = $now->endOfWeek()->format('Y-m-d');
+        $query->whereDate('start' ,'>=',$filter['start']);
+        $query->whereDate('end' ,'<=',$filter['end']);
 
         if(!empty($filter['medico'])){
             $query->whereIn("doctor_id", $filter['medico']);
@@ -109,37 +125,8 @@ class EventController extends Controller
             $query->whereIn("clinic_id", $filter['ambulatorio']);
         }
 
-        if($filter['tp'] === 0) {
-            if($lst !== null){
-            $query->whereDate("start", $filter['data']);
-            }
-        }
-        if($filter['tp'] === 1) {
-            $query->whereDate("start", $filter['data']);
-        }
-        if($filter['tp'] === 2) {
-            $query->whereDate("start",">=",$weekStartDate)
-                ->whereDate("start", "<=" ,$weekEndDate);
-        }
-        if($filter['tp'] === 3) {
-            $query->whereMonth("start", $now->month)->whereYear("start", $now->year);
-        }
-
-        // RICERCHE CORRELATE
-        if(!empty($search = $filter['search'])) {
-            $query->where(function($query2) use ($search) {
-                $query2->whereDate("start", "like", '%'.$search.'%')
-                    ->orWhere("denominazione", "like", '%'.$search.'%');
-            });
-        }
-//        logger('request start ', [Carbon::parse($filter['start'])]);
-//        logger('start ', [$now]);
-//        logger('inizio',[$weekStartDate]);
-//        logger('fine',[$weekEndDate]);
-//        logger($query->toSql());
-
         // PAGINAZIONE
-        return $query->paginate($request->input("pageSize"));
+        return $query->get();
 
     }
 

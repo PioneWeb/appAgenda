@@ -26,16 +26,6 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4" class="m-1 p-2">
-                    <el-form-item label="Data">
-                        <el-date-picker
-                            v-model="filter.data"
-                            type="date"
-                            placeholder="Pick a day"
-                            @change="$emit('cambiaData',filter.data)"
-                        />
-                    </el-form-item>
-                </el-col>
             </el-row>
         </div>
     </el-form>
@@ -45,7 +35,7 @@
 
 export default {
     name: "header appuntamenti",
-    emits:["cambiaMedico","cambiaAmbulatorio","cambiaData"],
+    emits:["cambiaMedico","cambiaAmbulatorio"],
     props: {
         ambulatori: Object,
         medici: Object,

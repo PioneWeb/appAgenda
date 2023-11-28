@@ -1,8 +1,3 @@
-<script setup>
-import {Check, Close, AlarmClock, Phone, Edit, Printer, Cloudy, Delete, Calendar} from '@element-plus/icons-vue';
-
-</script>
-
 <template>
 <!--    <el-card class="box-card">-->
 <!--        <template #header>-->
@@ -42,7 +37,7 @@ export default {
     data() {
         return {
             calendarOptions: {
-                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin, /*multiMonthPlugin*/],
+                plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin/*, multiMonthPlugin*/],
                 initialView: 'dayGridMonth',
                 contentHeight: 680,
                 contentWidth: 'auto',
@@ -52,7 +47,7 @@ export default {
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,multiMonth'
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' /*,multiMonth*/
                 },
                 dayMaxEventRows: true,
                 timeGrid: {
@@ -64,10 +59,7 @@ export default {
                 locale: itLocale,
                 droppable: true,
                 editable: true,
-                events: [
-                    {title: 'Paolo Rossi', date: '2023-11-24', start:'2023-11-24 12:00:00',end:'2023-11-24 12:30:00',  textColor: '#AAF'},
-                    {title: 'Nome Cognome', date: '2023-11-23', start:'2023-11-23 12:00:00',end:'2023-11-23 12:30:00', textColor: '#FAA'}
-                ]
+                events: this.appuntamenti
             },
         }
     }
