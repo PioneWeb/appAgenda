@@ -286,34 +286,23 @@ export default {
                 return parseInt(x.id);
             }).indexOf(this.formEvento.id);
             this.visible = false;
-            ElMessageBox.confirm(
-                'Stai per modificare l\'appuntamento',
-                'Warning',
-                {
-                    confirmButtonText: 'OK',
-                    cancelButtonText: 'Cancel',
-                    type: 'warning',
-                }
-                ).then(() => {
-                    console.log('aaa', this.formEvento)
-                    axios.post(route("events.update", {
-                        id: parseInt(this.formEvento.id)
-                    }), {
-                        id: this.formEvento.id,
-                        title: this.formEvento.title,
-                        start: this.moment(this.formEvento.start).format("YYYY/MM/DD HH:mm"),
-                        end: this.moment(this.formEvento.end).format("YYYY/MM/DD HH:mm"),
-                        doctor_id: this.formEvento.doctor_id,
-                        patient_id: this.formEvento.patient_id,
-                        clinic_id: this.formEvento.clinic_id
-                    }).then(result => {
-                        this.calendarOptions.events[index] = result.data;
-                        ElMessage({
-                            type: 'success',
-                            message: 'Evento modificato con successo',
-                        });
-                    });
-                })
+            axios.post(route("events.update", {
+                id: parseInt(this.formEvento.id)
+            }), {
+                id: this.formEvento.id,
+                title: this.formEvento.title,
+                start: this.moment(this.formEvento.start).format("YYYY/MM/DD HH:mm"),
+                end: this.moment(this.formEvento.end).format("YYYY/MM/DD HH:mm"),
+                doctor_id: this.formEvento.doctor_id,
+                patient_id: this.formEvento.patient_id,
+                clinic_id: this.formEvento.clinic_id
+            }).then(result => {
+                this.calendarOptions.events[index] = result.data;
+                ElMessage({
+                    type: 'success',
+                    message: 'Evento modificato con successo',
+                });
+            });
         },
         controllaMedico(val) {
             this.filter.medico = val;
