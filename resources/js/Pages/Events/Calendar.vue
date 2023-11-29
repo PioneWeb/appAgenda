@@ -149,8 +149,8 @@ export default {
                     right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                 },
                 dayMaxEventRows: true,
-                slotMinTime: "08:00:00",
-                slotMaxTime: "20:00:00",
+                slotMinTime: "09:00:00",
+                slotMaxTime: "12:00:00",
                 slotDuration: {
                     minute: 20
                 },

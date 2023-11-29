@@ -20,19 +20,20 @@ class EventController extends Controller
     public function list()
     {
         /** @var User $user */
-        $user = auth()->user();
+//        $user = auth()->user();
+//        if(!$user->can("company.list")) {
+//            abort(403,"Non disponi dei permessi necessari!");
+//        }
         /** @var Clinics $ambulatori */
         $ambulatori = Clinics::all('id AS value','nome AS label');
         /** @var User $medici */
         $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
-//        if(!$user->can("company.list")) {
-//            abort(403,"Non disponi dei permessi necessari!");
-//        }
         return Inertia::render('Events/List', [
             "ambulatori" => $ambulatori,
-            "medici" => $medici
+            "medici" => $medici,
+            "appuntamenti" => $appuntamenti
         ]);
     }
 
