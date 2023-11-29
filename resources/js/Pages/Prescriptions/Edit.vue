@@ -88,11 +88,7 @@ export default {
             ricetta: {...this.ricettaProp},
             medici: {...this.mediciProp},
             pazienti: {...this.pazientiProp},
-            tipiRicetta:['Visite','Farmaci','Analisi'
-                { id: 1, name: 'Farmaci' },
-                { id: 2, name: 'Farmaci' },
-                { id: 3, name: 'Farmaci' },
-            ],
+            tipiRicetta:[{id: 1, name: 'Visite'},{id: 1, name: 'Farmaci'},{id: 1, name: 'Analisi'}],
             tastiEditAzienda: [
                 { id: 2, name: 'Salva', type: "success", icon:Edit, click: this.save },
                 { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }

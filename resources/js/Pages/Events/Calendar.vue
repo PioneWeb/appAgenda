@@ -22,7 +22,7 @@ import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
             </div>
         </div>
 
-        <el-dialog v-model="visible" :width="500" :title="!formEvento.id ? 'Aggiungi evento' : 'Modifica evento'">
+        <el-dialog v-model="visible" :width="650" :title="!formEvento.id ? 'Aggiungi evento' : 'Modifica evento'">
             <el-form ref="form" label-position="top" :rules="rules" :model="formEvento">
                 <el-row :gutter="10">
                     <el-col>
@@ -70,7 +70,9 @@ import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
                     </el-col>
                     <el-col :span="8">
                         <el-form-item prop="patient_id" label="Paziente">
-                            <el-input v-model="formEvento.patient_id" />
+                            <el-select v-model="formEvento.patient_id" class="w-full" placeholder="" clearable filterable>
+                                <el-option v-for="item in pazienti" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -105,6 +107,7 @@ export default {
     props: {
         ambulatori: Object,
         medici: Object,
+        pazienti: Object,
         filter: Object,
         appuntamenti: Object,
         orari: Object,
@@ -193,14 +196,12 @@ export default {
             this.visible = true;
             this.data = arg.dateStr;
             this.formEvento = {
-                title: null,
+                title: 'Nuovo appuntamento',
                 start: this.data,
                 end: this.moment(this.data).add('1','hour').format('YYYY-MM-DD HH:mm'),
-                nota: null,
-                color: '#076c7d',
-                doctor_id: 2,
-                clinic_id: 2,
-                patient_id: 2
+                doctor_id: this.filter.medico[0],
+                clinic_id: this.filter.ambulatorio[0],
+                patient_id: null
             }
         },
         handleMonthChange(payload){
@@ -209,7 +210,6 @@ export default {
             this.paginate()
         },
         handleEventClick(clickInfo) {
-            console.log(clickInfo);
             this.visible = true;
             let evento = this.calendarOptions.events.find(x => {
                 return String(x.id) === String(clickInfo.event._def.publicId);
@@ -222,7 +222,7 @@ export default {
                 end: this.moment(evento.end).format("YYYY/MM/DD HH:mm"),
                 doctor_id: clickInfo.event._def.extendedProps.doctor_id,
                 clinic_id: clickInfo.event._def.extendedProps.clinic_id,
-                patient_id: 2
+                patient_id: clickInfo.event._def.extendedProps.patient_id
             }
         },
         handleDrop(dropInfo) {
@@ -256,7 +256,6 @@ export default {
             })
         },
         handleDrag(info) {
-            console.log(info)
             let index = this.calendarOptions.events.map(x => {
                 return parseInt(x.id);
             }).indexOf(parseInt(info.event._def.publicId));
@@ -281,6 +280,29 @@ export default {
                     message: 'Evento modificato con successo',
                 });
             })
+        },
+        aggiungiEvento(){
+            ElMessageBox.confirm(
+                'Stai per modificare l\'appuntamento',
+                'Warning',
+                {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'warning',
+                }
+            )
+                .then(() => {
+                    ElMessage({
+                        type: 'success',
+                        message: 'Modifica completata',
+                    })
+                })
+                .catch(() => {
+                    ElMessage({
+                        type: 'info',
+                        message: 'Modifica annullata',
+                    })
+                })
         },
         controllaMedico(val) {
             this.filter.medico = val;

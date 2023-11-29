@@ -28,11 +28,15 @@ class EventController extends Controller
         $ambulatori = Clinics::all('id AS value','nome AS label');
         /** @var User $medici */
         $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();
+        /** @var User $pazienti */
+        $pazienti = User::select('id AS value','name AS label')->where('user_type_id',3)->get();
+
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
         return Inertia::render('Events/List', [
             "ambulatori" => $ambulatori,
             "medici" => $medici,
+            "pazienti" => $pazienti,
             "appuntamenti" => $appuntamenti
         ]);
     }
@@ -50,12 +54,13 @@ class EventController extends Controller
 
         /** @var Schedule $orari */
         $orari = Schedule::select('id','giorno','inizio','quantita','minuti')->where('attivo',1)->where('doctor_id',2)->get();
-//        echo($orari->toSql());
-//        return;
+
         /** @var Clinics $ambulatori */
         $ambulatori = Clinics::all('id AS value','nome AS label');
         /** @var User $medici */
-        $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();
+        $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();;
+        /** @var User $pazienti */
+        $pazienti = User::select('id AS value','name AS label')->where('user_type_id',3)->get();
 
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
@@ -63,6 +68,7 @@ class EventController extends Controller
         return Inertia::render('Events/Calendar', [
             "ambulatori" => $ambulatori,
             "medici" => $medici,
+            "pazienti" => $pazienti,
             "appuntamenti" => $appuntamenti,
             "orari" => $orari
         ]);
