@@ -21,9 +21,70 @@ import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
                 <FullCalendar class="flex lg:hidden h-[70vh]" :options="mobileCalendar" />
             </div>
         </div>
+
+        <el-dialog v-model="visible" :width="500" :title="!formEvento.id ? 'Aggiungi evento' : 'Modifica evento'">
+            <el-form ref="form" label-position="top" :rules="rules" :model="formEvento">
+                <el-row :gutter="10">
+                    <el-col>
+                        <el-form-item prop="title" label="Nome">
+                            <el-input v-model="formEvento.title"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item prop="start" label="Inizio">
+                            <el-date-picker
+                                class="w-full"
+                                v-model="formEvento.start"
+                                type="datetime"
+                                format="DD/MM/YYYY HH:mm"
+                                value-format="YYYY/MM/DD HH:mm"
+                                :default-value="data"
+                            />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item prop="end" label="Fine">
+                            <el-date-picker
+                                class="w-full"
+                                v-model="formEvento.end"
+                                type="datetime"
+                                format="DD/MM/YYYY HH:mm"
+                                value-format="YYYY/MM/DD HH:mm"
+                                :default-value="data"
+                            />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item prop="doctor_id" label="Medico">
+                            <el-select v-model="formEvento.doctor_id" class="w-full" placeholder="" clearable filterable>
+                                <el-option v-for="item in medici" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item prop="clinic_id" label="Ambulatorio">
+                            <el-select v-model="formEvento.clinic_id" class="w-full" placeholder="" clearable filterable>
+                                <el-option v-for="item in ambulatori" :label="item.label" :key="item.value" :value="item.value"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item prop="patient_id" label="Paziente">
+                            <el-input v-model="formEvento.patient_id" />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <el-divider></el-divider>
+            <div class="inline-flex items-center justify-between w-full">
+                <el-button v-if="formEvento.id" type="danger" @click="eliminaEvento()" plain>elimina</el-button>
+                <el-button type="primary" @click="visible = false" plain>Annulla</el-button>
+                <el-button type="success" @click="aggiungiEvento()" plain>{{ !formEvento.id ? 'Aggiungi' : 'Modifica' }}</el-button>
+            </div>
+
+        </el-dialog>
     </AppLayout>
 </template>
-
 
 <script>
 import {ElMessage, ElMessageBox} from "element-plus";
@@ -45,13 +106,25 @@ export default {
         ambulatori: Object,
         medici: Object,
         filter: Object,
-        appuntamenti: Object
+        appuntamenti: Object,
+        orari: Object,
     },
     components: {
-        FullCalendar // make the <FullCalendar> tag available
+        FullCalendar
     },
     data() {
         return {
+            formEvento: {
+                title: null,
+                start: null,
+                nota: null,
+                end: null,
+                color: null,
+                doctor_id: null,
+                clinic_id: null,
+                patient_id: null
+            },
+            visible: false,
             appuntamenti: [],
             filter: {
                 tp: 0,
@@ -73,23 +146,22 @@ export default {
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' /*,multiMonth*/
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                 },
                 dayMaxEventRows: true,
-                timeGrid: {
-                    dayMaxEventRows: 1 // adjust to 6 only for timeGridWeek/timeGridDay
-                },
                 slotMinTime: "08:00:00",
-                slotMaxTime: "18:00:00",
-                eventColor: '#2c3e50',
+                slotMaxTime: "20:00:00",
+                slotDuration: {
+                    minute: 20
+                },
+                eventColor: '#076c7d',
                 locale: itLocale,
                 droppable: true,
                 editable: true,
-                events: this.appuntamenti,
                 theme: 'Slate'
             },
             mobileCalendar: {
-                plugins: [listPlugin/*, multiMonthPlugin*/],
+                plugins: [listPlugin],
                 initialView: 'list',
                 dateClick: this.handleDateClick,
                 datesSet: this.handleMonthChange,
@@ -100,25 +172,36 @@ export default {
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' /*,multiMonth*/
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
                 },
                 dayMaxEventRows: true,
                 timeGrid: {
-                    dayMaxEventRows: 1 // adjust to 6 only for timeGridWeek/timeGridDay
+                    dayMaxEventRows: 1
                 },
                 slotMinTime: "08:00:00",
-                slotMaxTime: "18:00:00",
+                slotMaxTime: "20:00:00",
                 eventColor: '#2c3e50',
                 locale: itLocale,
                 droppable: true,
                 editable: true,
-                events: this.appuntamenti
             }
         }
     },
     methods: {
         handleDateClick(arg){
-
+            this.visible = true;
+            this.visible = true;
+            this.data = arg.dateStr;
+            this.formEvento = {
+                title: null,
+                start: this.data,
+                end: this.moment(this.data).add('1','hour').format('YYYY-MM-DD HH:mm'),
+                nota: null,
+                color: '#076c7d',
+                doctor_id: 2,
+                clinic_id: 2,
+                patient_id: 2
+            }
         },
         handleMonthChange(payload){
             this.filter.start = payload.startStr
@@ -126,19 +209,21 @@ export default {
             this.paginate()
         },
         handleEventClick(clickInfo) {
-            console.log(clickInfo)
-            // let evento = this.calendarOptions.events.find(x => {
-            //     return String(x.id) === String(clickInfo.event._def.publicId);
-            // });
-            // this.visible = true;
-            // this.formEvento = {
-            //     id: evento.id,
-            //     title: evento.title,
-            //     start: this.moment(evento.start).format("YYYY/MM/DD HH:mm"),
-            //     nota: evento.nota.nota,
-            //     color: evento.nota.color,
-            //     end: this.moment(evento.end).format("YYYY/MM/DD HH:mm")
-            // }
+            console.log(clickInfo);
+            this.visible = true;
+            let evento = this.calendarOptions.events.find(x => {
+                return String(x.id) === String(clickInfo.event._def.publicId);
+            });
+            this.visible = true;
+            this.formEvento = {
+                id: evento.id,
+                title: evento.title,
+                start: this.moment(evento.start).format("YYYY/MM/DD HH:mm"),
+                end: this.moment(evento.end).format("YYYY/MM/DD HH:mm"),
+                doctor_id: clickInfo.event._def.extendedProps.doctor_id,
+                clinic_id: clickInfo.event._def.extendedProps.clinic_id,
+                patient_id: 2
+            }
         },
         handleDrop(dropInfo) {
             let index = this.calendarOptions.events.map(x => {
@@ -211,19 +296,47 @@ export default {
                 order: this.sortingOrder,
                 filter: this.filter
             }).then( result => {
-                this.appuntamenti = result.data;
+                this.calendarOptions.events = result.data
+                this.mobileCalendar.events = result.data
             });
         },
     },
     created() {
-        this.paginate();
+        // this.filter.start = this.moment().format("YYYY/MM/DD HH:mm")
+        // this.filter.end = this.moment().format("YYYY/MM/DD HH:mm")
+        // this.paginate();
     }
 }
 </script>
 
-<style scoped>
+<style>
+.fc-theme-standard .fc-list-day-cushion {
+    background-color: hsla(202.8, 74.7%, 18.6%, 0.83);
+}
+.fc-theme-standard:hover .fc-list-day-cushion:hover {
+    background-color: hsla(129.8, 73.5%, 16.3%, 0.83);
+}
+.fc .fc-list-event:hover td {
+    background-color: hsla(129.8, 73.5%, 16.3%, 0.83);
+}
+.fc-direction-ltr .fc-list-day-text, .fc-direction-rtl .fc-list-day-side-text {
+    float: left;
+    color: #FFF;
+}
 .el-form-item {
     margin-bottom: 0px;
+}
+.fc .fc-popover-header {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 3px 4px;
+    color: #1a202c;
+}
+.fc-theme-standard .fc-popover {
+    background-color: #51698c;
+    border: 1px solid #000;
 }
 </style>
 

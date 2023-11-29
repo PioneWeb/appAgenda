@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Clinics;
 use App\Models\Company;
 use App\Models\Event;
+use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -41,20 +42,28 @@ class EventController extends Controller
     public function calendar()
     {
         /** @var User $user */
-        $user = auth()->user();
+//        $user = auth()->user();
+        //        if(!$user->can("company.list")) {
+//            abort(403,"Non disponi dei permessi necessari!");
+//        }
+
+        /** @var Schedule $orari */
+        $orari = Schedule::select('id','giorno','inizio','quantita','minuti')->where('attivo',1)->where('doctor_id',2)->get();
+//        echo($orari->toSql());
+//        return;
         /** @var Clinics $ambulatori */
         $ambulatori = Clinics::all('id AS value','nome AS label');
         /** @var User $medici */
         $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();
+
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
-//        if(!$user->can("company.list")) {
-//            abort(403,"Non disponi dei permessi necessari!");
-//        }
+
         return Inertia::render('Events/Calendar', [
             "ambulatori" => $ambulatori,
             "medici" => $medici,
-            "appuntamenti" => $appuntamenti
+            "appuntamenti" => $appuntamenti,
+            "orari" => $orari
         ]);
     }
 
@@ -115,7 +124,8 @@ class EventController extends Controller
 //        }
 
         /** @var Event $query */
-        $query = Event::query();
+        $query = Event::select();
+
         $query->whereDate('start' ,'>=',$filter['start']);
         $query->whereDate('end' ,'<=',$filter['end']);
 
