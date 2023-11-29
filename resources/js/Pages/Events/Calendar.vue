@@ -28,6 +28,7 @@ import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
                     <el-col>
                         <el-form-item prop="title" label="Nome">
                             <el-input v-model="formEvento.title"></el-input>
+                            <el-input type="hidden" v-model="formEvento.id"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -193,7 +194,6 @@ export default {
     methods: {
         handleDateClick(arg){
             this.visible = true;
-            this.visible = true;
             this.data = arg.dateStr;
             this.formEvento = {
                 title: 'Nuovo appuntamento',
@@ -282,6 +282,10 @@ export default {
             })
         },
         aggiungiEvento(){
+            let index = this.calendarOptions.events.map(x => {
+                return parseInt(x.id);
+            }).indexOf(this.formEvento.id);
+            this.visible = false;
             ElMessageBox.confirm(
                 'Stai per modificare l\'appuntamento',
                 'Warning',
@@ -290,18 +294,25 @@ export default {
                     cancelButtonText: 'Cancel',
                     type: 'warning',
                 }
-            )
-                .then(() => {
-                    ElMessage({
-                        type: 'success',
-                        message: 'Modifica completata',
-                    })
-                })
-                .catch(() => {
-                    ElMessage({
-                        type: 'info',
-                        message: 'Modifica annullata',
-                    })
+                ).then(() => {
+                    console.log('aaa', this.formEvento)
+                    axios.post(route("events.update", {
+                        id: parseInt(this.formEvento.id)
+                    }), {
+                        id: this.formEvento.id,
+                        title: this.formEvento.title,
+                        start: this.moment(this.formEvento.start).format("YYYY/MM/DD HH:mm"),
+                        end: this.moment(this.formEvento.end).format("YYYY/MM/DD HH:mm"),
+                        doctor_id: this.formEvento.doctor_id,
+                        patient_id: this.formEvento.patient_id,
+                        clinic_id: this.formEvento.clinic_id
+                    }).then(result => {
+                        this.calendarOptions.events[index] = result.data;
+                        ElMessage({
+                            type: 'success',
+                            message: 'Evento modificato con successo',
+                        });
+                    });
                 })
         },
         controllaMedico(val) {
@@ -359,6 +370,9 @@ export default {
 .fc-theme-standard .fc-popover {
     background-color: #51698c;
     border: 1px solid #000;
+}
+.el-select__tags .el-tag--info {
+    background-color: rgba(134, 38, 0, 0.98);
 }
 </style>
 
