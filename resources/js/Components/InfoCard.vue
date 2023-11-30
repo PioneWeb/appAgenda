@@ -19,7 +19,7 @@ Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value)
                 </span>
             </div>
             <div class="footer-item ">
-                <a :href="route('dashboard')">
+                <a :href="route(link)">
                     <component :is="linkIcon" class="w-4 h-4" />
                 </a>
             </div>
@@ -37,12 +37,13 @@ export default {
         title: String,
         icon: String,
         percent: Number,
-        value: Number,
+        value: String,
         subTitle: String,
-        linkIcon: String
+        linkIcon: String,
+        link: String,
     },
     mounted() {
-        console.log(this.tasti)
+        console.log(this.value);
     }
 }
 </script>

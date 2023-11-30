@@ -5,36 +5,22 @@
                 <card-header :title="$t('Home')" :icon="HomeIcon" :tasti="tasti" nascondi-search></card-header>
                 <el-row :gutter="16">
                     <el-col :span="4">
-                        <InfoCard :title="$t('Companies')" icon="Warning" linkIcon="ArrowRight" percent="24" :value="companies" subTitle="than yesterday"/>
+                        <InfoCard :title="$t('Companies')" icon="Warning" linkIcon="ArrowRight" percent="24" :value="companies" link="companies.list" subTitle="than yesterday"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Users')" icon="Warning" linkIcon="ArrowRight" percent="12" :value="users" subTitle="than yesterday"/>
+                        <InfoCard :title="$t('Users')" icon="Warning" linkIcon="ArrowRight" percent="12" :value="users" link="users.list" subTitle="than yesterday"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Clinics')" icon="CaretTop" :percent="0" :value="ambulatori" subTitle="Ambulatori"/>
+                        <InfoCard :title="$t('Clinics')" icon="CaretTop" :percent="0" :value="ambulatori" link="clinics.list" subTitle="Ambulatori"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Schedules')" icon="CaretTop" linkIcon="ArrowRight" :percent="0" :value="orari" subTitle="Orari"/>
+                        <InfoCard :title="$t('Schedules')" icon="CaretTop" linkIcon="ArrowRight" :percent="0" :value="orari" link="schedules.list" subTitle="Orari"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Prescriptions')" icon="CaretTop" linkIcon="ArrowRight" percent="0" :value="ricette" subTitle="than yesterday"/>
+                        <InfoCard :title="$t('Prescriptions')" icon="CaretTop" linkIcon="ArrowRight" percent="0" :value="ricette" link="prescriptions.list" subTitle="than yesterday"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Events')" icon="CaretTop" linkIcon="ArrowRight" percent="0" :value="appuntamenti" subTitle="than yesterday"/>
-                    </el-col>
-                </el-row>
-
-
-                <el-row :gutter="16" class="mt-10">
-                    <el-col :span="24">
-                        <el-steps :active="2" finish-status="success" simple >
-                            <el-step title="Scrivere" :icon="Edit" />
-                            <el-step title="Uploadare" :icon="Upload" />
-                            <el-step title="Stampare" :icon="Printer" />
-                            <el-step title="Avanzare" :icon="CirclePlus" />
-                            <el-step title="Attenzione" :icon="Warning" />
-                            <el-step title="Eliminare" :icon="DeleteFilled" />
-                        </el-steps>
+                        <InfoCard :title="$t('Events')" icon="CaretTop" linkIcon="ArrowRight" percent="0" :value="appuntamenti" link="events.calendar" subTitle="than yesterday"/>
                     </el-col>
                 </el-row>
 
