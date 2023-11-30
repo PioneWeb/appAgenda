@@ -104,35 +104,25 @@
                                 <img :src="utente.profile_photo_url" :alt="utente.name" class="rounded-full h-20 w-20 object-cover">
                             </el-form-item>
                         </el-col>
+                        <el-divider></el-divider>
                     </el-row>
 
                     <el-row :gutter="30" class="mb-5">
 
-                        <el-col :span="24">
-                            <el-form-item v-if="utente.user_type_id === 2" prop="a" label="Lista pazienti">
-
+                        <el-col :span="12">
+                            <h1>Lista pazienti e segretarie</h1>
+                            <el-form-item v-if="utente.user_type_id === 2" prop="a">
                                 <el-table :data="utente.patients" stripe style="width: 100%">
+                                    <el-table-column prop="patients.user_type_id" label="tipo" width="100">
+                                        <template #default="scope">
+                                            <el-tag v-if="scope.row.user_type_id === 3" effect="dark" size="small">Paziente</el-tag>
+                                            <el-tag v-if="scope.row.user_type_id === 4" effect="dark" size="small" type="warning">Segretaria</el-tag>
+                                        </template>
+                                    </el-table-column>
                                     <el-table-column prop="name" label="Nome" />
                                     <el-table-column prop="email" label="Email" />
-                                    <el-table-column prop="indirizzo" label="Indirizzo" />
-                                    <el-table-column prop="localita" label="Località" />
-                                    <el-table-column prop="cap" label="Cap" width="80" />
-                                    <el-table-column prop="provincia" label="Provincia" width="90" />
-                                    <el-table-column prop="telefono" label="Telefono" width="120" />
+                                    <el-table-column prop="telefono" label="Telefono" />
                                 </el-table>
-
-<!--                                <el-pagination-->
-<!--                                    class="mt-6"-->
-<!--                                    v-model:currentPage="currentPage"-->
-<!--                                    :page-sizes="pageSizes"-->
-<!--                                    :page-size="pageSize"-->
-<!--                                    layout="total, sizes, prev, pager, next, jumper"-->
-<!--                                    :total="total"-->
-<!--                                    @size-change="handleSizeChange"-->
-<!--                                    @current-change="handleCurrentChange"-->
-<!--                                >-->
-<!--                                </el-pagination>-->
-
                             </el-form-item>
 
                             <el-form-item v-if="utente.user_type_id === 3" prop="a" label="medico">
@@ -143,6 +133,25 @@
                                 <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
                             </el-form-item>
                         </el-col>
+
+
+                        <el-col :span="12">
+                            <h1>Lista ambulatori utilizzati</h1>
+                            <el-form-item v-if="utente.user_type_id === 2" prop="a">
+                                <el-table :data="utente.clinics" stripe style="width: 100%">
+                                    <el-table-column prop="nome" label="Nome" />
+                                    <el-table-column prop="indirizzo" label="Indirizzo" />
+                                    <el-table-column prop="localita" label="Località" />
+                                    <el-table-column prop="telefono" label="Telefono"  />
+                                </el-table>
+                            </el-form-item>
+
+                        </el-col>
+
+                    </el-row>
+
+                    <el-row :gutter="30" class="mb-5">
+
 
                     </el-row>
 
@@ -263,6 +272,9 @@ export default {
 </script>
 
 <style scoped>
+
+h1{ font-size: 130% !important; font-weight: bold !important; margin-bottom: 20px; }
+
 .el-button{ font-size: 120%; width: 200px; height: 33px; }
 
 :global(h2#card-usage ~ .example .example-showcase) {

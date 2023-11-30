@@ -107,7 +107,13 @@ class User extends Authenticatable
         'profile_photo_path',
         'email_verified_at',
         "company_id",
-        'user_type_id'
+        'user_type_id',
+        'indirizzo',
+        'localita',
+        'cap',
+        'provincia',
+        'telefono',
+        'color'
     ];
 
     /**
@@ -161,8 +167,8 @@ class User extends Authenticatable
         return $this->hasOne(DoctorUsers::where('user_id',$this->id));
     }
 
-    public function tickets(){
-        return $this->hasManyThrough(Ticket::class,TicketUser::class,"user_id","id","id","ticket_id");
+    public function clinics(){
+        return $this->hasManyThrough(Clinics::class,DoctorClinics::class,"doctor_id","id","id","clinic_id");
     }
 
     public function user_type(): BelongsTo

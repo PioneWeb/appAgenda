@@ -20,7 +20,7 @@
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
-                            <div class="ml-3 relative">
+                            <div class="ml-3 relative mr-2">
                                 <!-- Teams Dropdown -->
                                 <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="60">
                                     <template #trigger>
@@ -250,7 +250,6 @@
 
             <el-row class="tac">
                 <el-col :span="3">
-<!--                    <h5 class="mb-2 mx-12">Menu</h5>-->
                     <el-menu
                         default-active="2"
                         class="w-auto min-w-fit"
@@ -290,23 +289,12 @@
                             <el-menu-item index="2-5">
                                 <NavLink :href="route('schedules.list')" :active="route().current('schedules.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Orari') }}</NavLink>
                             </el-menu-item>
-<!--                            <el-menu-item index="2-5">
+                            <el-menu-item index="2-6">
                                 <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>
-                            </el-menu-item>-->
-                            <el-menu-item index="2-5">
+                            </el-menu-item>
+                            <el-menu-item index="2-7">
                                 <NavLink :href="route('events.calendar')" :active="route().current('events.calendar')"><el-icon><Calendar /></el-icon> {{ $t('Calendar') }}</NavLink>
                             </el-menu-item>
-
-<!--                            <el-menu-item index="4">-->
-<!--                                <NavLink :href="route('tickets.list')" :active="route().current('tickets.list')"><el-icon><Menu /></el-icon> {{ $t('Tickets') }}</NavLink>-->
-<!--                            </el-menu-item>-->
-
-<!--                            <el-menu-item index="4-1-1">-->
-<!--                                <NavLink :href="route('services.list')" :active="route().current('services.list')"><el-icon><Document /></el-icon> {{ $t('Services') }}</NavLink>-->
-<!--                            </el-menu-item>-->
-<!--                            <el-menu-item index="4-1-2">-->
-<!--                                <NavLink :href="route('tipitickets.list')" :active="route().current('tipitickets.list')"><el-icon><CreditCard /></el-icon> {{ $t('Tickets_types') }}</NavLink>-->
-<!--                            </el-menu-item>-->
 
                         </el-sub-menu>
 
@@ -347,9 +335,7 @@ import 'element-plus/theme-chalk/dark/css-vars.css';
 import 'element-plus/es/components/drawer/style/css';
 import { HomeFilled, Setting, Document, Location, Menu, User, Sunny, Moon, Operation, CreditCard, Money, Edit, Calendar } from '@element-plus/icons-vue';
 import { BeakerIcon, BuildingOfficeIcon, UsersIcon, UserIcon, SunIcon, MoonIcon, HomeIcon } from '@heroicons/vue/24/solid';
-
-// import { BeakerIcon, GlobeEuropeAfricaIcon, SunIcon, MoonIcon, HomeIcon } from '@heroicons/vue/24/outline';
-
+import { defineProps } from 'vue';
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 

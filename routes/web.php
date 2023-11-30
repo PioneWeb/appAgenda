@@ -45,28 +45,12 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-//    Route::get('/', function () {
-//        return Inertia::render('Welcome');
-//    })->name('welcome');
-//    Route::get('/home', function () {
-//        return Inertia::render('Home');
-//    })->name('home');
-
     Route::get('/home', [HomeController::class, "index"])->name('home');
-
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-    Route::get('/modifica', function () {
-        return Inertia::render('Modifica');
-    })->name('modifica');
-
+    Route::get('/dashboard', function () { return Inertia::render('Dashboard'); })->name('dashboard');
+    Route::get('/modifica', function () { return Inertia::render('Modifica'); })->name('modifica');
 
     Route::prefix('/companies')->group(fn () => Route::group([], __DIR__."/companies/index.php"));
     Route::prefix('/users')->group(fn () => Route::group([], __DIR__."/users/index.php"));
-//    Route::prefix('/tickets')->group(fn () => Route::group([], __DIR__."/tickets/index.php"));
-//    Route::prefix('/services')->group(fn () => Route::group([], __DIR__."/services/index.php"));
-//    Route::prefix('/tipitickets')->group(fn () => Route::group([], __DIR__."/tipitickets/index.php"));
     Route::prefix('/clinics')->group(fn () => Route::group([], __DIR__."/clinics/index.php"));
     Route::prefix('/prescriptions')->group(fn () => Route::group([], __DIR__ . "/prescriptions/index.php"));
     Route::prefix('/schedules')->group(fn () => Route::group([], __DIR__ . "/schedules/index.php"));

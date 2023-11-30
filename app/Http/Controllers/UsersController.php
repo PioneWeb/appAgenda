@@ -45,7 +45,9 @@ class UsersController extends Controller
         $user = auth()->user();
         if($user->can("user.list")) {
             /** @var User $utenti */
-            $utenti = User::select('id','name')->where('current_team_id',$user->current_team_id)->where("company_id","1")->get();
+            $utenti = User::select('id','name')
+                ->where('current_team_id',$user->current_team_id)
+                ->where("company_id","1")->get();
             return $utenti;
         }
     }
@@ -86,7 +88,8 @@ class UsersController extends Controller
         }
 
         /** @var User $query */
-        $query = User::with(['user_type','medico','medico.patients','teams'])->where('current_team_id',$user->current_team_id);
+        $query = User::with(['user_type','medico','medico.patients','teams'])
+                 ->where('current_team_id',$user->current_team_id);
 
         // RICERCHE CORRELATE
         if(!empty($search = $request->input("search"))) {
@@ -167,7 +170,10 @@ class UsersController extends Controller
         $user = auth()->user();
         if($user->can("user.list")) {
             /** @var User $query */
-            $query = User::query()->where('id',$id)->with(['tickets','user_type','medico.patients','medico','patients','teams'])->where('current_team_id',$user->current_team_id)->first();
+            $query = User::query()->where('id',$id)
+                ->with(['user_type','medico.patients','medico','patients','teams','clinics'])
+                ->where('current_team_id',$user->current_team_id)
+                ->first();
             /** @var Company $query */
             $aziende = Company::query()->get();
             /** @var Team $query */

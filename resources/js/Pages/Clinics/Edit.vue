@@ -78,6 +78,25 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                                 active-text="Attivo"
                             />
                         </el-form-item>
+                        <el-divider></el-divider>
+                    </el-row>
+
+                    <el-row :gutter="30" class="mb-5">
+
+                        <el-col :span="24">
+                            <h1>Lista ambulatori utilizzati</h1>
+                            <el-form-item prop="a">
+                                <el-table :data="ambulatorio.doctor" stripe style="width: 100%">
+                                    <el-table-column prop="name" label="Nome" />
+                                    <el-table-column prop="indirizzo" label="Indirizzo" />
+                                    <el-table-column prop="localita" label="Località" />
+                                    <el-table-column prop="cap" label="Cap" width="80" />
+                                    <el-table-column prop="provincia" label="Provincia" width="90" />
+                                    <el-table-column prop="telefono" label="Telefono" width="120" />
+                                </el-table>
+                            </el-form-item>
+
+                        </el-col>
 
                     </el-row>
 
@@ -149,5 +168,6 @@ export default {
 </script>
 
 <style scoped>
+h1{ font-size: 130% !important; font-weight: bold !important; margin-bottom: 20px; }
 .el-tag__content{ font-size: 150% !important; font-weight: bold !important; }
 </style>
