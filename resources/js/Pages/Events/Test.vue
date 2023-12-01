@@ -4,20 +4,20 @@
             <div class="flex flex-none items-center justify-between">
                 <div>
                     <h1 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-300">
-                        <time datetime="2023-01-22" class="sm:hidden">Jan 22, 2023</time>
-                        <time datetime="2023-01-22" class="hidden sm:inline">January 22, 2023</time>
+                        <time :datetime="selected_date.format('YYYY-MM-DD')" class="sm:hidden">{{ selected_date.format('D MMM Y') }}</time>
+                        <time :datetime="selected_date.format('YYYY-MM-DD')" class="hidden sm:inline">{{ selected_date.format('D MMMM Y') }}</time>
                     </h1>
-                    <p class="mt-1 text-sm text-gray-500">Saturday</p>
+                    <p class="mt-1 text-sm text-gray-500 capitalize">{{ selected_date.format('dddd') }}</p>
                 </div>
                 <div class="flex items-center">
                     <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
-                        <button type="button" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50">
+                        <button @click="change_day(true)" type="button" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50">
                             <span class="sr-only">Previous day</span>
                             <ChevronLeftIcon class="h-5 w-5" aria-hidden="true" />
                         </button>
-                        <button type="button" class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block">Today</button>
+                        <button type="button" class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block">{{ selected_date.calendar().split(' a')[0]}}</button>
                         <span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
-                        <button type="button" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50">
+                        <button @click="change_day()" type="button" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50">
                             <span class="sr-only">Next day</span>
                             <ChevronRightIcon class="h-5 w-5" aria-hidden="true" />
                         </button>
@@ -89,7 +89,6 @@
                 </div>
             </div>
         </template>
-
 
         <div class="flex gap-6 ">
             <div class="isolate flex flex-auto overflow-hidden bg-white rounded-lg relative">
@@ -183,12 +182,12 @@
 
             <div class="sticky top-40 bg-white rounded-lg h-fit hidden w-1/2 max-w-md flex-none px-8 py-10 md:block dark:bg-gray-600 dark:border-gray-600">
                 <div class="flex items-center text-center text-gray-900">
-                    <button type="button" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
+                    <button @click="change_month(true)" type="button" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
                         <span class="sr-only">Previous month</span>
                         <ChevronLeftIcon class="h-5 w-5" aria-hidden="true" />
                     </button>
-                    <div class="flex-auto text-sm font-semibold">Gennaio 2024</div>
-                    <button type="button" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
+                    <div class="flex-auto text-sm font-semibold">{{ selected_date.format('MMMM') }} {{ selected_date.format('Y') }}</div>
+                    <button @click="change_month()" type="button" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
                         <span class="sr-only">Next month</span>
                         <ChevronRightIcon class="h-5 w-5" aria-hidden="true" />
                     </button>
@@ -202,8 +201,8 @@
                     <div>S</div>
                     <div>D</div>
                 </div>
-                <div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
-                    <button v-for="(day, dayIdx) in days" :key="day.date" type="button" :class="['py-1.5 hover:bg-gray-100 focus:z-10  dark:bg-gray-600 dark:border-gray-600', day.isCurrentMonth ? 'bg-white' : 'bg-gray-50', (day.isSelected || day.isToday) && 'font-semibold', day.isSelected && 'text-white', !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900', !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400', day.isToday && !day.isSelected && 'text-indigo-600', dayIdx === 0 && 'rounded-tl-lg', dayIdx === 6 && 'rounded-tr-lg', dayIdx === days.length - 7 && 'rounded-bl-lg', dayIdx === days.length - 1 && 'rounded-br-lg']">
+                <div v-if="days.length > 0" class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
+                    <button @click="select_date(day)" v-for="(day, dayIdx) in days" :key="day.date" type="button" :class="['py-1.5 hover:bg-gray-100 focus:z-10  dark:bg-gray-600 dark:border-gray-600', day.isCurrentMonth ? 'bg-white' : 'bg-gray-50', (day.isSelected || day.isToday) && 'font-semibold', day.isSelected && 'text-white', !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900', !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400', day.isToday && !day.isSelected && 'text-indigo-600', dayIdx === 0 && 'rounded-tl-lg', dayIdx === 6 && 'rounded-tr-lg', dayIdx === days.length - 7 && 'rounded-bl-lg', dayIdx === days.length - 1 && 'rounded-br-lg']">
                         <time :datetime="day.date" :class="['mx-auto flex h-7 w-7 items-center justify-center rounded-full', day.isSelected && day.isToday && 'bg-indigo-600', day.isSelected && !day.isToday && 'bg-gray-900']">
                             {{ day.date.split('-').pop().replace(/^0/, '') }}
                         </time>
@@ -222,7 +221,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import AppLayout from "../../Layouts/AppLayout.vue";
 import moment from "moment/moment";
 
-const days = [
+/*const days = [
     { date: '2023-12-25' },
     { date: '2023-12-26' },
     { date: '2023-12-27' },
@@ -265,53 +264,11 @@ const days = [
     { date: '2023-02-02' },
     { date: '2023-02-03' },
     { date: '2023-02-04' },
-]
+]*/
 
 const container = ref(null)
 const containerNav = ref(null)
 const containerOffset = ref(null)
-//
-// const today = moment();
-// const month = today.month();
-// const year = today.year();
-//
-// const firstDay = moment(`${year}-${month+1}-01`);
-// console.log('first',firstDay._i)
-// const numberOfDays = firstDay.daysInMonth();
-// const lastDay = moment(`${year}-${month+1}-${numberOfDays}`);
-// console.log('last',lastDay._i);
-//
-// const firstDayWeekday = firstDay.weekday();
-// const endDayWeekday = lastDay.weekday();
-// console.log(firstDayWeekday, moment(firstDayWeekday).format('dddd'), endDayWeekday);
-//
-// const startDay = firstDay.startOf('day').subtract(4, 'd');
-// console.log(firstDay._i, startDay._i);
-
-const today = moment();
-const month = today.month();
-const year = today.year();
-
-const firstDay = moment(`${year}-${month + 1}-01`);
-const firstDayWeekday = firstDay.weekday();
-const numberOfDays = firstDay.daysInMonth();
-const lastDay = moment(`${year}-${month + 1}-${numberOfDays}`);
-const endDayWeekday = lastDay.weekday();
-let startDay;
-if (firstDayWeekday === 1) {
-    startDay = firstDay.startOf('day'); // La data di inizio è già lunedì
-} else {
-    startDay = firstDay.startOf('day').subtract( firstDayWeekday, 'd');
-}
-let stopDay;
-if (endDayWeekday === 1) {
-    stopDay = lastDay.startOf('day'); // La data di inizio è già lunedì
-} else {
-    stopDay = lastDay.startOf('day').add( endDayWeekday+1, 'd');
-}
-console.log('Data di inizio:', startDay.format('YYYY-MM-DD'));
-console.log('Data di fine:', lastDay.format('YYYY-MM-DD'));
-
 
 onMounted(() => {
     // Set the container scroll position based on the current time.
@@ -324,9 +281,53 @@ onMounted(() => {
 </script>
 
 <script>
+
 export default {
-    computed: {
-        hours() {
+    data() {
+      return {
+          days: [],
+          selected_date: moment()
+      }
+    },
+    methods: {
+        get_days_for_calendar() {
+            this.days = [];
+            const numberOfDays = 42;
+            const today = this.moment();
+            const month = this.selected_date ? this.selected_date.month() : today.month();
+            const year = this.selected_date ? this.selected_date.year() : today.year();
+            const firstDay = this.moment(`${year}-${month + 1}-01`).subtract(2,'days');
+            const firstDayWeekday = firstDay.weekday();
+            let startDay;
+            if (firstDayWeekday === 1) {
+                startDay = firstDay.startOf('day'); // La data di inizio è già lunedì
+            } else {
+                startDay = firstDay.startOf('day').subtract( firstDayWeekday, 'd');
+            }
+
+            for (let i = 0; i < numberOfDays; i++) {
+                this.days.push({
+                        date: startDay.format('YYYY-MM-DD'),
+                        isCurrentMonth: startDay.month() === month,
+                        isToday: startDay.isSame(today, 'day'),
+                        isSelected: startDay.isSame(this.selected_date, 'day'),
+                });
+                startDay.add(1,'day');
+            }
+        },
+        change_day(previous) {
+            this.selected_date = this.selected_date.add(previous ? -1 : 1,'day');
+            this.get_days_for_calendar()
+        },
+        change_month(previous) {
+            this.selected_date = this.selected_date.add(previous ? -1 : 1,'month');
+            this.get_days_for_calendar()
+        },
+        select_date(day) {
+            this.selected_date = this.moment(day.date);
+            this.get_days_for_calendar()
+        },
+        get_hours_for_list() {
             let result = [];
             let nowHour = new Date().setUTCHours(0, 0, 0, 0);
             nowHour = new Date(nowHour).getHours();
@@ -335,7 +336,15 @@ export default {
                 result.push(i+':00');
             }
             return result
+        }
+    },
+    computed: {
+        hours() {
+            return this.get_hours_for_list()
         },
     },
+    mounted() {
+        this.get_days_for_calendar()
+    }
 }
 </script>
