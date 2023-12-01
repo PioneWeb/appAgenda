@@ -41,6 +41,11 @@ class EventController extends Controller
         ]);
     }
 
+    public function test()
+    {
+        return Inertia::render('Events/Test');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -131,7 +136,7 @@ class EventController extends Controller
 //        }
 
         /** @var Event $query */
-        $query = Event::select();
+        $query = Event::with("doctor","patient","clinic");
 
         $query->whereDate('start' ,'>=',$filter['start']);
         $query->whereDate('end' ,'<=',$filter['end']);

@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\Prescription;
 use App\Models\Schedule;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use stdClass;
@@ -28,14 +29,33 @@ class ScheduleController extends Controller
         $user = auth()->user();
         /** @var Schedule $orari */
         $orari = Schedule::with(['doctor','patient','clinic']);
-//        if(!$user->can("schedule.list")) {
-//            abort(403,"Non disponi dei permessi necessari!");
-//        }
         return Inertia::render('Schedules/List', [
             "orari" => $orari,
         ]);
     }
 
+
+    public function orariList(Request $request)
+    {
+        $this->validate($request,[
+            "doctor_id" => "required|int|exists:users,id",
+            "clinic_id" => "required|int|exists:clinics,id",
+            "date" => "required|date"
+        ]);
+
+        $gg = Carbon::parse($request->input("date"))->dayOfWeekIso;
+        /** @var User $user */
+        $user = auth()->user();
+        if($user->can("schedule.orariList")) {}
+        /** @var Schedule $orari */
+        $orari = Schedule::all()->where('doctor_id',$request->input("doctor_id"))
+            ->where('clinic_id',$request->input("clinic_id"))
+            ->where('giorno',$gg)
+            ->where('attivo',1);
+
+        return $orari;
+
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -87,7 +107,7 @@ class ScheduleController extends Controller
             "search" => "nullable|string",
             "sort" => "nullable|string",
             "order" => "nullable|string|in:ascending,descending"
-        ]);;
+        ]);
 
         /** @var User $user */
         $user = auth()->user();

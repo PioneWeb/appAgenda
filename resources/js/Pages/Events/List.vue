@@ -1,24 +1,3 @@
-<script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import CardHeader from "../../Components/CardHeader.vue";
-import {
-    CirclePlus,
-    DeleteFilled,
-    Edit,
-    Printer,
-    Setting,
-    Delete,
-    Calendar,
-    AlarmClock,
-    Close, Check, Phone, Cloudy
-} from '@element-plus/icons-vue';
-import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
-import CorpoDay from "../../Components/CorpoDay.vue";
-import CorpoWeek from "../../Components/CorpoWeek.vue";
-import CorpoMonth from "../../Components/CorpoMonth.vue";
-
-</script>
-
 <template>
     <AppLayout title="Lista Appuntamenti">
 
@@ -34,33 +13,18 @@ import CorpoMonth from "../../Components/CorpoMonth.vue";
                               @selection-change="handleSelectionChange">
                         <el-table-column type="selection" />
                         <el-table-column label="ID" prop="id" width="80" sortable />
-                        <el-table-column label="medico" prop="doctor.name" sortable />
-                        <el-table-column label="paziente" prop="patient.name" sortable >
+                        <el-table-column label="Descrizione" prop="title" sortable />
+                        <el-table-column label="medico" prop="doctor_id" sortable width="100" />
+                        <el-table-column label="paziente" prop="patient_id" sortable width="110" />
+                        <el-table-column label="ambulatorio" prop="clinic_id" sortable width="130" />
+                        <el-table-column label="inizio" prop="start" sortable width="180" >
                             <template #default="scope">
-                                <el-tag v-if="scope.row.patient !== null" size="small" type="danger">{{scope.row.patient.name}}</el-tag>
-                                <el-tag v-if="scope.row.patient === null" size="small">{{ scope.row.denominazione }}</el-tag>
+                                <span>{{ moment(scope.row.start).format('YYYY/MM/DD HH:mm') }}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
-                        <el-table-column label="data" prop="data" sortable width="150" >
+                        <el-table-column label="fine" prop="end" sortable width="180" >
                             <template #default="scope">
-                                {{ moment(scope.row.data).format('DD MMM YYYY') }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="ora" prop="ora" sortable width="90" >
-                            <template #default="scope">
-                                {{ moment(scope.row.ora).format('HH:mm') }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="azioni" prop="" sortable width="120" >
-                            <template #default="scope">
-                                <el-icon class="m-1" color="green"><Edit /></el-icon>
-                                <el-icon v-if="scope.row.patient_id === null" class="m-1" color="blue"><Phone /></el-icon>
-                                <el-icon v-else class="m-1" color="red"><Cloudy /></el-icon>
-                                <el-icon class="m-1" color="red"><Delete /></el-icon>
-                                <el-icon v-if="scope.row.stato === 1" color="green"><Check /></el-icon>
-                                <el-icon v-if="scope.row.stato === 2" color="yellow"><Close /></el-icon>
-                                <el-icon v-if="scope.row.stato === 3" color="red"><AlarmClock /></el-icon>
+                                <span>{{ moment(scope.row.end).format('YYYY/MM/DD HH:mm') }}</span>
                             </template>
                         </el-table-column>
 
@@ -82,17 +46,35 @@ import CorpoMonth from "../../Components/CorpoMonth.vue";
                 <CorpoDay v-if="filter.tp === 1 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoDay>
                 <CorpoWeek v-if="filter.tp === 2 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoWeek>
                 <CorpoMonth v-if="filter.tp === 3 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoMonth>
-
             </div>
         </div>
 
     </AppLayout>
 
 </template>
+<script setup>
+import AppLayout from '@/Layouts/AppLayout.vue';
+import CardHeader from "../../Components/CardHeader.vue";
+import {
+    CirclePlus,
+    DeleteFilled,
+    Edit,
+    Printer,
+    Setting,
+    Delete,
+    Calendar,
+    AlarmClock,
+    Close, Check, Phone, Cloudy
+} from '@element-plus/icons-vue';
+import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
+import CorpoDay from "../../Components/CorpoDay.vue";
+import CorpoWeek from "../../Components/CorpoWeek.vue";
+import CorpoMonth from "../../Components/CorpoMonth.vue";
 
+</script>
 <script>
 import {ElMessage, ElMessageBox} from "element-plus";
-import moment from "moment/moment";
+import moment, {now} from "moment/moment";
 
 export default {
     name: "Appuntamenti",
@@ -106,7 +88,8 @@ export default {
                 tp: 0,
                 medico: null,
                 ambulatorio: null,
-                data: moment().format('YYYY-MM-DD'),
+                start: null,
+                end: null,
                 search: null
             },
             appuntamenti: [],
@@ -135,9 +118,9 @@ export default {
             tasti: [
                 { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click: this.create },
                 { id: 2, name: 'Lista', type: "success", icon:Calendar, click: this.lista },
-         /*       { id: 3, name: 'Giorno', type: "success", icon:Calendar, click: this.giorno },
+                { id: 3, name: 'Giorno', type: "success", icon:Calendar, click: this.giorno },
                 { id: 4, name: 'Settimana', type: "success", icon:Calendar, click: this.settimana },
-                { id: 5, name: 'Mese', type: "primary", icon:Calendar, click: this.mese },*/
+                { id: 5, name: 'Mese', type: "primary", icon:Calendar, click: this.mese },
                 { id: 6, name: 'Stampa', type: "primary", icon:Printer }
             ],
             giorni:['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
@@ -216,7 +199,6 @@ export default {
         // },
         handleClick(row,column,event){
             let col = column.property;
-
             switch (col) {
                 case 'accorpa':
                     break;
@@ -228,21 +210,19 @@ export default {
         },
         paginate() {
             this.tableLoading = true;
+            this.filter.start = moment(now()).format('YYYY-MM-DD');
+            this.filter.end  = moment(now()).add(1, 'M').format('YYYY-MM-DD');
             this.SessionStorage.setItem('appuntamenti_list_filter', this.filter,true);
             this.SessionStorage.setItem('appuntamenti_list_order', this.sortingOrder);
             this.SessionStorage.setItem('appuntamenti_list_column', this.sortingColumn);
             this.SessionStorage.setItem('appuntamenti_list_page', this.currentPage);
             this.SessionStorage.setItem('appuntamenti_list_page_size', this.pageSize);
             axios.post(route("events.paginate"),{
-                pageSize: this.pageSize,
-                page: this.currentPage,
                 sort: this.sortingColumn,
                 order: this.sortingOrder,
                 filter: this.filter
             }).then( result => {
-                console.log(result.data.data)
-                this.appuntamenti = result.data.data;
-                this.total = result.data.total;
+                this.appuntamenti = result.data;
                 this.tableLoading = false;
             });
         },

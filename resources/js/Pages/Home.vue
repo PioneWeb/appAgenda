@@ -11,7 +11,7 @@
                         <InfoCard :title="$t('Users')" icon="Warning" linkIcon="ArrowRight" percent="12" :value="users" link="users.list" subTitle="than yesterday"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Clinics')" icon="CaretTop" :percent="0" :value="ambulatori" link="clinics.list" subTitle="Ambulatori"/>
+                        <InfoCard :title="$t('Clinics')" icon="CaretTop" linkIcon="ArrowRight" :percent="0" :value="ambulatori" link="clinics.list" subTitle="Ambulatori"/>
                     </el-col>
                     <el-col :span="4">
                         <InfoCard :title="$t('Schedules')" icon="CaretTop" linkIcon="ArrowRight" :percent="0" :value="orari" link="schedules.list" subTitle="Orari"/>
@@ -31,7 +31,6 @@
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {Edit, Warning, CirclePlus, DeleteFilled, Printer, CaretBottom, ArrowRight, CaretTop, Minus, Plus, Upload } from '@element-plus/icons-vue';
 import { HomeIcon } from '@heroicons/vue/24/solid';
 import CardHeader from "../Components/CardHeader.vue";
 import InfoCard from "../Components/InfoCard.vue";

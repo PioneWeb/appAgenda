@@ -38,7 +38,7 @@ import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
                                 v-model="formEvento.start"
                                 type="datetime"
                                 format="DD/MM/YYYY HH:mm"
-                                value-format="YYYY/MM/DD HH:mm"
+                                value-format="YYYY-MM-DD HH:mm"
                                 :default-value="data"
                             />
                         </el-form-item>
@@ -50,7 +50,7 @@ import TestataAppuntamenti from "../../Components/TestataAppuntamenti.vue";
                                 v-model="formEvento.end"
                                 type="datetime"
                                 format="DD/MM/YYYY HH:mm"
-                                value-format="YYYY/MM/DD HH:mm"
+                                value-format="YYYY-MM-DD HH:mm"
                                 :default-value="data"
                             />
                         </el-form-item>
@@ -134,8 +134,8 @@ export default {
                 tp: 0,
                 medico: null,
                 ambulatorio: null,
-                start:null,
-                end:null,
+                start: null,
+                end: null,
                 search: null
             },
             calendarOptions: {
@@ -193,6 +193,17 @@ export default {
     },
     methods: {
         handleDateClick(arg){
+            axios.post(route("schedules.orariList"), {
+                doctor_id: 2,
+                clinic_id: 1,
+                date: arg.dateStr  //moment().format("YYYY-MM-DD")
+            }).then(result => {
+                console.log(result)
+                // ElMessage({
+                //     type: 'success',
+                //     message: 'Evento modificato con successo',
+                // });
+            })
             this.visible = true;
             this.data = arg.dateStr;
             this.formEvento = {
@@ -210,6 +221,7 @@ export default {
             this.paginate()
         },
         handleEventClick(clickInfo) {
+            console.log(clickInfo);
             this.visible = true;
             let evento = this.calendarOptions.events.find(x => {
                 return String(x.id) === String(clickInfo.event._def.publicId);
