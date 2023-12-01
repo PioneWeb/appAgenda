@@ -1,6 +1,6 @@
 <template>
     <el-form :model="form" :inline="true" class="demo-form-inline">
-        <div class="bg-slate-800 h-14 m-4 rounded-lg">
+        <div class="bg-slate-800 h-14 m-4 rounded-lg bg-white dark:bg-gray-900 dark:border-gray-900">
             <el-row :gutter="24">
                 <el-col :span="9" class="m-1 p-2">
                     <el-form-item label="Ambulatorio" class="w-full">

@@ -131,11 +131,11 @@
                                 </Dropdown>
                             </div>
 
-                            <el-button :icon="BeakerIcon" >  </el-button>
 
                             <el-button :icon="isDark ? MoonIcon : SunIcon" @click="toggleDark()" >  </el-button>
 
-                            <el-button :icon="isDark ? Moon : Sunny" @click="toggleDark()">  </el-button>
+<!--                            <el-button :icon="isDark ? Moon : Sunny" @click="toggleDark()">  </el-button>-->
+<!--                            <el-button :icon="BeakerIcon" >  </el-button>-->
 
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
@@ -301,7 +301,7 @@
             </nav>
             <div class="py-10 dark:bg-gray-800 dark:border-gray-700">
                 <!-- Page Content -->
-                <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 dark:bg-gray-800 dark:border-gray-700">
+                <main class="max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8 dark:bg-gray-800 dark:border-gray-700">
                     <slot />
                 </main>
             </div>

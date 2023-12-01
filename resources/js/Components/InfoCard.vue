@@ -13,10 +13,10 @@
 <!--                Intl.NumberFormat('it_IT').format(value)
 Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value)
 -->
-                <span class="green">
-                  {{  Intl.NumberFormat("en-IN", { maximumSignificantDigits: 3 }).format(percent)  }}%
-                    <component :is="icon" class="w-4 h-4" />
-                </span>
+<!--                <span class="green">-->
+<!--                  {{  Intl.NumberFormat("en-IN", { maximumSignificantDigits: 3 }).format(percent)  }}-->
+<!--                    <component :is="icon" class="w-4 h-4" />-->
+<!--                </span>-->
             </div>
             <div class="footer-item ">
                 <a :href="route(link)">
