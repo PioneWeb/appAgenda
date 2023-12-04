@@ -165,7 +165,7 @@
                                         </p>
                                     </a>
                                 </li>
-                                <li class="relative mt-px flex" style="grid-row: 134 / span 18">
+                                <li class="relative mt-px flex" style="grid-row: 134 / span 12">
                                     <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-indigo-50 p-2 text-xs leading-5 hover:bg-indigo-100">
                                         <p class="order-1 font-semibold text-indigo-700">Sightseeing</p>
                                         <p class="order-1 text-indigo-500 group-hover:text-indigo-700">Eiffel Tower</p>
@@ -202,14 +202,40 @@
                     <div>D</div>
                 </div>
                 <div v-if="days.length > 0" class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
-                    <button @click="select_date(day)" v-for="(day, dayIdx) in days" :key="day.date" type="button" :class="['py-1.5 hover:bg-gray-100 focus:z-10  dark:bg-gray-600 dark:border-gray-600', day.isCurrentMonth ? 'bg-white' : 'bg-gray-50', (day.isSelected || day.isToday) && 'font-semibold', day.isSelected && 'text-white', !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900', !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400', day.isToday && !day.isSelected && 'text-indigo-600', dayIdx === 0 && 'rounded-tl-lg', dayIdx === 6 && 'rounded-tr-lg', dayIdx === days.length - 7 && 'rounded-bl-lg', dayIdx === days.length - 1 && 'rounded-br-lg']">
+                    <button @click="select_date(day)" v-for="(day, dayIdx) in days" :key="day.date" type="button" :class="['py-1.5 hover:bg-gray-100 focus:z-10  dark:bg-gray-600 dark:border-gray-600', day.isCurrentMonth ? 'bg-white' : 'bg-gray-50', (day.isSelected || day.isToday) && 'font-semibold', day.isSelected && 'text-white', !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900', !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400', day.isToday && !day.isSelected && 'text-indigo-400', dayIdx === 0 && 'rounded-tl-lg', dayIdx === 6 && 'rounded-tr-lg', dayIdx === days.length - 7 && 'rounded-bl-lg', dayIdx === days.length - 1 && 'rounded-br-lg']">
                         <time :datetime="day.date" :class="['mx-auto flex h-7 w-7 items-center justify-center rounded-full', day.isSelected && day.isToday && 'bg-indigo-600', day.isSelected && !day.isToday && 'bg-gray-900']">
                             {{ day.date.split('-').pop().replace(/^0/, '') }}
                         </time>
                     </button>
                 </div>
+                <el-divider></el-divider>
+
+                <el-row :gutter="24">
+                    <el-col :span="11" class="m-1 p-2">
+                        <el-select v-model="ambulatorio" class="m-0 w-full" placeholder="Select" @change="controllaAmbulatorio(this.ambulatorio)">
+                            <el-option
+                                v-for="item in ambulatori"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            />
+                        </el-select>
+                    </el-col>
+                    <el-col :span="11" class="m-1 p-2">
+                        <el-select v-model="medico" class="m-0 w-full" placeholder="Select" @change="controllaMedico(this.medico)">
+                        <el-option
+                            v-for="item in medici"
+                            :key="item.key"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                        </el-select>
+                    </el-col>
+                </el-row>
             </div>
         </div>
+
+
 
     </app-layout>
 </template>
@@ -220,49 +246,13 @@ import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalI
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import AppLayout from "../../Layouts/AppLayout.vue";
 import moment from "moment/moment";
+import 'moment/locale/it'
 
 /*const days = [
     { date: '2023-12-25' },
-    { date: '2023-12-26' },
-    { date: '2023-12-27' },
-    { date: '2023-12-28' },
-    { date: '2023-12-29' },
-    { date: '2023-12-30' },
-    { date: '2023-12-31' },
-    { date: '2023-01-01', isCurrentMonth: true },
-    { date: '2023-01-02', isCurrentMonth: true },
-    { date: '2023-01-03', isCurrentMonth: true },
-    { date: '2023-01-04', isCurrentMonth: true },
-    { date: '2023-01-05', isCurrentMonth: true },
-    { date: '2023-01-06', isCurrentMonth: true },
-    { date: '2023-01-07', isCurrentMonth: true },
-    { date: '2023-01-08', isCurrentMonth: true },
-    { date: '2023-01-09', isCurrentMonth: true },
-    { date: '2023-01-10', isCurrentMonth: true },
-    { date: '2023-01-11', isCurrentMonth: true },
-    { date: '2023-01-12', isCurrentMonth: true },
-    { date: '2023-01-13', isCurrentMonth: true },
-    { date: '2023-01-14', isCurrentMonth: true },
-    { date: '2023-01-15', isCurrentMonth: true },
-    { date: '2023-01-16', isCurrentMonth: true },
-    { date: '2023-01-17', isCurrentMonth: true },
-    { date: '2023-01-18', isCurrentMonth: true },
-    { date: '2023-01-19', isCurrentMonth: true },
     { date: '2023-01-20', isCurrentMonth: true, isToday: true },
-    { date: '2023-01-21', isCurrentMonth: true },
     { date: '2023-01-22', isCurrentMonth: true, isSelected: true },
     { date: '2023-01-23', isCurrentMonth: true },
-    { date: '2023-01-24', isCurrentMonth: true },
-    { date: '2023-01-25', isCurrentMonth: true },
-    { date: '2023-01-26', isCurrentMonth: true },
-    { date: '2023-01-27', isCurrentMonth: true },
-    { date: '2023-01-28', isCurrentMonth: true },
-    { date: '2023-01-29', isCurrentMonth: true },
-    { date: '2023-01-30', isCurrentMonth: true },
-    { date: '2023-01-31', isCurrentMonth: true },
-    { date: '2023-02-01' },
-    { date: '2023-02-02' },
-    { date: '2023-02-03' },
     { date: '2023-02-04' },
 ]*/
 
@@ -283,17 +273,43 @@ onMounted(() => {
 <script>
 
 export default {
+    name: "Test",
+    props: {
+        ambulatori: Object,
+        medici: Object,
+        appuntamenti: Object
+    },
     data() {
       return {
+          filter: {
+              tp: 0,
+              medico: null,
+              ambulatorio: null,
+              start: null,
+              end: null,
+              search: null
+          },
           days: [],
-          selected_date: moment()
+          selected_date: moment(),
+          ambulatorio: null,
+          medico: null,
+          eventi: [],
       }
     },
     methods: {
+        controllaMedico(val){
+            console.log(val);
+            this.filter.medico = val;
+        },
+        controllaAmbulatorio(val){
+            console.log(val);
+            this.filter.ambulatorio = val;
+        },
         get_days_for_calendar() {
             this.days = [];
             const numberOfDays = 42;
             const today = this.moment();
+            console.log(today.format("YYYY/MM/DD HH:mm"))
             const month = this.selected_date ? this.selected_date.month() : today.month();
             const year = this.selected_date ? this.selected_date.year() : today.year();
             const firstDay = this.moment(`${year}-${month + 1}-01`).subtract(2,'days');
@@ -304,7 +320,6 @@ export default {
             } else {
                 startDay = firstDay.startOf('day').subtract( firstDayWeekday, 'd');
             }
-
             for (let i = 0; i < numberOfDays; i++) {
                 this.days.push({
                         date: startDay.format('YYYY-MM-DD'),
@@ -314,6 +329,20 @@ export default {
                 });
                 startDay.add(1,'day');
             }
+            this.filter = {
+                medico: [this.medico],
+                start: moment(this.selected_date).format("YYYY/MM/DD HH:mm"),
+                end: moment(this.selected_date).add(1,'day').format("YYYY/MM/DD HH:mm")
+            }
+
+            axios.post(route("events.paginate"),{
+                sort: this.sortingColumn,
+                order: this.sortingOrder,
+                filter: this.filter
+            }).then( result => {
+                console.log(result.data);
+                this.eventi = result.data
+            });
         },
         change_day(previous) {
             this.selected_date = this.selected_date.add(previous ? -1 : 1,'day');

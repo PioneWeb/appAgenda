@@ -53,6 +53,9 @@
                     <el-menu-item index="2-6">
                         <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>
                     </el-menu-item>
+                    <el-menu-item index="2-6">
+                        <NavLink :href="route('events.test')" :active="route().current('events.test')"><el-icon><UsersIcon /></el-icon> Nuovo Cal</NavLink>
+                    </el-menu-item>
                     <el-menu-item index="2-7">
                         <NavLink :href="route('events.calendar')" :active="route().current('events.calendar')"><el-icon><Calendar /></el-icon> {{ $t('Calendar') }}</NavLink>
                     </el-menu-item>

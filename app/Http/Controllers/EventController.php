@@ -43,7 +43,20 @@ class EventController extends Controller
 
     public function test()
     {
-        return Inertia::render('Events/Test');
+        /** @var Clinics $ambulatori */
+        $ambulatori = Clinics::all('id AS value','nome AS label');
+        /** @var User $medici */
+        $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();
+        /** @var User $pazienti */
+        $pazienti = User::select('id AS value','name AS label')->where('user_type_id',3)->get();
+
+        /** @var Event $appuntamenti */
+        $appuntamenti = Event::all();
+        return Inertia::render('Events/Test', [
+            "ambulatori" => $ambulatori,
+            "medici" => $medici,
+            "appuntamenti" => $appuntamenti
+        ]);
     }
 
     /**
@@ -147,7 +160,7 @@ class EventController extends Controller
         if(!empty($filter['ambulatorio'])) {
             $query->whereIn("clinic_id", $filter['ambulatorio']);
         }
-
+//        echo $query->toSql();
         // PAGINAZIONE
         return response()->json($query->get());
 

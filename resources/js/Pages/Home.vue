@@ -17,7 +17,7 @@
                         <InfoCard :title="$t('Schedules')" icon="CaretTop" linkIcon="ArrowRight" :value="orari" link="schedules.list" subTitle="Lista Orari"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Prescriptions')" icon="CaretTop" linkIcon="ArrowRight" :value="ricette" link="prescriptions.list" subTitle="Lista Riecette"/>
+                        <InfoCard :title="$t('Prescriptions')" icon="CaretTop" linkIcon="ArrowRight" :value="ricette" link="prescriptions.list" subTitle="Lista Ricette"/>
                     </el-col>
                     <el-col :span="4">
                         <InfoCard :title="$t('Events')" icon="CaretTop" linkIcon="ArrowRight" :value="appuntamenti" link="events.calendar" subTitle="Lista Eventi"/>
