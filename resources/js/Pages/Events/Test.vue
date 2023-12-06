@@ -91,7 +91,7 @@
         </template>
 
         <div class="flex gap-6 ">
-            <div class="isolate flex flex-auto overflow-hidden bg-white rounded-lg relative">
+            <div v-loading="loading" class="isolate flex flex-auto overflow-hidden bg-white rounded-lg relative">
                 <div ref="container" class="flex flex-auto flex-col overflow-auto dark:bg-gray-600 dark:border-gray-600">
                     <div ref="containerNav" class="sticky top-0 z-10 grid flex-none grid-cols-7 bg-white text-xs text-gray-500 shadow ring-1 ring-black ring-opacity-5 md:hidden">
                         <button type="button" class="flex flex-col items-center pb-1.5 pt-3">
@@ -124,7 +124,7 @@
                             <span class="mt-3 flex h-8 w-8 items-center justify-center rounded-full text-base font-semibold text-gray-900">25</span>
                         </button>
                     </div>
-                    <div class="flex w-full flex-auto">
+                    <div v-if="hours && hours.length > 0" class="flex w-full flex-auto">
                         <div class="w-14 flex-none bg-white ring-1 ring-gray-100 dark:ring-gray-500 dark:divide-gray-500 dark:bg-gray-600 dark:border-gray-600" />
                         <div class="grid flex-auto grid-cols-1 grid-rows-1">
                             <!-- Horizontal lines -->
@@ -149,6 +149,19 @@
                                     </a>
                                 </li>
                             </ol>
+                        </div>
+                    </div>
+                    <div v-else class="h-full flex items-center justify-center">
+                        <div class="text-center">
+                            <CalendarDaysIcon class="mx-auto h-12 w-12 text-gray-400"></CalendarDaysIcon>
+                            <h3 class="mt-2 text-sm font-semibold text-gray-900">Non ci sono orari di {{ selected_date.format('dddd') }}</h3>
+                            <p class="mt-1 text-sm text-gray-500">Crea degli orari nuovi per inserire appuntamenti in questo giorno.</p>
+                            <div class="mt-6">
+                                <button type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    <PlusIcon class="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
+                                    Nuovi orari
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -209,33 +222,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon } from '@heroicons/vue/20/solid'
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon,PlusIcon } from '@heroicons/vue/20/solid'
+import { CalendarDaysIcon } from '@heroicons/vue/24/outline'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import AppLayout from "../../Layouts/AppLayout.vue";
 import moment from "moment/moment";
 import 'moment/locale/it'
 
-/*const days = [
-    { date: '2023-12-25' },
-    { date: '2023-01-20', isCurrentMonth: true, isToday: true },
-    { date: '2023-01-22', isCurrentMonth: true, isSelected: true },
-    { date: '2023-01-23', isCurrentMonth: true },
-    { date: '2023-02-04' },
-]*/
-
-const container = ref(null)
-const containerNav = ref(null)
-const containerOffset = ref(null)
-
-onMounted(() => {
-    // Set the container scroll position based on the current time.
-    const currentMinute = new Date().getHours() * 60
-    container.value.scrollTop =
-        ((container.value.scrollHeight - containerNav.value.offsetHeight - containerOffset.value.offsetHeight) *
-            currentMinute) /
-        1440
-})
 </script>
 
 <script>
@@ -259,6 +252,7 @@ export default {
               search: null
           },
           days: [],
+          loading: false,
           selected_date: moment(),
           ambulatorio: null,
           medico: null,
@@ -274,6 +268,7 @@ export default {
     },
     methods: {
         get_days_for_calendar() {
+            this.loading = true;
             this.days = [];
             const numberOfDays = 42;
             const today = this.moment();
@@ -307,7 +302,12 @@ export default {
                 filter: this.filter
             }).then( result => {
                 this.eventi = result.data
+                if(this.medico!==null && this.ambulatorio!==null) {
+                    this.get_schedules(this.eventi[0])
+                }
+                this.loading = false;
             });
+
         },
         get_schedules() {
             axios.post(route("schedules.orariList"), {
@@ -315,6 +315,15 @@ export default {
                 'clinic_id': this.ambulatorio,
                 'date': moment(this.selected_date).format("YYYY/MM/DD HH:mm"),
             }).then(result => {
+                if(result.data.length === 0) {
+                    this.schedule = {
+                        inizio: '00:00',
+                        fine: null,
+                        minuti: null,
+                        quantita: null
+                    }
+                    return
+                }
                 this.schedule = result.data
             });
         },
