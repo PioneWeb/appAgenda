@@ -10,7 +10,16 @@ module.exports = {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
     ],
-
+    safelist: [
+        {
+            pattern: /bg-.+/,
+            variants: ['hover', 'group-hover']
+        },
+        {
+            pattern: /text-.+/,
+            variants: ['hover', 'group-hover']
+        }
+    ],
     theme: {
         extend: {
             fontFamily: {
@@ -18,6 +27,5 @@ module.exports = {
             },
         },
     },
-
     plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
 };

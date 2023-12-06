@@ -44,11 +44,9 @@ class EventController extends Controller
     public function test()
     {
         /** @var Clinics $ambulatori */
-        $ambulatori = Clinics::all('id AS value','nome AS label');
+        $ambulatori = Clinics::all('id','nome');
         /** @var User $medici */
-        $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();
-        /** @var User $pazienti */
-        $pazienti = User::select('id AS value','name AS label')->where('user_type_id',3)->get();
+        $medici = User::select('id','name')->where('user_type_id',2)->get();
 
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
@@ -134,8 +132,8 @@ class EventController extends Controller
             "sort" => "nullable|string",
             "order" => "nullable|string|in:ascending,descending",
             "filter.tp" => "nullable|int",
-            "filter.medico" => "nullable|array",
-            "filter.ambulatorio" => "nullable|array",
+            "filter.medico" => "nullable|int",
+            "filter.ambulatorio" => "nullable|int ",
             "filter.search" => "nullable|string",
         ]);;
 
@@ -155,10 +153,10 @@ class EventController extends Controller
         $query->whereDate('end' ,'<=',$filter['end']);
 
         if(!empty($filter['medico'])){
-            $query->whereIn("doctor_id", $filter['medico']);
+            $query->where("doctor_id", $filter['medico']);
         }
         if(!empty($filter['ambulatorio'])) {
-            $query->whereIn("clinic_id", $filter['ambulatorio']);
+            $query->where("clinic_id", $filter['ambulatorio']);
         }
 //        echo $query->toSql();
         // PAGINAZIONE

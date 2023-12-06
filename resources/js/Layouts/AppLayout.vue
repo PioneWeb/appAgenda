@@ -297,14 +297,14 @@
                     </div>
                 </div>
                 <header v-if="$slots.header" class="sticky top-0 bg-white dark:bg-gray-800 border-b border-b-gray-200">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-screen-2xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         <slot name="header" />
                     </div>
                 </header>
             </nav>
             <div class="py-10 dark:bg-gray-800 dark:border-gray-700">
                 <!-- Page Content -->
-                <main class="max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8 dark:bg-gray-800 dark:border-gray-700">
+                <main class="max-w-screen-2xl mx-auto py-6 px-4 sm:px-6 lg:px-8 dark:bg-gray-800 dark:border-gray-700">
                     <slot />
                 </main>
             </div>

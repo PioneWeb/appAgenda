@@ -25,7 +25,7 @@
                     <div class="hidden md:ml-4 md:flex md:items-center">
                         <Menu as="div" class="relative">
                             <MenuButton type="button" class="flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                Day view
+                                Vista giorno
                                 <ChevronDownIcon class="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
                             </MenuButton>
 
@@ -33,23 +33,23 @@
                                 <MenuItems class="absolute right-0 z-10 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                     <div class="py-1">
                                         <MenuItem v-slot="{ active }">
-                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Day view</a>
+                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Vista giorno</a>
                                         </MenuItem>
                                         <MenuItem v-slot="{ active }">
-                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Week view</a>
+                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Vista settimana</a>
                                         </MenuItem>
                                         <MenuItem v-slot="{ active }">
-                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Month view</a>
+                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Vista mese</a>
                                         </MenuItem>
                                         <MenuItem v-slot="{ active }">
-                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Year view</a>
+                                            <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Vista anno</a>
                                         </MenuItem>
                                     </div>
                                 </MenuItems>
                             </transition>
                         </Menu>
                         <div class="ml-6 h-6 w-px bg-gray-300" />
-                        <button type="button" class="ml-6 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Add event</button>
+                        <button type="button" class="ml-6 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Aggiungi</button>
                     </div>
                     <Menu as="div" class="relative ml-6 md:hidden">
                         <MenuButton class="-mx-2 flex items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500">
@@ -71,16 +71,16 @@
                                 </div>
                                 <div class="py-1">
                                     <MenuItem v-slot="{ active }">
-                                        <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Day view</a>
+                                        <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Vista giorno</a>
                                     </MenuItem>
                                     <MenuItem v-slot="{ active }">
-                                        <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Week view</a>
+                                        <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Vista settimana</a>
                                     </MenuItem>
                                     <MenuItem v-slot="{ active }">
-                                        <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Month view</a>
+                                        <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Vista mese</a>
                                     </MenuItem>
                                     <MenuItem v-slot="{ active }">
-                                        <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Year view</a>
+                                        <a href="#" :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Vista anno</a>
                                     </MenuItem>
                                 </div>
                             </MenuItems>
@@ -128,7 +128,7 @@
                         <div class="w-14 flex-none bg-white ring-1 ring-gray-100 dark:ring-gray-500 dark:divide-gray-500 dark:bg-gray-600 dark:border-gray-600" />
                         <div class="grid flex-auto grid-cols-1 grid-rows-1">
                             <!-- Horizontal lines -->
-                            <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100 dark:divide-gray-500" style="grid-template-rows: repeat( 24, minmax(7rem, 1fr))">
+                            <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100 dark:divide-gray-500" :style="'grid-template-rows: repeat(' + schedule.quantita +' , minmax(7rem, 1fr))'">
                                 <div ref="containerOffset" class="row-end-1 h-7"></div>
                                 <div v-for="hour in hours">
                                     <div>
@@ -139,39 +139,13 @@
                             </div>
 
                             <!-- Events -->
-                            <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1" style="grid-template-rows: 1.75rem repeat(288, minmax(0, 1fr)) auto">
-                                <li class="relative mt-px flex" style="grid-row: 20 / span 12">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-amber-50 p-2 text-xs leading-5 hover:bg-amber-100">
-                                        <p class="order-1 font-semibold text-amber-700">Breakfast</p>
-                                        <p class="text-amber-500 group-hover:text-amber-700">
-                                            <time datetime="2023-01-22T06:00">2:30 AM</time>
+                            <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1" :style="'grid-template-rows: 1.75rem repeat('+ space*schedule.quantita +', minmax(0, 1fr)) auto'">
+                                <li v-for="item in eventi" class="relative mt-px flex" :style="'grid-row: '+calcola_ore(item)+' / span '+space">
+                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" :class="colors_classes[ambulatorio].background">
+                                        <p :class="colors_classes[ambulatorio].time">
+                                            <time datetime="{{ moment(item.start).format('YYYY/MM/DD HH:mm') }}">{{ moment(item.start).format('HH:mm') }} - {{ moment(item.end).format('HH:mm') }}</time>
                                         </p>
-                                    </a>
-                                </li>
-                                <li class="relative mt-px flex" style="grid-row: 62 / span 12">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100">
-                                        <p class="order-1 font-semibold text-blue-700">Breakfast</p>
-                                        <p class="text-blue-500 group-hover:text-blue-700">
-                                            <time datetime="2023-01-22T06:00">5:00 AM</time>
-                                        </p>
-                                    </a>
-                                </li>
-                                <li class="relative mt-px flex" style="grid-row: 152 / span 12">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-pink-50 p-2 text-xs leading-5 hover:bg-pink-100">
-                                        <p class="order-1 font-semibold text-pink-700">Flight to Paris</p>
-                                        <p class="order-1 text-pink-500 group-hover:text-pink-700">John F. Kennedy International Airport</p>
-                                        <p class="text-pink-500 group-hover:text-pink-700">
-                                            <time datetime="2023-01-22T07:30">12:30</time>
-                                        </p>
-                                    </a>
-                                </li>
-                                <li class="relative mt-px flex" style="grid-row: 134 / span 12">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-indigo-50 p-2 text-xs leading-5 hover:bg-indigo-100">
-                                        <p class="order-1 font-semibold text-indigo-700">Sightseeing</p>
-                                        <p class="order-1 text-indigo-500 group-hover:text-indigo-700">Eiffel Tower</p>
-                                        <p class="text-indigo-500 group-hover:text-indigo-700">
-                                            <time datetime="2023-01-22T11:00">11:00 AM</time>
-                                        </p>
+                                        <p class="order-1 font-semibold" :class="colors_classes[ambulatorio].title">{{ item.title }}</p>
                                     </a>
                                 </li>
                             </ol>
@@ -208,30 +182,24 @@
                         </time>
                     </button>
                 </div>
-                <el-divider></el-divider>
+                <hr class="my-3">
+                <div>
+                    <label for="ambulatorio" class="block text-sm font-medium leading-6 text-gray-900">Ambulatorio</label>
+                    <div class="mt-2">
+                        <select v-model="ambulatorio" @change="controlla_ambulatorio" name="ambulatorio" autocomplete="ambulatorio" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                            <option v-for="option in ambulatori" :value="option.id" >{{ option.nome }}</option>
+                        </select>
+                    </div>
+                </div>
 
-                <el-row :gutter="24">
-                    <el-col :span="11" class="m-1 p-2">
-                        <el-select v-model="ambulatorio" class="m-0 w-full" placeholder="Select" @change="controllaAmbulatorio(this.ambulatorio)">
-                            <el-option
-                                v-for="item in ambulatori"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                            />
-                        </el-select>
-                    </el-col>
-                    <el-col :span="11" class="m-1 p-2">
-                        <el-select v-model="medico" class="m-0 w-full" placeholder="Select" @change="controllaMedico(this.medico)">
-                        <el-option
-                            v-for="item in medici"
-                            :key="item.key"
-                            :label="item.label"
-                            :value="item.value"
-                        />
-                        </el-select>
-                    </el-col>
-                </el-row>
+                <div>
+                    <label for="medico" class="block text-sm font-medium leading-6 text-gray-900">Medico</label>
+                    <div class="mt-2">
+                        <select v-model="medico" @change="controlla_medico" name="medico" autocomplete="medico" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                            <option v-for="option in medici" :value="option.id" >{{ option.name }}</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -281,6 +249,7 @@ export default {
     },
     data() {
       return {
+          colors: ['amber','red','indigo','lime','green','yellow','fuchsia','gray','teal','cyan','lightBlue','orange','lightGreen','emerald','rose','violet','sky','cyan','coolGray','trueGray','warmGray','blueGray','pink','purple','blue'],
           filter: {
               tp: 0,
               medico: null,
@@ -294,22 +263,20 @@ export default {
           ambulatorio: null,
           medico: null,
           eventi: [],
+          colors_classes: [],
+          schedule: {
+              inizio: '0:0',
+              fine: null,
+              minuti: null,
+              quantita: null
+          }
       }
     },
     methods: {
-        controllaMedico(val){
-            console.log(val);
-            this.filter.medico = val;
-        },
-        controllaAmbulatorio(val){
-            console.log(val);
-            this.filter.ambulatorio = val;
-        },
         get_days_for_calendar() {
             this.days = [];
             const numberOfDays = 42;
             const today = this.moment();
-            console.log(today.format("YYYY/MM/DD HH:mm"))
             const month = this.selected_date ? this.selected_date.month() : today.month();
             const year = this.selected_date ? this.selected_date.year() : today.year();
             const firstDay = this.moment(`${year}-${month + 1}-01`).subtract(2,'days');
@@ -330,19 +297,44 @@ export default {
                 startDay.add(1,'day');
             }
             this.filter = {
-                medico: [this.medico],
+                medico: this.medico,
+                ambulatorio: this.ambulatorio,
                 start: moment(this.selected_date).format("YYYY/MM/DD HH:mm"),
-                end: moment(this.selected_date).add(1,'day').format("YYYY/MM/DD HH:mm")
+                end: moment(this.selected_date).format("YYYY/MM/DD HH:mm")
             }
 
             axios.post(route("events.paginate"),{
-                sort: this.sortingColumn,
-                order: this.sortingOrder,
                 filter: this.filter
             }).then( result => {
-                console.log(result.data);
                 this.eventi = result.data
             });
+        },
+        get_schedules() {
+            axios.post(route("schedules.orariList"), {
+                'doctor_id': this.medico,
+                'clinic_id': this.ambulatorio,
+                'date': moment(this.selected_date).format("YYYY/MM/DD HH:mm"),
+            }).then(result => {
+                this.schedule = result.data
+            });
+        },
+        get_hours_for_list() {
+            console.log(this.schedule)
+
+            let result = [];
+            let today = this.moment(this.selected_date);
+            today.set({
+                hour:this.schedule.inizio.split(':')[0],
+                minute:this.schedule.inizio.split(':')[1],
+                second:0,
+                millisecond:0
+            })
+
+            for(let i = 0; i < this.schedule.quantita; i++){
+                result.push(today.format('HH:mm'));
+                today.add(this.schedule.minuti,'minutes');
+            }
+            return result
         },
         change_day(previous) {
             this.selected_date = this.selected_date.add(previous ? -1 : 1,'day');
@@ -356,24 +348,41 @@ export default {
             this.selected_date = this.moment(day.date);
             this.get_days_for_calendar()
         },
-        get_hours_for_list() {
-            let result = [];
-            let nowHour = new Date().setUTCHours(0, 0, 0, 0);
-            nowHour = new Date(nowHour).getHours();
-
-            for(let i = nowHour-1; i < 24; i++){
-                result.push(i+':00');
-            }
-            return result
+        controlla_medico(){
+            this.filter.medico = this.medico;
+            this.get_days_for_calendar()
+        },
+        controlla_ambulatorio(){
+            this.filter.ambulatorio = this.ambulatorio;
+            this.get_days_for_calendar()
+        },
+        calcola_ore(item) {
+            let start = this.moment(item.start).subtract(this.schedule.inizio.split(':')[0],'h').hour();
+            let plus = this.moment(item.start).subtract(this.schedule.inizio.split(':')[1],'m').minute();
+            return ((start*9)+((plus/20)*3))+2
         }
     },
     computed: {
         hours() {
             return this.get_hours_for_list()
         },
+        space() {
+            return Math.ceil(((this.schedule.quantita-1)*this.schedule.minuti)/60)
+        }
     },
     mounted() {
-        this.get_days_for_calendar()
+        this.get_days_for_calendar();
+        this.medico = this.medici[0].id;
+        this.ambulatorio = this.ambulatori[0].id;
+        this.colors_classes = this.colors.map( color => {
+            return {
+                background: 'bg-'+color+'-50 hover:bg-'+color+'-100',
+                time: 'text-'+color+'-500 group-hover:text-'+color+'-700',
+                title: 'text-'+color+'-700',
+            }
+        });
+
+        this.get_schedules(this.eventi[0])
     }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <img
-        src="/storage/logoMiniGrigio.jpg"
+        src="/storage/logoMiniGrigio.png"
         alt="Logo"
     />
 </template>

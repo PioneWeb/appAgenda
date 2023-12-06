@@ -48,10 +48,10 @@ class ScheduleController extends Controller
         $user = auth()->user();
         if($user->can("schedule.orariList")) {}
         /** @var Schedule $orari */
-        $orari = Schedule::all()->where('doctor_id',$request->input("doctor_id"))
+        $orari = Schedule::where('doctor_id',$request->input("doctor_id"))
             ->where('clinic_id',$request->input("clinic_id"))
             ->where('giorno',$gg)
-            ->where('attivo',1);
+            ->where('attivo',1)->first(['id','inizio','minuti','quantita']);
 
         return $orari;
 
