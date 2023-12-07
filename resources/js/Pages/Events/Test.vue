@@ -146,7 +146,7 @@
                                     </a>
                                 </li>
                                 <!-- Empty Event -->
-                                <li v-for="hour in hours" @click="editEvent(hour)" class="relative mt-px flex hover:bg-indigo-600" :style="'grid-row: '+calcola_ore(hour)+' / span '+space">
+                                <li v-for="hour in hours" @click="editEvent(hour)" class="relative flex rounded-md mx-1 my-1 mt-1 hover:bg-amber-50" :style="'grid-row: '+calcola_ore(hour)+' / span '+space">
                                     <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" >
                                         <p :class="colors_classes[ambulatorio].time">
                                             <time :datetime="dateFromHour(hour)">{{ dateFromHour(hour) }}</time>
