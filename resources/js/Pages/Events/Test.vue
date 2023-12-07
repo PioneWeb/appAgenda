@@ -130,25 +130,32 @@
                             <!-- Horizontal lines -->
                             <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100 dark:divide-gray-500" :style="'grid-template-rows: repeat(' + schedule.quantita +' , minmax(7rem, 1fr))'">
                                 <div ref="containerOffset" class="row-end-1 h-7"></div>
-                                <div v-for="hour in hours">
-                                    <div>
-                                        <div class="sticky left-0 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">{{ hour }}</div>
-                                    </div>
-                                    <div />
+                                <div v-for="hour in hours" class="hover:bg-indigo-600">
+                                    <div class="sticky left-0 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">{{ hour }}</div>
                                 </div>
                             </div>
 
                             <!-- Events -->
                             <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1" :style="'grid-template-rows: 1.75rem repeat('+ space*schedule.quantita +', minmax(0, 1fr)) auto'">
                                 <li v-for="item in eventi" class="relative mt-px flex" :style="'grid-row: '+calcola_ore(item)+' / span '+space">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" :class="colors_classes[ambulatorio].background">
+                                    <a href="#" @click="editEvent(item)" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" :class="colors_classes[ambulatorio].background">
                                         <p :class="colors_classes[ambulatorio].time">
                                             <time datetime="{{ moment(item.start).format('YYYY/MM/DD HH:mm') }}">{{ moment(item.start).format('HH:mm') }} - {{ moment(item.end).format('HH:mm') }}</time>
                                         </p>
                                         <p class="order-1 font-semibold" :class="colors_classes[ambulatorio].title">{{ item.title }}</p>
                                     </a>
                                 </li>
+                                <!-- Empty Event -->
+                                <li v-for="hour in hours" @click="editEvent(hour)" class="relative mt-px flex hover:bg-indigo-600" :style="'grid-row: '+calcola_ore(hour)+' / span '+space">
+                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" >
+                                        <p :class="colors_classes[ambulatorio].time">
+                                            <time :datetime="dateFromHour(hour)">{{ dateFromHour(hour) }}</time>
+                                        </p>
+                                        <p class="order-1 font-semibold" :class="colors_classes[ambulatorio].title">Nessun evento</p>
+                                    </a>
+                                </li>
                             </ol>
+
                         </div>
                     </div>
                     <div v-else class="h-full flex items-center justify-center">
@@ -157,10 +164,10 @@
                             <h3 class="mt-2 text-sm font-semibold text-gray-900">Non ci sono orari di {{ selected_date.format('dddd') }}</h3>
                             <p class="mt-1 text-sm text-gray-500">Crea degli orari nuovi per inserire appuntamenti in questo giorno.</p>
                             <div class="mt-6">
-                                <button type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                <a :href="route('schedules.create')" type="button" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                     <PlusIcon class="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
                                     Nuovi orari
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -216,7 +223,21 @@
             </div>
         </div>
 
-
+        <el-dialog v-model="dialogFormVisible" title="Shipping address">
+            <el-form-item label="Zones" :label-width="formLabelWidth">
+                <el-select v-model="paziente" placeholder="Seleziona paziente" filterable allow-create>
+                    <el-option v-for="item in pazienti" :label="item.name" :value="item.id" />
+                </el-select>
+            </el-form-item>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="saveEvent">
+                  Confirm
+                </el-button>
+              </span>
+            </template>
+        </el-dialog>
 
     </app-layout>
 </template>
@@ -226,12 +247,13 @@ import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalI
 import { CalendarDaysIcon } from '@heroicons/vue/24/outline'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import AppLayout from "../../Layouts/AppLayout.vue";
-import moment from "moment/moment";
 import 'moment/locale/it'
 
 </script>
 
 <script>
+
+import moment from "moment";
 
 export default {
     name: "Test",
@@ -242,6 +264,9 @@ export default {
     },
     data() {
       return {
+          dialogFormVisible:false,
+          form:[],
+          formLabelWidth:'160px',
           colors: ['amber','red','indigo','lime','green','yellow','fuchsia','gray','teal','cyan','lightBlue','orange','lightGreen','emerald','rose','violet','sky','cyan','coolGray','trueGray','warmGray','blueGray','pink','purple','blue'],
           filter: {
               tp: 0,
@@ -254,8 +279,11 @@ export default {
           days: [],
           loading: false,
           selected_date: moment(),
+          appuntamento:[],
           ambulatorio: null,
           medico: null,
+          paziente: null,
+          pazienti:[],
           eventi: [],
           colors_classes: [],
           schedule: {
@@ -267,6 +295,12 @@ export default {
       }
     },
     methods: {
+        dateFromHour(hour) {
+          return moment(this.selected_date).set({
+              hour: hour.split(':')[0],
+              minute: hour.split(':')[1],
+          }).format('YYYY/MM/DD HH:mm');
+        },
         get_days_for_calendar() {
             this.loading = true;
             this.days = [];
@@ -309,6 +343,18 @@ export default {
             });
 
         },
+        get_patients() {
+            axios.get(route("users.patientsList"), {
+                'search': this.search,
+                'page': this.currentPage,
+                'page_size': this.pageSize,
+                'sort': this.sortingColumn,
+                'order': this.sortingOrder,
+            }).then(result => {
+                console.log(result.data)
+                this.pazienti = result.data;
+            });
+        },
         get_schedules() {
             axios.post(route("schedules.orariList"), {
                 'doctor_id': this.medico,
@@ -328,10 +374,8 @@ export default {
             });
         },
         get_hours_for_list() {
-            console.log(this.schedule)
-
             let result = [];
-            let today = this.moment(this.selected_date);
+            let today = moment(this.selected_date);
             today.set({
                 hour:this.schedule.inizio.split(':')[0],
                 minute:this.schedule.inizio.split(':')[1],
@@ -366,9 +410,53 @@ export default {
             this.get_days_for_calendar()
         },
         calcola_ore(item) {
-            let start = this.moment(item.start).subtract(this.schedule.inizio.split(':')[0],'h').hour();
-            let plus = this.moment(item.start).subtract(this.schedule.inizio.split(':')[1],'m').minute();
-            return ((start*9)+((plus/20)*3))+2
+            if (typeof item !== 'object') {
+                return this.calcola_ore({
+                    start: this.dateFromHour(item),
+                });
+            }
+            let start = moment(item.start).subtract(this.schedule.inizio.split(':')[0],'h').hour();
+            let plus = moment(item.start).subtract(this.schedule.inizio.split(':')[1],'m').minute();
+            let sp = Math.ceil(this.schedule.minuti/5);
+            let ps
+            if(sp===1){ ps=12 }
+            if(sp===2){ ps=12 }
+            if(sp===3){ ps=12 }
+            if(sp===4){ ps=9 }
+            if(sp===5){ ps=7 }
+            if(sp===6){ ps=6 }
+            return ((start*ps)+((plus/this.schedule.minuti)*3))+2;
+        },
+        editEvent(item){
+            this.appuntamento = item
+            this.dialogFormVisible= true;
+        },
+        saveEvent(){
+            this.dialogFormVisible= false;
+            let id;
+            if (typeof this.appuntamento === 'object') {
+                id = this.appuntamento.id;
+                this.appuntamento = moment(item.start).format('HH:mm')
+            }
+            let endDate = moment(this.dateFromHour(this.appuntamento)).add(this.schedule.minuti,'minutes').format('YYYY/MM/DD HH:mm');
+            if(id===undefined){
+                let paziente_id;
+                let descrizione;
+                console.log(this.paziente, typeof(this.paziente))
+
+               if( typeof(this.paziente) === "number" ) { paziente_id = this.paziente } else { descrizione = this.paziente }
+
+                axios.post(route("events.save"), {
+                    'start': this.dateFromHour(this.appuntamento),
+                    'end': endDate,
+                    'doctor_id': this.medico,
+                    'clinic_id': this.ambulatorio,
+                    'patient_id': paziente_id,
+                    'descrizione': descrizione,
+                }).then(result => {
+                    this.get_days_for_calendar()
+                });
+            }
         }
     },
     computed: {
@@ -376,7 +464,7 @@ export default {
             return this.get_hours_for_list()
         },
         space() {
-            return Math.ceil(((this.schedule.quantita-1)*this.schedule.minuti)/60)
+            return 3 //Math.ceil(((this.schedule.quantita-1)*this.schedule.minuti)/60)
         }
     },
     mounted() {
@@ -392,6 +480,7 @@ export default {
         });
 
         this.get_schedules(this.eventi[0])
+        this.get_patients()
     }
 }
 </script>

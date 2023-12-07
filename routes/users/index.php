@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/list', [UsersController::class, "list"])->name('users.list');
 Route::get('/usersList', [UsersController::class, "usersList"])->name('users.usersList');
+Route::get('/doctorsList', [UsersController::class, "doctorsList"])->name('users.doctorsList');
+Route::get('/patientsList', [UsersController::class, "patientsList"])->name('users.patientsList');
 Route::get('/ticketUsersList', [UsersController::class, "ticketUsersList"])->name('users.ticketUsersList');
 Route::get('/edit/{id}', [UsersController::class, "edit"])->name('users.edit');
 Route::get('/create', [UsersController::class, "create"])->name('users.create');

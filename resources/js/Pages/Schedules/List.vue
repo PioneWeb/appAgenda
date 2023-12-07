@@ -17,7 +17,16 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     <el-table-column type="selection" />
                     <el-table-column label="ID" prop="id" width="80" sortable />
                     <el-table-column label="medico" prop="doctor.name" sortable />
-                    <el-table-column label="ambulatorio" prop="clinic.nome" sortable />
+                    <el-table-column label="ambulatorio" prop="clinic.nome" sortable >
+                        <template #default="scope">
+                            <div class="flex flex-row items-center">
+                                <div>
+                                    <span class="font-bold text-sm" :class="colors_classes[scope.row.clinic.id].title">{{ scope.row.clinic.nome }} </span>&nbsp;
+                                    <span class="text-xs" :class="colors_classes[scope.row.clinic.id].time"> {{ scope.row.clinic.indirizzo }}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="tipo" prop="tipo" sortable  width="90">
                         <template #default="scope">
                             {{ this.tipi[scope.row.tipo] }}
@@ -25,7 +34,7 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     </el-table-column>
                     <el-table-column label="giorno" prop="giorno" sortable width="120">
                         <template #default="scope">
-                            {{ this.giorni[scope.row.giorno] }}
+                            <span :class="colors_classes[scope.row.giorno].title">  {{ this.giorni[scope.row.giorno] }} </span>
                         </template>
                     </el-table-column>
                     <el-table-column label="Visite" prop="quantita" sortable width="90" />
@@ -69,6 +78,8 @@ export default {
     },
     data() {
         return {
+            colors: ['coolGray','red','blue','green','amber','fuchsia','indigo','gray','yellow','teal','cyan','lightBlue','orange','lightGreen','emerald','rose','violet','sky','lime','cyan','trueGray','warmGray','blueGray','pink','purple'],
+            colors_classes: [],
             orari: [],
             tasti: [
                 { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click: this.create },
@@ -160,6 +171,13 @@ export default {
         this.currentPage = this.SessionStorage.getItem('ricette_list_page', this.currentPage, true);
         this.pageSize = this.SessionStorage.getItem('ricette_list_page_size', this.pageSize, true);
         this.paginate();
+        this.colors_classes = this.colors.map( color => {
+            return {
+                background: 'bg-'+color+'-50 hover:bg-'+color+'-100',
+                time: 'text-'+color+'-500 group-hover:text-'+color+'-700',
+                title: 'text-'+color+'-700',
+            }
+        });
     }
 }
 </script>

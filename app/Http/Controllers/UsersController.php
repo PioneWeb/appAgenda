@@ -34,8 +34,35 @@ class UsersController extends Controller
         $user = auth()->user();
         if($user->can("user.list")) {
             /** @var User $utenti */
-            $utenti = User::all('id','name')->where('current_team_id',$user->current_team_id);
+            $utenti = User::all('id','name')
+                ->where('current_team_id',$user->current_team_id);
             return $utenti;
+        }
+    }
+
+    public function doctorsList()
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        if($user->can("user.list")) {
+            /** @var User $medici */
+            $medici = User::all('id','name')
+                ->where('current_team_id',$user->current_team_id)
+                ->where('user_type_id',2);
+            return $medici;
+        }
+    }
+
+    public function patientsList()
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        if($user->can("user.list")) {
+            /** @var User $pazienti */
+            $pazienti = User::query('id','name')
+                ->where('current_team_id',$user->current_team_id)
+                ->where('user_type_id',3)->get();
+            return $pazienti;
         }
     }
 

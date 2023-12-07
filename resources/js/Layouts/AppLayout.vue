@@ -34,7 +34,7 @@
                         <NavLink :href="route('users.list')" :active="route().current('users.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Utenti') }}</NavLink>
                     </el-menu-item>
                     <el-menu-item index="2-3">
-                        <NavLink :href="route('clinics.list')" :active="route().current('clinics.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Ambulatori') }}</NavLink>
+                        <NavLink :href="route('clinics.list')" :active="route().current('clinics.list')"><el-icon><BuildingOfficeIcon /></el-icon> {{ $t('Ambulatori') }}</NavLink>
                     </el-menu-item>
                 </el-sub-menu>
 
@@ -45,20 +45,18 @@
                     </template>
 
                     <el-menu-item index="2-4">
-                        <NavLink :href="route('prescriptions.list')" :active="route().current('prescriptions.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Ricette') }}</NavLink>
+                        <NavLink :href="route('prescriptions.list')" :active="route().current('prescriptions.list')"><el-icon><DocumentAdd /></el-icon> {{ $t('Ricette') }}</NavLink>
                     </el-menu-item>
                     <el-menu-item index="2-5">
-                        <NavLink :href="route('schedules.list')" :active="route().current('schedules.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Orari') }}</NavLink>
+                        <NavLink :href="route('schedules.list')" :active="route().current('schedules.list')"><el-icon><Clock /></el-icon> {{ $t('Orari') }}</NavLink>
                     </el-menu-item>
+<!--                    <el-menu-item index="2-6">-->
+<!--                        <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>-->
+<!--                    </el-menu-item>-->
                     <el-menu-item index="2-6">
-                        <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>
+                        <NavLink :href="route('events.test')" :active="route().current('events.test')"><el-icon><Calendar /></el-icon> {{ $t('Events') }}</NavLink>
                     </el-menu-item>
-                    <el-menu-item index="2-6">
-                        <NavLink :href="route('events.test')" :active="route().current('events.test')"><el-icon><UsersIcon /></el-icon> Nuovo Cal</NavLink>
-                    </el-menu-item>
-                    <el-menu-item index="2-7">
-                        <NavLink :href="route('events.calendar')" :active="route().current('events.calendar')"><el-icon><Calendar /></el-icon> {{ $t('Calendar') }}</NavLink>
-                    </el-menu-item>
+
 
                 </el-sub-menu>
 
@@ -327,8 +325,8 @@ import 'element-plus/es/components/message-box/style/css';
 import 'element-plus/es/components/notification/style/css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 import 'element-plus/es/components/drawer/style/css';
-import { HomeFilled, Setting, Document, Location, Menu, User, Sunny, Moon, Operation, CreditCard, Money, Edit, Calendar } from '@element-plus/icons-vue';
-import { BeakerIcon, BuildingOfficeIcon, UsersIcon, UserIcon, SunIcon, MoonIcon, HomeIcon } from '@heroicons/vue/24/solid';
+import { DocumentAdd, Setting, Document, Location, Menu, User, Sunny, Moon, Operation, CreditCard, Clock, Edit, Calendar } from '@element-plus/icons-vue';
+import { BeakerIcon, BuildingOfficeIcon, UsersIcon, UserIcon, SunIcon, MoonIcon, HomeIcon} from '@heroicons/vue/24/solid';
 import { defineProps } from 'vue';
 const isDark = useDark()
 const toggleDark = useToggle(isDark)

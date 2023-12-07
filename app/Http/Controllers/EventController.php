@@ -135,7 +135,7 @@ class EventController extends Controller
             "filter.medico" => "nullable|int",
             "filter.ambulatorio" => "nullable|int ",
             "filter.search" => "nullable|string",
-        ]);;
+        ]);
 
         $filter = $request->input("filter");
 
@@ -201,8 +201,17 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function save(event $event)
+    public function save(Request $request)
     {
         //ricordati di mettere il nome del paziente anche nella denominazione
+
+        $this->validate($request,[
+            "clinic_id" => "nullable|int|exists:clinics,id",
+            "doctor:id" => "nullable|int|exists:users,id",
+            "patient_id" => "nullable|int|exists:users,id",
+            "descrizione" => "nullable|int",
+            "start" => "nullable|datetime ",
+            "end" => "nullable|datetime",
+        ]);
     }
 }
