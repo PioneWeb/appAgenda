@@ -41,7 +41,7 @@ class EventController extends Controller
         ]);
     }
 
-    public function test()
+    public function appuntamenti()
     {
         /** @var Clinics $ambulatori */
         $ambulatori = Clinics::all('id','nome');
@@ -50,7 +50,7 @@ class EventController extends Controller
 
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
-        return Inertia::render('Events/Test', [
+        return Inertia::render('Events/Appuntamenti', [
             "ambulatori" => $ambulatori,
             "medici" => $medici,
             "appuntamenti" => $appuntamenti
@@ -160,7 +160,7 @@ class EventController extends Controller
         }
 //        echo $query->toSql();
         // PAGINAZIONE
-        return response()->json($query->get());
+        return response()->json($query->orderBy('start')->get());
 
     }
 
@@ -204,14 +204,45 @@ class EventController extends Controller
     public function save(Request $request)
     {
         //ricordati di mettere il nome del paziente anche nella denominazione
-
         $this->validate($request,[
             "clinic_id" => "nullable|int|exists:clinics,id",
             "doctor:id" => "nullable|int|exists:users,id",
             "patient_id" => "nullable|int|exists:users,id",
-            "descrizione" => "nullable|int",
-            "start" => "nullable|datetime ",
-            "end" => "nullable|datetime",
+            "title" => "nullable|string",
+            "start" => "nullable|date",
+            "end" => "nullable|date",
+        ]);
+
+        /** @var User $user */
+        $user = auth()->user();
+//        if(!$user->can("user.edit")) {
+//            abort(403,"Non disponi dei permessi necessari!");
+//        }
+        /** @var User $paziente */
+        $paziente = User::select('name')->where('id',$request->input("patient_id"))->first();
+        if($request->input("descrizione") == null){
+            $descrizione = $paziente->name;
+        }else{
+            $descrizione = $request->input("descrizione");
+        }
+       $oggEvento = [
+             "clinic_id" => $request->input("clinic_id"),
+             "doctor_id" => $request->input("doctor_id"),
+             "patient_id" => $request->input("patient_id"),
+             "title" => $descrizione,
+             "start" => $request->input("start"),
+             "end" => $request->input("end"),
+             "stato" => $request->input("stato")
+        ];
+
+        if(empty($request->input("id"))) {
+            $evento = Event::create($oggEvento);
+        } else {
+            /** @var Event $evento */
+            $evento = Event::where("id",$request->input('id')->first())->update($oggEvento);
+        }
+        return response()->json([
+            "id" => $evento->id
         ]);
     }
 }

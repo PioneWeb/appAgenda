@@ -66,7 +66,7 @@ import {Edit} from '@element-plus/icons-vue';
                         </el-col>
                         <el-col :span="4">
                             <el-form-item prop="quantita" label="Durata appuntamento minuti">
-                                <el-input-number v-model="orario.minuti" class="w-full" clearable placeholder="Minuti"></el-input-number>
+                                <el-input-number v-model="orario.minuti" class="w-full" clearable placeholder="Minuti" min="15" max="30" step="5"></el-input-number>
                             </el-form-item>
                         </el-col>
                         <el-col :span="4">

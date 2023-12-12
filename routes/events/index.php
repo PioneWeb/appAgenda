@@ -4,7 +4,7 @@ use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/list', [EventController::class, "list"])->name('events.list');
-Route::get('/test', [EventController::class, "test"])->name('events.test');
+Route::get('/appuntamenti', [EventController::class, "appuntamenti"])->name('events.appuntamenti');
 //Route::get('/calendar', [EventController::class, "calendar"])->name('events.calendar');
 //Route::get('/day/{dt}/{id}/{cl}', [EventController::class, "day"])->name('events.day');
 //Route::get('/week/{inizio}/{fine}/{id}/{cl}', [EventController::class, "week"])->name('events.week');

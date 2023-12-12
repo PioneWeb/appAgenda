@@ -137,16 +137,16 @@
 
                             <!-- Events -->
                             <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1" :style="'grid-template-rows: 1.75rem repeat('+ space*schedule.quantita +', minmax(0, 1fr)) auto'">
-                                <li v-for="item in eventi" class="relative mt-px flex" :style="'grid-row: '+calcola_ore(item)+' / span '+space">
+                                <li v-for="(item,index) in eventi" class="relative mt-px flex" :style="'grid-row: '+calcola_ore(item,index)+' / span '+space">
                                     <a href="#" @click="editEvent(item)" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" :class="colors_classes[ambulatorio].background">
                                         <p :class="colors_classes[ambulatorio].time">
-                                            <time datetime="{{ moment(item.start).format('YYYY/MM/DD HH:mm') }}">{{ moment(item.start).format('HH:mm') }} - {{ moment(item.end).format('HH:mm') }}</time>
+                                            <time :datetime="moment(item.start).format('YYYY/MM/DD HH:mm')">{{ moment(item.start).format('HH:mm') }}</time>
                                         </p>
                                         <p class="order-1 font-semibold" :class="colors_classes[ambulatorio].title">{{ item.title }}</p>
                                     </a>
                                 </li>
                                 <!-- Empty Event -->
-                                <li v-for="hour in hours" @click="editEvent(hour)" class="relative flex rounded-md mx-1 my-1 mt-1 hover:bg-amber-50" :style="'grid-row: '+calcola_ore(hour)+' / span '+space">
+                                <li v-for="(hour,index) in hours" @click="editEvent(hour)" class="relative flex rounded-md mx-1 my-1 mt-1 hover:bg-amber-50" :style="'grid-row: '+calcola_ore(hour,index)+' / span '+space">
                                     <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" >
                                         <p :class="colors_classes[ambulatorio].time">
                                             <time :datetime="dateFromHour(hour)">{{ dateFromHour(hour) }}</time>
@@ -223,17 +223,35 @@
             </div>
         </div>
 
-        <el-dialog v-model="dialogFormVisible" title="Shipping address">
-            <el-form-item label="Zones" :label-width="formLabelWidth">
+        <el-dialog v-model="dialogFormVisible" title="Inserisci il nome del paziente">
+            <div v-if="this.appuntamento.id === undefined">
+                Puoi scegliere un paziente già registrato dal combo box o inserirne uno nuovo.<br><hr><br>
+            <el-form-item label="Paziente" :label-width="formLabelWidth">
                 <el-select v-model="paziente" placeholder="Seleziona paziente" filterable allow-create>
                     <el-option v-for="item in pazienti" :label="item.name" :value="item.id" />
                 </el-select>
-            </el-form-item>
+            </el-form-item><br><hr>
+            </div>
+            <div v-else><hr>
+
+                <span v-if="this.appuntamento.patient === null">
+                paziente:  <b> {{this.appuntamento.title}}</b><br>
+                </span>
+                <span v-else>
+                    paziente:   <b> {{this.appuntamento.patient.name}}</b><br> telefono: {{this.appuntamento.patient.telefono}}<br> email: {{this.appuntamento.patient.email}}<br>
+                </span><hr><br>
+
+                Dati dell'appuntamento: {{this.appuntamento.id}}<br>
+                del: {{moment(this.appuntamento.start).format('YYYY/MM/DD')}} alle {{moment(this.appuntamento.start).format('HH:mm')}}<br>
+                medico: {{this.appuntamento.doctor.name}}<br>
+                ambulatorio: {{this.appuntamento.clinic.nome}}<br>
+                <hr>
+            </div>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="saveEvent">
-                  Confirm
+                <el-button @click="dialogFormVisible = false">Annulla</el-button>
+                <el-button v-if="this.appuntamento.id === undefined" type="primary" @click="saveEvent">
+                  Salva
                 </el-button>
               </span>
             </template>
@@ -299,7 +317,7 @@ export default {
           return moment(this.selected_date).set({
               hour: hour.split(':')[0],
               minute: hour.split(':')[1],
-          }).format('YYYY/MM/DD HH:mm');
+          }).format('HH:mm');
         },
         get_days_for_calendar() {
             this.loading = true;
@@ -409,12 +427,14 @@ export default {
             this.filter.ambulatorio = this.ambulatorio;
             this.get_days_for_calendar()
         },
-        calcola_ore(item) {
+        calcola_ore(item,index) {
             if (typeof item !== 'object') {
                 return this.calcola_ore({
                     start: this.dateFromHour(item),
-                });
+                },index);
             }
+            let precedente = 0;
+            let op = [2,5,8,11,14,17,20,23,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108,111,114,117,120,123,126,129,132,135,138,141,144,147,150,153,156,159,162,165,168,171,174,177,180,183,186,189,192,195,198,201,204,207,210,213,216,219,222,225,228,231,234,237,240,243,246,249,252,255,258,261,264,267,270,273,276,279,282,285,288,291,294,297,300,303,306,309,312,315,318,321,324,327,330,333,336,339,342,345,348,351,354,357,360,363,366,369,372,375,378,381,384,387,390,393,396,399,402,405,408,411,414,417,420,423,426,429,432,435,438,441,444,447,450,453,456,459,462,465,468,471,474,477,480,483,486,489,492,495,498,501,504,507,510,513,516,519,522,525,528,531,534,537,540,543,546,549,552,555,558,561,564,567,570,573,576,579,582,585,588,591,594,597,600,603,606,609,612,615,618,621,624,627,630,633,636,639,642,645,648,651,654,657,660,663,666,669,672,675,678,681,684,687,690,693,696,699,702,705,708,711,714,717,720,723,726,729,732,735,738,741,744,747,750,753,756,759,762,765,768,771,774,777]
             let start = moment(item.start).subtract(this.schedule.inizio.split(':')[0],'h').hour();
             let plus = moment(item.start).subtract(this.schedule.inizio.split(':')[1],'m').minute();
             let sp = Math.ceil(this.schedule.minuti/5);
@@ -425,38 +445,42 @@ export default {
             if(sp===4){ ps=9 }
             if(sp===5){ ps=7 }
             if(sp===6){ ps=6 }
-            return ((start*ps)+((plus/this.schedule.minuti)*3))+2;
+            precedente = ((start*ps)+((plus/this.schedule.minuti)*3))+2;
+            console.log(start,plus,this.schedule.minuti,sp,ps,precedente,index )
+
+            if (item.id !== undefined) {
+                return precedente;
+            }else{ return op[index] }
         },
         editEvent(item){
+            console.log('ID',item.id)
             this.appuntamento = item
             this.dialogFormVisible= true;
         },
         saveEvent(){
             this.dialogFormVisible= false;
-            let id;
             if (typeof this.appuntamento === 'object') {
-                id = this.appuntamento.id;
                 this.appuntamento = moment(item.start).format('HH:mm')
             }
-            let endDate = moment(this.dateFromHour(this.appuntamento)).add(this.schedule.minuti,'minutes').format('YYYY/MM/DD HH:mm');
-            if(id===undefined){
-                let paziente_id;
-                let descrizione;
-                console.log(this.paziente, typeof(this.paziente))
-
-               if( typeof(this.paziente) === "number" ) { paziente_id = this.paziente } else { descrizione = this.paziente }
-
-                axios.post(route("events.save"), {
-                    'start': this.dateFromHour(this.appuntamento),
-                    'end': endDate,
-                    'doctor_id': this.medico,
-                    'clinic_id': this.ambulatorio,
-                    'patient_id': paziente_id,
-                    'descrizione': descrizione,
-                }).then(result => {
-                    this.get_days_for_calendar()
-                });
-            }
+            let inizio = this.dateFromHour(this.appuntamento);
+            var ore = inizio.split(':')[0];
+            var minuti = inizio.split(':')[1];
+            let startDate = moment(this.selected_date).add(ore, 'hours').add(minuti, 'minutes').format('YYYY/MM/DD HH:mm');
+            let endDate = moment(startDate).add(this.schedule.minuti,'minutes').format('YYYY/MM/DD HH:mm');
+            let paziente_id;
+            let descrizione;
+            if( typeof(this.paziente) === "number" ) { paziente_id = this.paziente } else { descrizione = this.paziente }
+            axios.post(route("events.save"), {
+                'id':this.appuntamento.id,
+                'start': startDate,
+                'end': endDate,
+                'doctor_id': this.medico,
+                'clinic_id': this.ambulatorio,
+                'patient_id': paziente_id,
+                'descrizione': descrizione,
+            }).then(result => {
+                this.get_days_for_calendar()
+            });
         }
     },
     computed: {
@@ -468,7 +492,6 @@ export default {
         }
     },
     mounted() {
-        this.get_days_for_calendar();
         this.medico = this.medici[0].id;
         this.ambulatorio = this.ambulatori[0].id;
         this.colors_classes = this.colors.map( color => {
@@ -478,7 +501,8 @@ export default {
                 title: 'text-'+color+'-700',
             }
         });
-
+        this.selected_date = moment().set({hour:0,minute:0,second:0,millisecond:0});
+        this.get_days_for_calendar();
         this.get_schedules(this.eventi[0])
         this.get_patients()
     }

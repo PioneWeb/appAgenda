@@ -54,7 +54,7 @@
 <!--                        <NavLink :href="route('events.list')" :active="route().current('events.list')"><el-icon><UsersIcon /></el-icon> {{ $t('Events') }}</NavLink>-->
 <!--                    </el-menu-item>-->
                     <el-menu-item index="2-6">
-                        <NavLink :href="route('events.test')" :active="route().current('events.test')"><el-icon><Calendar /></el-icon> {{ $t('Events') }}</NavLink>
+                        <NavLink :href="route('events.appuntamenti')" :active="route().current('events.appuntamenti')"><el-icon><Calendar /></el-icon> {{ $t('Events') }}</NavLink>
                     </el-menu-item>
 
 
