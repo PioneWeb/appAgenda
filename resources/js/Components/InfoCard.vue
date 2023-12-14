@@ -1,5 +1,5 @@
 <template>
-    <div class="statistic-card">
+    <div :class="'statistic-card '+color">
         <el-statistic :value="Intl.NumberFormat('it-IT', { maximumSignificantDigits: 3 }).format(value)" title="New transactions today">
             <template #title>
                 <div class="flex inline-flex items-center text-xl">
@@ -41,6 +41,7 @@ export default {
         subTitle: String,
         linkIcon: String,
         link: String,
+        color: String,
     },
     mounted() {
         console.log(this.value);
@@ -49,7 +50,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style>
 :global(h2#card-usage ~ .example .example-showcase) {
     background-color: var(--el-fill-color) !important;
 }
@@ -72,10 +73,12 @@ export default {
     align-items: center;
     flex-wrap: wrap;
     font-size: 12px;
-    color: var(--el-text-color-regular);
+    color: #666666;
     margin-top: 16px;
 }
-
+.el-statistic__head{
+    color: #666666 !important;
+}
 .statistic-footer .footer-item {
     display: flex;
     justify-content: space-between;

@@ -5,22 +5,22 @@
                 <card-header :title="$t('Home')" :icon="HomeIcon" :tasti="tasti" nascondi-search></card-header>
                 <el-row :gutter="16">
                     <el-col :span="4">
-                        <InfoCard :title="$t('Companies')" icon="Warning" linkIcon="ArrowRight" :value="companies" link="companies.list" subTitle="Lista Aziende"/>
+                        <InfoCard color="!bg-amber-200" :title="$t('Companies')" icon="Warning" linkIcon="ArrowRight" :value="companies" link="companies.list" subTitle="Lista Aziende"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Users')" icon="Warning" linkIcon="ArrowRight" :value="users" link="users.list" subTitle="Lista Utenti"/>
+                        <InfoCard color="!bg-blue-200" :title="$t('Users')" icon="Warning" linkIcon="ArrowRight" :value="users" link="users.list" subTitle="Lista Utenti"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Clinics')" icon="CaretTop" linkIcon="ArrowRight" :value="ambulatori" link="clinics.list" subTitle="Lista Ambulatori"/>
+                        <InfoCard color="!bg-red-200" :title="$t('Clinics')" icon="CaretTop" linkIcon="ArrowRight" :value="ambulatori" link="clinics.list" subTitle="Lista Ambulatori"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Schedules')" icon="CaretTop" linkIcon="ArrowRight" :value="orari" link="schedules.list" subTitle="Lista Orari"/>
+                        <InfoCard color="!bg-fuchsia-200" :title="$t('Schedules')" icon="CaretTop" linkIcon="ArrowRight" :value="orari" link="schedules.list" subTitle="Lista Orari"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Prescriptions')" icon="CaretTop" linkIcon="ArrowRight" :value="ricette" link="prescriptions.list" subTitle="Lista Ricette"/>
+                        <InfoCard color="!bg-green-200" :title="$t('Prescriptions')" icon="CaretTop" linkIcon="ArrowRight" :value="ricette" link="prescriptions.list" subTitle="Lista Ricette"/>
                     </el-col>
                     <el-col :span="4">
-                        <InfoCard :title="$t('Events')" icon="CaretTop" linkIcon="ArrowRight" :value="appuntamenti" link="events.calendar" subTitle="Lista Eventi"/>
+                        <InfoCard color="!bg-orange-200" :title="$t('Events')" icon="CaretTop" linkIcon="ArrowRight" :value="appuntamenti" link="events.appuntamenti" subTitle="Lista Eventi"/>
                     </el-col>
                 </el-row>
 
