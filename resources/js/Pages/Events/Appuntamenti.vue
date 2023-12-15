@@ -96,7 +96,7 @@
         <div class="flex gap-6 ">
             <div v-loading="loading" class="isolate flex flex-auto overflow-hidden bg-white rounded-lg relative">
                 <div ref="container" class="flex flex-auto flex-col overflow-auto dark:bg-gray-600 dark:border-gray-600 overflow-x-hidden no-scrollbar">
-                    <div ref="containerNav" class="sticky top-0 z-10 grid flex-none grid-cols-7 bg-white text-xs text-gray-500 shadow ring-1 ring-black ring-opacity-5 md:hidden">
+                    <div ref="containerNav" class="sticky top-0 z-10 grid flex-none grid-cols-7 text-xs text-gray-500 shadow ring-1 ring-black ring-opacity-5 md:hidden">
                         <button type="button" class="flex flex-col items-center pb-1.5 pt-3">
                             <span>W</span>
                             <!-- Default: "text-gray-900", Selected: "bg-gray-900 text-white", Today (Not Selected): "text-indigo-600", Today (Selected): "bg-indigo-600 text-white" -->
@@ -210,7 +210,8 @@
                 <div>
                     <label for="medico" class="block text-sm font-medium leading-6 text-gray-900">Medico</label>
                     <div class="mt-2">
-                        <select v-model="medico" @change="controlla_medico" name="medico" autocomplete="medico" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6">
+                        <select v-model="medico" @change="controlla_medico" name="medico" autocomplete="medico"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6">
                             <option v-for="option in medici" :value="option.id" >{{ option.name }}</option>
                         </select>
                     </div>
@@ -226,7 +227,7 @@
                         <RadioGroup v-model="ambulatorio">
                             <div class="space-y-2">
                                 <RadioGroupOption  as="template" v-for="option in ambulatori" :key="option.name" :value="option.id" v-slot="{ active, checked }">
-                                    <div @click="controlla_ambulatorio(option.id)" :class="[active ? 'border-red-600 ring-2 ring-red-600' : 'border-gray-300', 'relative block cursor-pointer rounded-lg border bg-white px-3 py-1 shadow-sm focus:outline-none sm:flex sm:justify-between']">
+                                    <div @click="controlla_ambulatorio(option.id)" :class="[active ? 'border-2 border-red-500 ring-red-500' : 'border-gray-300', 'relative block cursor-pointer rounded-lg border bg-gray-300 px-3 py-1 shadow-sm focus:outline-none sm:flex sm:justify-between']">
                                       <span class="flex items-center">
                                         <span class="flex flex-col text-sm">
                                           <RadioGroupLabel as="span" class="font-medium text-gray-900">{{ option.nome }}</RadioGroupLabel>
@@ -578,3 +579,8 @@ export default {
     }
 }
 </script>
+<style>
+select{
+    background-color: #ccc;
+}
+</style>
