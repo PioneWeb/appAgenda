@@ -49,7 +49,10 @@
                             </transition>
                         </Menu>
                         <div class="ml-6 h-6 w-px bg-gray-300" />
-                        <button type="button" class="ml-6 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Aggiungi</button>
+                        <button type="button"
+                            class="ml-6 rounded-md bg-green-300 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500"
+                                @click="visualizzaLista"
+                        >Lista</button>
                     </div>
                     <Menu as="div" class="relative ml-6 md:hidden">
                         <MenuButton class="-mx-2 flex items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500">
@@ -137,12 +140,16 @@
 
                             <!-- Events -->
                             <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1" :style="'grid-template-rows: 1.75rem repeat('+ space*schedule.quantita +', minmax(0, 1fr)) auto'">
-                                <li v-for="(item,index) in eventi" class="relative mt-px flex" :style="'grid-row: '+calcola_ore(item,index)+' / span '+space">
-                                    <a href="#" @click="editEvent(item)" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" :class="colors_classes[ambulatorio].background">
+                                <li v-for="(item,index) in eventi" class="mt-px flex" :style="'grid-row: '+calcola_ore(item,index)+' / span '+space">
+                                    <a href="#" @click="editEvent(item)" class="w-full group relative inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" :class="colors_classes[ambulatorio].background">
                                         <p :class="colors_classes[ambulatorio].time">
                                             <time :datetime="moment(item.start).format('YYYY/MM/DD HH:mm')">{{ moment(item.start).format('HH:mm') }}</time>
                                         </p>
                                         <p class="order-1 font-semibold" :class="colors_classes[ambulatorio].title">{{ item.title }}</p>
+<!--                                        <button class="z-20 absolute right-1 top-1 ring-1 ring-gray-300 rounded-full p-2">-->
+<!--                                            <TrashIcon class="h-5 w-5" aria-hidden="true" />-->
+<!--                                        </button>-->
+
                                     </a>
                                 </li>
                                 <!-- Empty Event -->
@@ -203,14 +210,6 @@
                     </button>
                 </div>
                 <hr class="my-3">
-                <div>
-                    <label for="ambulatorio" class="block text-sm font-medium leading-6 text-gray-900">Ambulatorio</label>
-                    <div class="mt-2">
-                        <select v-model="ambulatorio" @change="controlla_ambulatorio" name="ambulatorio" autocomplete="ambulatorio" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                            <option v-for="option in ambulatori" :value="option.id" >{{ option.nome }}</option>
-                        </select>
-                    </div>
-                </div>
 
                 <div>
                     <label for="medico" class="block text-sm font-medium leading-6 text-gray-900">Medico</label>
@@ -220,12 +219,41 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="mt-4">
+                    <label for="ambulatorio" class="block text-sm font-medium leading-6 text-gray-900">Ambulatorio</label>
+                    <div>
+<!--                        <select v-model="ambulatorio" @change="controlla_ambulatorio" name="ambulatorio" autocomplete="ambulatorio" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">-->
+<!--                            <option v-for="option in ambulatori" :value="option.id" >{{ option.nome }}</option>-->
+<!--                        </select>-->
+
+                        <RadioGroup v-model="ambulatorio">
+                            <div class="space-y-2">
+                                <RadioGroupOption  as="template" v-for="option in ambulatori" :key="option.name" :value="option.id" v-slot="{ active, checked }">
+                                    <div @click="controlla_ambulatorio(option.id)" :class="[active ? 'border-red-600 ring-2 ring-red-600' : 'border-gray-300', 'relative block cursor-pointer rounded-lg border bg-white px-6 py-2 shadow-sm focus:outline-none sm:flex sm:justify-between']">
+                                      <span class="flex items-center">
+                                        <span class="flex flex-col text-sm">
+                                          <RadioGroupLabel as="span" class="font-medium text-gray-900">{{ option.nome }}</RadioGroupLabel>
+                                        </span>
+                                      </span>
+                                        <RadioGroupDescription as="span" class="mt-1 flex text-sm sm:ml-4 sm:mt-0 sm:flex-col sm:text-right">
+                                            <span class="font-medium text-gray-900">{{ option.id }}</span>
+                                        </RadioGroupDescription>
+                                        <span :class="[active ? 'border' : 'border-2', checked ? 'border-red-600' : 'border-transparent', 'pointer-events-none absolute -inset-px rounded-lg']" aria-hidden="true" />
+                                    </div>
+                                </RadioGroupOption>
+                            </div>
+                        </RadioGroup>
+
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <el-dialog v-model="dialogFormVisible" title="Inserisci il nome del paziente">
             <div v-if="this.appuntamento.id === undefined">
-                Puoi scegliere un paziente già registrato dal combo box o inserirne uno nuovo.<br><hr><br>
+                Puoi scegliere un paziente già registrato dal combo box o inserirne uno nuovo non memorizzato.<br><hr><br>
             <el-form-item label="Paziente" :label-width="formLabelWidth">
                 <el-select v-model="paziente" placeholder="Seleziona paziente" filterable allow-create>
                     <el-option v-for="item in pazienti" :label="item.name" :value="item.id" />
@@ -235,12 +263,11 @@
             <div v-else><hr>
 
                 <span v-if="this.appuntamento.patient === null">
-                paziente:  <b> {{this.appuntamento.title}}</b><br>
+                    paziente:  <b> {{this.appuntamento.title}}</b><br>
                 </span>
                 <span v-else>
                     paziente:   <b> {{this.appuntamento.patient.name}}</b><br> telefono: {{this.appuntamento.patient.telefono}}<br> email: {{this.appuntamento.patient.email}}<br>
                 </span><hr><br>
-
                 Dati dell'appuntamento: {{this.appuntamento.id}}<br>
                 del: {{moment(this.appuntamento.start).format('YYYY/MM/DD')}} alle {{moment(this.appuntamento.start).format('HH:mm')}}<br>
                 medico: {{this.appuntamento.doctor.name}}<br>
@@ -249,9 +276,12 @@
             </div>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">Annulla</el-button>
+                <el-button @click="this.dialogFormVisible = false">Annulla</el-button>
                 <el-button v-if="this.appuntamento.id === undefined" type="primary" @click="saveEvent">
                   Salva
+                </el-button>
+                <el-button v-if="this.appuntamento.id !== undefined" type="primary" @click="deleteEvent">
+                  Elimina
                 </el-button>
               </span>
             </template>
@@ -261,9 +291,17 @@
 </template>
 
 <script setup>
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon,PlusIcon } from '@heroicons/vue/20/solid'
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon,PlusIcon, TrashIcon } from '@heroicons/vue/20/solid'
 import { CalendarDaysIcon } from '@heroicons/vue/24/outline'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import {
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems, RadioGroup,
+    RadioGroupDescription,
+    RadioGroupLabel,
+    RadioGroupOption
+} from '@headlessui/vue'
 import AppLayout from "../../Layouts/AppLayout.vue";
 import 'moment/locale/it'
 
@@ -423,7 +461,8 @@ export default {
             this.filter.medico = this.medico;
             this.get_days_for_calendar()
         },
-        controlla_ambulatorio(){
+        controlla_ambulatorio(id){
+            this.ambulatorio = id;
             this.filter.ambulatorio = this.ambulatorio;
             this.get_days_for_calendar()
         },
@@ -446,7 +485,7 @@ export default {
             if(sp===5){ ps=7 }
             if(sp===6){ ps=6 }
             precedente = ((start*ps)+((plus/this.schedule.minuti)*3))+2;
-            console.log(start,plus,this.schedule.minuti,sp,ps,precedente,index )
+            //console.log(start,plus,this.schedule.minuti,sp,ps,precedente,index )
 
             if (item.id !== undefined) {
                 return precedente;
@@ -481,6 +520,41 @@ export default {
             }).then(result => {
                 this.get_days_for_calendar()
             });
+        },
+        deleteEvent(){
+            ElMessageBox.confirm(
+                'Sei sicuro di eliminare?',
+                'Attenzione',
+                {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Annulla',
+                    type: 'warning',
+                }
+            )
+                .then(() => {
+                    axios.get(route("events.delete",this.appuntamento.id))
+                        .then(result => {
+                            this.get_days_for_calendar()
+                        });
+                    ElMessage({
+                        type: 'success',
+                        message: 'Appuntamento eliminato',
+                    })
+                    this.dialogFormVisible= false;
+                })
+                .catch(() => {
+                    ElMessage({
+                        type: 'info',
+                        message: 'Eliminazione cancellata',
+                    })
+                    this.dialogFormVisible= false;
+                })
+
+        },
+        visualizzaLista(){
+            this.$inertia.get(route("events.list"), {data: this.selected_date.format("YYYY/MM/DD")})
+            //this.route({ name: 'events.list' })
+            //this.route('events.list')
         }
     },
     computed: {

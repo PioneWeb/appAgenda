@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Clinics;
 use App\Models\Company;
+use App\Models\DoctorClinics;
+use App\Models\DoctorUsers;
 use App\Models\Event;
 use App\Models\Schedule;
 use App\Models\User;
@@ -43,11 +45,20 @@ class EventController extends Controller
 
     public function appuntamenti()
     {
+        /** @var User $user */
+        $user = auth()->user();
+        //        if(!$user->can("company.list")) {
+//            abort(403,"Non disponi dei permessi necessari!");
+//        }
+        /** @var DoctorUsers $doc */
+        $doc = DoctorUsers::where('user_id',$user->id)->first('doctor_id');
+        /** @var DoctorClinics $amb */
+        $amb = DoctorClinics::where('doctor_id',$doc->doctor_id )->get('clinic_id');
+        $amb = $amb->pluck('clinic_id');
         /** @var Clinics $ambulatori */
-        $ambulatori = Clinics::all('id','nome');
+        $ambulatori = Clinics::select(['id','nome'])->where('attivo',1)->whereIn('id',$amb)->get();
         /** @var User $medici */
         $medici = User::select('id','name')->where('user_type_id',2)->get();
-
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
         return Inertia::render('Events/Appuntamenti', [
@@ -118,7 +129,7 @@ class EventController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(event $event)
+    public function edit($id)
     {
         //
     }
@@ -193,9 +204,17 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(event $event)
+    public function delete($id)
     {
-        //
+        /** @var User $user */
+        $user = auth()->user();
+//        if(!$user->can("agenti.list")) {
+//            abort(403,"Non disponi dei permessi necessari!");
+//        }
+            Event::where("id", $id)->delete();
+            return response()->json([
+                "id" => $id
+            ]);
     }
 
     /**

@@ -12,6 +12,7 @@ Route::get('/appuntamenti', [EventController::class, "appuntamenti"])->name('eve
 
 
 Route::get('/edit/{id}', [EventController::class, "edit"])->name('events.edit');
+Route::get('/delete/{id}', [EventController::class, "delete"])->name('events.delete');
 Route::get('/create', [EventController::class, "create"])->name('events.create');
 Route::post("/paginate", [EventController::class, "paginate"])->name('events.paginate');
 

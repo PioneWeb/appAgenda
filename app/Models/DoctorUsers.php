@@ -9,7 +9,7 @@ class DoctorUsers extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'ticket_id',
+        'doctor_id',
         'user_id',
     ];
 

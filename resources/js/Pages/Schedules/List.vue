@@ -78,7 +78,7 @@ export default {
     },
     data() {
         return {
-            colors: ['coolGray','red','blue','green','amber','fuchsia','indigo','gray','yellow','teal','cyan','lightBlue','orange','lightGreen','emerald','rose','violet','sky','lime','cyan','trueGray','warmGray','blueGray','pink','purple'],
+            colors: ['coolGray','red','blue','amber','green','fuchsia','indigo','gray','yellow','teal','cyan','lightBlue','orange','lightGreen','emerald','rose','violet','sky','lime','cyan','trueGray','warmGray','blueGray','pink','purple'],
             colors_classes: [],
             orari: [],
             tasti: [

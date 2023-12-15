@@ -23,8 +23,8 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     <el-table-column label="telefono" prop="telefono" sortable width="120" />
                     <el-table-column label="stato" prop="attivo" sortable  width="100">
                         <template #default="scope">
-                            <el-tag v-if="scope.row.attivo === 1" size="small">Attivo</el-tag>
-                            <el-tag v-if="scope.row.attivo === 0" size="small" type="danger">Non attivo</el-tag>
+                            <el-tag v-if="scope.row.attivo === true" size="small" type="success">Attivo</el-tag>
+                            <el-tag v-else size="small" type="danger">Non attivo</el-tag>
                         </template>
                     </el-table-column>
 
