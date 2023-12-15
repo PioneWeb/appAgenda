@@ -27,11 +27,11 @@ class EventController extends Controller
 //            abort(403,"Non disponi dei permessi necessari!");
 //        }
         /** @var Clinics $ambulatori */
-        $ambulatori = Clinics::all('id AS value','nome AS label');
+        $ambulatori = Clinics::all('id','nome');
         /** @var User $medici */
-        $medici = User::select('id AS value','name AS label')->where('user_type_id',2)->get();
+        $medici = User::select('id','name')->where('user_type_id',2)->get();
         /** @var User $pazienti */
-        $pazienti = User::select('id AS value','name AS label')->where('user_type_id',3)->get();
+        $pazienti = User::select('id AS','name')->where('user_type_id',3)->get();
 
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
@@ -50,17 +50,51 @@ class EventController extends Controller
         //        if(!$user->can("company.list")) {
 //            abort(403,"Non disponi dei permessi necessari!");
 //        }
-        /** @var DoctorUsers $doc */
-        $doc = DoctorUsers::where('user_id',$user->id)->first('doctor_id');
-        /** @var DoctorClinics $amb */
-        $amb = DoctorClinics::where('doctor_id',$doc->doctor_id )->get('clinic_id');
-        $amb = $amb->pluck('clinic_id');
-        /** @var Clinics $ambulatori */
-        $ambulatori = Clinics::select(['id','nome'])->where('attivo',1)->whereIn('id',$amb)->get();
-        /** @var User $medici */
-        $medici = User::select('id','name')->where('user_type_id',2)->get();
-        /** @var Event $appuntamenti */
-        $appuntamenti = Event::all();
+
+        if($user->user_type_id === 1){
+            /** @var Clinics $ambulatori */
+            $ambulatori = Clinics::all('id','nome');
+            /** @var User $medici */
+            $medici = User::select('id','name')->where('user_type_id',2)->get();
+            /** @var Event $appuntamenti */
+            $appuntamenti = Event::all();
+        }else {
+            if($user->user_type_id === 3){
+                /** @var DoctorUsers $doc */
+                $doc = DoctorUsers::where('user_id', $user->id)->first('doctor_id');
+                /** @var DoctorClinics $amb */
+                $amb = DoctorClinics::where('doctor_id', $doc->doctor_id)->get('clinic_id');
+                /** @var Clinics $ambulatori */
+                $ambulatori = Clinics::select(['id', 'nome'])->where('attivo', 1)->whereIn('id', $amb)->get();
+                /** @var User $medici */
+                $medici = User::select('id','name')->where('id', $doc->doctor_id)->where('user_type_id',2)->get();
+                /** @var Event $appuntamenti */
+                $appuntamenti = Event::query()->where('patient_id', $user->id)->get();
+            }else {
+                if($user->user_type_id === 2){
+                    /** @var DoctorClinics $amb */
+                    $amb = DoctorClinics::where('doctor_id', $user->id)->get('clinic_id');
+                    /** @var Clinics $ambulatori */
+                    $ambulatori = Clinics::select(['id', 'nome'])->where('attivo', 1)->whereIn('id', $amb)->get();
+                    /** @var User $medici */
+                    $medici = User::select('id', 'name')->where('id', $user->id)->where('user_type_id', 2)->get();
+                    /** @var Event $appuntamenti */
+                    $appuntamenti = Event::query()->where('doctor_id', $user->id)->get();
+                }else{
+                    /** @var DoctorUsers $doc */
+                    $doc = DoctorUsers::where('user_id', $user->id)->first('doctor_id');
+                    /** @var DoctorClinics $amb */
+                    $amb = DoctorClinics::where('doctor_id', $doc->doctor_id)->get('clinic_id');
+                    $amb = $amb->pluck('clinic_id');
+                    /** @var Clinics $ambulatori */
+                    $ambulatori = Clinics::select(['id', 'nome'])->where('attivo', 1)->whereIn('id', $amb)->get();
+                    /** @var User $medici */
+                    $medici = User::select('id', 'name')->where('user_type_id', 2)->get();
+                    /** @var Event $appuntamenti */
+                    $appuntamenti = Event::all();
+                }
+            }
+        }
         return Inertia::render('Events/Appuntamenti', [
             "ambulatori" => $ambulatori,
             "medici" => $medici,
@@ -169,7 +203,9 @@ class EventController extends Controller
         if(!empty($filter['ambulatorio'])) {
             $query->where("clinic_id", $filter['ambulatorio']);
         }
-//        echo $query->toSql();
+        if($user->user_type_id === 3){
+            $query->where("patient_id", $user->id);
+        }
         // PAGINAZIONE
         return response()->json($query->orderBy('start')->get());
 

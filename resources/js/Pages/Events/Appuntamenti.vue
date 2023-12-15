@@ -95,7 +95,7 @@
 
         <div class="flex gap-6 ">
             <div v-loading="loading" class="isolate flex flex-auto overflow-hidden bg-white rounded-lg relative">
-                <div ref="container" class="flex flex-auto flex-col overflow-auto dark:bg-gray-600 dark:border-gray-600">
+                <div ref="container" class="flex flex-auto flex-col overflow-auto dark:bg-gray-600 dark:border-gray-600 overflow-x-hidden no-scrollbar">
                     <div ref="containerNav" class="sticky top-0 z-10 grid flex-none grid-cols-7 bg-white text-xs text-gray-500 shadow ring-1 ring-black ring-opacity-5 md:hidden">
                         <button type="button" class="flex flex-col items-center pb-1.5 pt-3">
                             <span>W</span>
@@ -131,9 +131,9 @@
                         <div class="w-14 flex-none bg-white ring-1 ring-gray-100 dark:ring-gray-500 dark:divide-gray-500 dark:bg-gray-600 dark:border-gray-600" />
                         <div class="grid flex-auto grid-cols-1 grid-rows-1">
                             <!-- Horizontal lines -->
-                            <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100 dark:divide-gray-500" :style="'grid-template-rows: repeat(' + schedule.quantita +' , minmax(7rem, 1fr))'">
+                            <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100 dark:divide-gray-500" :style="'grid-template-rows: repeat(' + schedule.quantita +' , minmax(0, 1fr))'">
                                 <div ref="containerOffset" class="row-end-1 h-7"></div>
-                                <div v-for="hour in hours" class="hover:bg-indigo-600">
+                                <div v-for="hour in hours" class="hover:bg-amber-50">
                                     <div class="sticky left-0 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">{{ hour }}</div>
                                 </div>
                             </div>
@@ -146,15 +146,11 @@
                                             <time :datetime="moment(item.start).format('YYYY/MM/DD HH:mm')">{{ moment(item.start).format('HH:mm') }}</time>
                                         </p>
                                         <p class="order-1 font-semibold" :class="colors_classes[ambulatorio].title">{{ item.title }}</p>
-<!--                                        <button class="z-20 absolute right-1 top-1 ring-1 ring-gray-300 rounded-full p-2">-->
-<!--                                            <TrashIcon class="h-5 w-5" aria-hidden="true" />-->
-<!--                                        </button>-->
-
                                     </a>
                                 </li>
                                 <!-- Empty Event -->
                                 <li v-for="(hour,index) in hours" @click="editEvent(hour)" class="relative flex rounded-md mx-1 my-1 mt-1 hover:bg-amber-50" :style="'grid-row: '+calcola_ore(hour,index)+' / span '+space">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5" >
+                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg p-2 text-xs leading-5 overflow-y-hidden no-scrollbar" >
                                         <p :class="colors_classes[ambulatorio].time">
                                             <time :datetime="dateFromHour(hour)">{{ dateFromHour(hour) }}</time>
                                         </p>
@@ -214,7 +210,7 @@
                 <div>
                     <label for="medico" class="block text-sm font-medium leading-6 text-gray-900">Medico</label>
                     <div class="mt-2">
-                        <select v-model="medico" @change="controlla_medico" name="medico" autocomplete="medico" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                        <select v-model="medico" @change="controlla_medico" name="medico" autocomplete="medico" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6">
                             <option v-for="option in medici" :value="option.id" >{{ option.name }}</option>
                         </select>
                     </div>
@@ -230,7 +226,7 @@
                         <RadioGroup v-model="ambulatorio">
                             <div class="space-y-2">
                                 <RadioGroupOption  as="template" v-for="option in ambulatori" :key="option.name" :value="option.id" v-slot="{ active, checked }">
-                                    <div @click="controlla_ambulatorio(option.id)" :class="[active ? 'border-red-600 ring-2 ring-red-600' : 'border-gray-300', 'relative block cursor-pointer rounded-lg border bg-white px-6 py-2 shadow-sm focus:outline-none sm:flex sm:justify-between']">
+                                    <div @click="controlla_ambulatorio(option.id)" :class="[active ? 'border-red-600 ring-2 ring-red-600' : 'border-gray-300', 'relative block cursor-pointer rounded-lg border bg-white px-3 py-1 shadow-sm focus:outline-none sm:flex sm:justify-between']">
                                       <span class="flex items-center">
                                         <span class="flex flex-col text-sm">
                                           <RadioGroupLabel as="span" class="font-medium text-gray-900">{{ option.nome }}</RadioGroupLabel>
@@ -391,6 +387,7 @@ export default {
             axios.post(route("events.paginate"),{
                 filter: this.filter
             }).then( result => {
+                console.log(result.data)
                 this.eventi = result.data
                 if(this.medico!==null && this.ambulatorio!==null) {
                     this.get_schedules(this.eventi[0])
@@ -407,7 +404,6 @@ export default {
                 'sort': this.sortingColumn,
                 'order': this.sortingOrder,
             }).then(result => {
-                console.log(result.data)
                 this.pazienti = result.data;
             });
         },
