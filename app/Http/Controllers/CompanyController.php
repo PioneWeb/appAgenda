@@ -91,7 +91,7 @@ class CompanyController extends Controller
                 "nullable",
                 "string",
                 "max:40",
-                "regex:/^\d{8,15}$/"
+                "regex:^(-?|\+)?\d{0,8}\s*\d{8,15}$^"
             ],
         ]);
         /** @var User $user */

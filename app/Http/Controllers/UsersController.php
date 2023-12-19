@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Clinics;
 use App\Models\Company;
 use App\Models\Team;
 use App\Models\User;
+use App\Models\UserType;
 use Carbon\Carbon;
 use Faker\Factory;
 use Illuminate\Database\Eloquent\Collection;
@@ -154,6 +156,7 @@ class UsersController extends Controller
             'cap' =>  $request->input('cap'),
             'provincia' =>  $request->input('provincia'),
             'telefono' =>  $request->input('telefono'),
+            'user_type_id' =>  $request->input('user_type_id'),
         ];
 
         if(empty($request->input("id"))) {
@@ -205,10 +208,16 @@ class UsersController extends Controller
             $aziende = Company::query()->get();
             /** @var Team $query */
             $team = Team::query()->get();
+            /** @var UserType $tipi */
+            $tipi = UserType::query()->get();
+
+            /** @var Clinics $ambulatori */
+            $ambulatori = Clinics::where('doctor_id')->get();
             return Inertia::render('Users/Edit', [
                 "utenteProp" => $query,
                 "aziendeProp" => $aziende,
-                "teamProp" => $team
+                "teamProp" => $team,
+                "tipiProp" => $tipi,
             ]);
         }
         abort(403,"Non disponi dei permessi necessari!");

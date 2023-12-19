@@ -41,5 +41,9 @@ export default {
         medici: Object,
         filter: Object,
     },
+    mounted() {
+        this.medico = this.medici[0].id;
+        this.ambulatorio = this.ambulatori[0].id;
+    }
 }
 </script>

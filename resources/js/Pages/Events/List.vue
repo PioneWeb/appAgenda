@@ -13,20 +13,32 @@
                               @selection-change="handleSelectionChange">
                         <el-table-column type="selection" />
                         <el-table-column label="ID" prop="id" width="80" sortable />
-                        <el-table-column label="Descrizione" prop="title" sortable />
-                        <el-table-column label="medico" prop="doctor_id" sortable width="100" />
-                        <el-table-column label="paziente" prop="patient_id" sortable width="110" />
-                        <el-table-column label="ambulatorio" prop="clinic_id" sortable width="130" />
-                        <el-table-column label="inizio" prop="start" sortable width="180" >
+                        <el-table-column label="Paziente" prop="title" sortable />
+                        <el-table-column label="Medico" prop="doctor_id" sortable width="180" >
                             <template #default="scope">
-                                <span>{{ moment(scope.row.start).format('YYYY/MM/DD HH:mm') }}</span>
+                                <span>{{ scope.row.doctor.name }}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="fine" prop="end" sortable width="180" >
+                        <el-table-column label="Ambulatorio" prop="clinic_id" sortable width="150">
                             <template #default="scope">
-                                <span>{{ moment(scope.row.end).format('YYYY/MM/DD HH:mm') }}</span>
+                                <span>{{ scope.row.clinic.nome }}</span>
                             </template>
                         </el-table-column>
+                        <el-table-column label="Data" prop="start" sortable width="180" align="right" >
+                            <template #default="scope">
+                                <span>{{ moment(scope.row.start).format('DD/MM/YYYY') }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Ora" prop="" sortable width="180" align="right" >
+                            <template #default="scope">
+                                <span>{{ moment(scope.row.start).format('HH:mm') }}</span>
+                            </template>
+                        </el-table-column>
+<!--                        <el-table-column label="fine" prop="end" sortable width="180" >-->
+<!--                            <template #default="scope">-->
+<!--                                <span>{{ moment(scope.row.end).format('YYYY/MM/DD HH:mm') }}</span>-->
+<!--                            </template>-->
+<!--                        </el-table-column>-->
 
                     </el-table>
 
@@ -43,9 +55,9 @@
                     </el-pagination>
                 </div>
 
-                <CorpoDay v-if="filter.tp === 1 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoDay>
-                <CorpoWeek v-if="filter.tp === 2 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoWeek>
-                <CorpoMonth v-if="filter.tp === 3 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoMonth>
+<!--                <CorpoDay v-if="filter.tp === 1 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoDay>-->
+<!--                <CorpoWeek v-if="filter.tp === 2 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoWeek>-->
+<!--                <CorpoMonth v-if="filter.tp === 3 && !tableLoading" :appuntamenti="appuntamenti" :medici="medici" :ambulatori="ambulatori"></CorpoMonth>-->
             </div>
         </div>
 
@@ -116,12 +128,12 @@ export default {
                 },
             ],
             tasti: [
-                { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click: this.create },
-                { id: 2, name: 'Lista', type: "success", icon:Calendar, click: this.lista },
-                { id: 3, name: 'Giorno', type: "success", icon:Calendar, click: this.giorno },
-                { id: 4, name: 'Settimana', type: "success", icon:Calendar, click: this.settimana },
-                { id: 5, name: 'Mese', type: "primary", icon:Calendar, click: this.mese },
-                { id: 6, name: 'Stampa', type: "primary", icon:Printer }
+                { id: 1, name: 'App.menti', type: "info", icon:Calendar, click: this.vaiAppuntamenti },
+                // { id: 2, name: 'Lista', type: "success", icon:Calendar, click: this.lista },
+                // { id: 3, name: 'Giorno', type: "success", icon:Calendar, click: this.giorno },
+                // { id: 4, name: 'Settimana', type: "success", icon:Calendar, click: this.settimana },
+                // { id: 5, name: 'Mese', type: "primary", icon:Calendar, click: this.mese },
+                // { id: 6, name: 'Stampa', type: "primary", icon:Printer }
             ],
             giorni:['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
             tipi:['Rappresentante','Visita','Vaccino'],
@@ -187,6 +199,9 @@ export default {
             this.filter.tp = 3;
             this.paginate();
         },
+        vaiAppuntamenti() {
+            this.$inertia.get(route("events.appuntamenti"));
+        },
         // getWeekStartEndDates(date) {
         //     // Ottieni il giorno della settimana della data specificata
         //     const dayOfWeek = moment(date).day();
@@ -209,6 +224,12 @@ export default {
             }
         },
         paginate() {
+            if(this.filter.medico === ''){
+                this.filter.medico = this.medici[0].id;
+            }
+            if(this.filter.ambulatorio === ''){
+                this.filter.ambulatorio = this.ambulatori[0].id;
+            }
             this.tableLoading = true;
             this.filter.start = moment(now()).format('YYYY-MM-DD');
             this.filter.end  = moment(now()).add(1, 'M').format('YYYY-MM-DD');
@@ -245,6 +266,11 @@ export default {
         this.currentPage = this.SessionStorage.getItem('appuntamenti_list_page', this.currentPage, false);
         this.pageSize = this.SessionStorage.getItem('appuntamenti_list_page_size', this.pageSize, false);
         this.paginate();
+    },
+    mounted() {
+        this.medico = this.medici[0].id;
+        this.ambulatorio = this.ambulatori[0].id;
+        //alert(' FSDFH SDF: '+this.medico+' '+this.ambulatorio)
     }
 }
 </script>

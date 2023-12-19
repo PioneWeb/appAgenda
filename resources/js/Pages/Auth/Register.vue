@@ -12,6 +12,7 @@ const form = useForm({
     name: '',
     email: '',
     password: '',
+    codice: '',
     password_confirmation: '',
     terms: false,
 });
@@ -57,6 +58,19 @@ const submit = () => {
                     autocomplete="username"
                 />
                 <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="codice" value="Codice Medico" />
+                <TextInput
+                    id="email"
+                    v-model="form.codice"
+                    type="text"
+                    class="mt-1 block w-full"
+                    required
+                    autocomplete="username"
+                />
+                <InputError class="mt-2" :message="form.errors.codice" />
             </div>
 
             <div class="mt-4">

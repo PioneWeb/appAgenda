@@ -31,7 +31,7 @@ class EventController extends Controller
         /** @var User $medici */
         $medici = User::select('id','name')->where('user_type_id',2)->get();
         /** @var User $pazienti */
-        $pazienti = User::select('id AS','name')->where('user_type_id',3)->get();
+        $pazienti = User::select('id','name')->where('user_type_id',3)->get();
 
         /** @var Event $appuntamenti */
         $appuntamenti = Event::all();
@@ -194,8 +194,8 @@ class EventController extends Controller
         /** @var Event $query */
         $query = Event::with("doctor","patient","clinic");
 
-        $query->whereDate('start' ,'>=',$filter['start']);
-        $query->whereDate('end' ,'<=',$filter['end']);
+        $query->whereDate('start' ,'=',$filter['start']);
+        //$query->whereDate('end' ,'<=',$filter['end']);
 
         if(!empty($filter['medico'])){
             $query->where("doctor_id", $filter['medico']);

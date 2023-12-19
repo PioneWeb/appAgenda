@@ -113,7 +113,8 @@ class User extends Authenticatable
         'cap',
         'provincia',
         'telefono',
-        'color'
+        'color',
+        'codice'
     ];
 
     /**
@@ -174,6 +175,10 @@ class User extends Authenticatable
     public function user_type(): BelongsTo
     {
         return $this->belongsTo(UserType::class);
+    }
+    public function team_user(): BelongsTo
+    {
+        return $this->belongsTo(TeamUser::class);
     }
 
     public function getAllPermissionsAttribute() {

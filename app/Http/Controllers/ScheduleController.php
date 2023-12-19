@@ -121,11 +121,15 @@ class ScheduleController extends Controller
 
         // RICERCHE CORRELATE
 //        if(!empty($search = $request->input("search"))) {
-//            $query->where(function($query2) use ($search) {
-//                $query2->where("email","like",'%'.$search.'%')
-//                    ->orWhere("name", "like", '%'.$search.'%');
-//            });
+//            $query->join('users',"users.id" ,"=", "doctor_id")
+//                ->orWhere("users.name","like", $search);
 //        }
+//        if(!empty($search = $request->input("search"))) {
+//            $query->join('clinics',"clinics.id" ,"=", "clinic_id")
+//                ->orWhere("clinics.nome","like", $search);
+//        }
+//        echo $query->toSql();
+
 
         // PAGINAZIONE
         return $query->paginate($request->input("pageSize"));

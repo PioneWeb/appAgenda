@@ -117,7 +117,6 @@ class PrescriptionController extends Controller
             "patient_id" => "nullable|integer|exists:users,id",
             "farmaci" => [ "nullable", "string", "max:255" ],
             "motivo" => [ "nullable", "string", "max:255" ],
-            "attiva" => [ "nullable", "boolean", "max:5" ],
             "tipo" => [ "nullable", "integer", "max:255" ]
         ]);
 
@@ -134,7 +133,7 @@ class PrescriptionController extends Controller
             'patient_id' => $request->input('patient_id'),
             'farmaci' => $request->input('farmaci'),
             'motivo' => $request->input('motivo'),
-            'attiva' => $request->input('attiva'),
+            'attiva' => 1,
             'tipo' => $request->input('tipo'),
         ];
 
@@ -147,5 +146,23 @@ class PrescriptionController extends Controller
             "id" => $ricetta->id
         ]);
 
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function prescribe($id)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        if(!$user->can("user.list")) {
+            abort(403,"Non disponi dei permessi necessari!");
+        }
+            /** @var Prescription $ricetta */
+            $ricetta = Prescription::query()->where('id',$id)->first();
+            $ricetta->update(['attiva' => 0]);
+            return response()->json([
+                "id" => $ricetta->id
+            ]);
     }
 }

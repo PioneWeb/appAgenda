@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/list', [PrescriptionController::class, "list"])->name('prescriptions.list');
 Route::get('/edit/{id}', [PrescriptionController::class, "edit"])->name('prescriptions.edit');
+Route::get('/prescribe/{id}', [PrescriptionController::class, "prescribe"])->name('prescriptions.prescribe');
 Route::get('/create', [PrescriptionController::class, "create"])->name('prescriptions.create');
 Route::post("/paginate", [PrescriptionController::class, "paginate"])->name('prescriptions.paginate');
 

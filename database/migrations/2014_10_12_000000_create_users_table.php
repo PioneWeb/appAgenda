@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string("provincia")->nullable();
             $table->string("telefono")->nullable();
             $table->string("color")->nullable();
+            $table->string("codice")->nullable();
             $table->rememberToken();
             $table->foreignId('user_type_id')->nullable()->references("id")->on("user_types");
             $table->foreignId('current_team_id')->nullable();

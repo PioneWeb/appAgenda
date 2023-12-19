@@ -13,7 +13,7 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                 <el-form :model="ricetta" :rules="rules" ref="form" label-position="top">
                     <el-page-header @click="routeToList()" title="Torna alla lista" class="mb-10">
                         <template #content>
-                            <span v-if="ricetta.id" class="text-xl">Modifica - {{ ricetta.tipo }}</span>
+                            <span v-if="ricetta.id" class="text-xl">Modifica ricetta {{ ricetta.id }}</span>
                             <span v-else class="text-xl">Crea nuova ricetta</span>
                         </template>
                     </el-page-header>
@@ -35,16 +35,18 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <el-form-item v-if="ricetta.length>0" prop="tipo" label="Tipo">
-                            <el-tag v-if="ricetta.tipo === 1" size="large" effect="dark" >Farmaci</el-tag>
-                            <el-tag v-if="ricetta.tipo === 2" size="large" effect="dark" type="warning">Analisi</el-tag>
-                            <el-tag v-if="ricetta.tipo === 3" size="large" effect="dark" type="info">Visite</el-tag>
-                        </el-form-item>
-                        <el-form-item v-else>
-                            <el-select v-model="ricetta.tipo" class="w-full" placeholder="" clearable filterable>
-                                <el-option v-for="item in tipiRicetta" :label="item.name" :key="item.id" :value="item.id"></el-option>
-                            </el-select>
-                        </el-form-item>
+                        <el-col :span="4">
+                            <el-form-item v-if="ricetta.tipo" prop="tipo" label="Tipo ricetta">
+                                <el-tag v-if="ricetta.tipo === 1" size="large" effect="dark" >Analisi</el-tag>
+                                <el-tag v-if="ricetta.tipo === 2" size="large" effect="dark" type="warning">Farmaci</el-tag>
+                                <el-tag v-if="ricetta.tipo === 3" size="large" effect="dark" type="info">Visite</el-tag>
+                            </el-form-item>
+                            <el-form-item v-else label="Tipo ricetta">
+                                <el-select v-model="ricetta.tipo" class="w-full" placeholder="" clearable filterable>
+                                    <el-option v-for="item in tipiRicetta" :label="item.name" :key="item.id" :value="item.id"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
 
                     </el-row>
 
@@ -59,10 +61,12 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                                 <el-input v-model="ricetta.motivo" class="w-full" clearable placeholder="Motivo"></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-form-item prop="attivo" label="Stato">
-                            <el-tag v-if="ricetta.attiva === true" size="large" type="success" @click="prescrivi(ricetta.tipo,ricetta.attiva)">Richiesto il {{ moment(ricetta.created_at).format('DD MMMM YYYY') }}</el-tag>
-                            <el-tag v-else size="large" type="danger" @click="prescrivi(ricetta.tipo,ricetta.attiva)">Prescritto il {{ moment(ricetta.updated_at).format('DD MMMM YYYY') }}</el-tag>
-                        </el-form-item>
+                        <el-col :span="4">
+                            <el-form-item prop="attivo" label="Stato">
+                                <el-tag v-if="ricetta.attiva === true" size="large" type="success" @click="prescrivi(ricetta.tipo,ricetta.attiva)">Richiesto il {{ moment(ricetta.created_at).format('DD MMMM YYYY') }}</el-tag>
+                                <el-tag v-else size="large" type="danger" @click="prescrivi(ricetta.tipo,ricetta.attiva)">Prescritto il {{ moment(ricetta.updated_at).format('DD MMMM YYYY') }}</el-tag>
+                            </el-form-item>
+                        </el-col>
                     </el-row>
 
 
@@ -88,7 +92,7 @@ export default {
             ricetta: {...this.ricettaProp},
             medici: {...this.mediciProp},
             pazienti: {...this.pazientiProp},
-            tipiRicetta:[{id: 1, name: 'Visite'},{id: 1, name: 'Farmaci'},{id: 1, name: 'Analisi'}],
+            tipiRicetta:[{id: 1, name: 'Analisi'},{id: 2, name: 'Farmaci'},{id: 3, name: 'Visite'},],
             tastiEditAzienda: [
                 { id: 2, name: 'Salva', type: "success", icon:Edit, click: this.save },
                 { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }
@@ -133,9 +137,12 @@ export default {
                         type: 'warning',
                     }
                 ).then(() => {
-                    ElMessage({
-                        type: 'success',
-                        message: 'La prescrizione è stata chiusa'
+                    axios.get(this.route("prescriptions.prescribe",{id: this.ricetta.id})).then(response => {
+                        ElMessage({
+                            type: 'success',
+                            message: 'La prescrizione è stata chiusa'
+                        });
+                        this.$inertia.get(route('prescriptions.edit', response.data.id));
                     });
                 });
             }else{
@@ -156,6 +163,7 @@ export default {
             // }
             this.$inertia.get(route("prescriptions.list"))
         }
+
     }
 }
 </script>

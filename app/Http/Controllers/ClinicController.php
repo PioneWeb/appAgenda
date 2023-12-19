@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Clinics;
 use App\Models\Company;
+use App\Models\DoctorClinics;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -175,5 +176,39 @@ class ClinicController extends Controller
     public function destroy(clinic $clinic)
     {
         //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function associate($id, $doctor)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        if(!$user->can("user.list")) {
+            abort(403,"Non disponi dei permessi necessari!");
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function dissociate($id, $doctor)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        if(!$user->can("user.list")) {
+            abort(403,"Non disponi dei permessi necessari!");
+        }
+        /** @var Clinics $ambulatorio */
+        $ambulatorio = Clinics::where("id",$id)->first();
+
+        /** @var DoctorClinics $doccli */
+        $doccli = DoctorClinics::where("clinic_id",$id)->where("doctor_id",$doctor)->first();
+        $doccli->delete();
+
+        return response()->json([
+            "id" => $doctor
+        ]);
     }
 }
