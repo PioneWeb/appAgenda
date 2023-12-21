@@ -349,11 +349,11 @@ const logout = () => {
     router.post(route('logout'));
 };
 const handleSelect = (key, keyPath) => {
-    console.log('Select ',key, keyPath)
+    //console.log('Select ',key, keyPath)
 }
 const isCollapse = true
 const handleOpen = (key, keyPath) => {
-    console.log('Open ',key, keyPath)
+    // console.log('Open ',key, keyPath)
 }
 const handleClose = (key, keyPath) => {
     //console.log('Close ',key, keyPath)

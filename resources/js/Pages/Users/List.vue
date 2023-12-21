@@ -18,19 +18,19 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                             {{ scope.row.teams[0]?.name }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="nome" prop="name" sortable />
+                    <el-table-column label="nome" prop="name" sortable width="180" />
                     <el-table-column label="indirizzo" prop="indirizzo" sortable />
                     <el-table-column label="email" prop="email" sortable />
                     <el-table-column label="verificata" prop="email_verified_at" sortable width="120">
                         <template #default="scope">
-                            <div v-if="scope.row.email_verified_at===null"></div>
+                            <div v-if="scope.row.email_verified_at===null">non verificata</div>
                             <div v-else>{{ moment(scope.row.email_verified_at).format('DD/MM/YYYY') }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="cap" prop="cap" sortable width="80" />
-                    <el-table-column label="provincia" prop="provincia" sortable width="120" />
-                    <el-table-column label="tipo utente" prop="user_type.descrizione" sortable  width="120">
-                        <template #default="scope">
+                    <el-table-column label="cap" prop="cap" sortable width="80" align="center" />
+                    <el-table-column label="pr." prop="provincia" sortable width="70" align="center" />
+                    <el-table-column label="tipo ut." prop="user_type.descrizione" sortable width="120" align="center">
+                        <template #default="scope" class="text-center">
                             <el-tag v-if="scope.row.user_type.id === 1" size="small" type="danger">{{scope.row.user_type.descrizione}}</el-tag>
                             <el-tag v-if="scope.row.user_type.id === 2" size="small">{{scope.row.user_type.descrizione}}</el-tag>
                             <el-tag v-if="scope.row.user_type.id === 4" size="small" type="success">{{scope.row.user_type.descrizione}}</el-tag>
@@ -126,7 +126,6 @@ export default {
                 order: this.sortingOrder,
                 search: this.search,
             }).then( result => {
-                console.log(result)
                 this.utenti = result.data.data;
                 this.total = result.data.total
             });
@@ -141,7 +140,6 @@ export default {
         },
         handleSelectionChange(selectedRows) {
             const ids = selectedRows.map((row) => row.id);
-            console.log('ID ',ids);
 
         },
     },

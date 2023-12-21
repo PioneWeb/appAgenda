@@ -212,12 +212,14 @@ class UsersController extends Controller
             $tipi = UserType::query()->get();
 
             /** @var Clinics $ambulatori */
-            $ambulatori = Clinics::where('doctor_id')->get();
+            $ambulatori = Clinics::where('team_id',$user->current_team_id)->get();
+
             return Inertia::render('Users/Edit', [
                 "utenteProp" => $query,
                 "aziendeProp" => $aziende,
                 "teamProp" => $team,
                 "tipiProp" => $tipi,
+                "ambulatoriProp" => $ambulatori
             ]);
         }
         abort(403,"Non disponi dei permessi necessari!");

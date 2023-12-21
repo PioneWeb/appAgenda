@@ -34,8 +34,8 @@ class Clinics extends Model
      * @var array<string, string>
      */
     protected $casts = [
-
         "doctor_id" => 'int',
+        "team_id" => 'int',
         "nome" => 'string',
         "indirizzo" => 'string',
         'localita' => 'string',
@@ -51,5 +51,7 @@ class Clinics extends Model
     public function doctor(){
         return $this->hasManyThrough(User::class,DoctorClinics::class,"clinic_id","id","id","doctor_id");
     }
-
+    public function team(){
+        return $this->hasManyThrough(Team::class,TeamClinics::class,"clinic_id","id","id","team_id");
+    }
 }

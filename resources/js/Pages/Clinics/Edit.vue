@@ -37,10 +37,8 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                             <el-form-item v-if="$page.props.auth.user.user_type_id===2" prop="ambulatorio.doctor" label="Medico">
                                 {{ $page.props.auth.user.name }}
                             </el-form-item>
-                            <el-form-item v-else prop="ambulatorio.doctor_id" label="Medico">
-                                <el-select v-model="ambulatorio.doctor_id" class="w-full" placeholder="" clearable>
-                                    <el-option v-for="item in medici" :label="item.name" :value=item.id></el-option>
-                                </el-select>
+                            <el-form-item v-else prop="ambulatorio.team_id" label="TEAM">
+                                <el-button type="primary" plain size="small">{{ambulatorio.team[0].name}}</el-button>
                             </el-form-item>
                         </el-col>
 
@@ -170,4 +168,5 @@ export default {
 <style scoped>
 h1{ font-size: 130% !important; font-weight: bold !important; margin-bottom: 20px; }
 .el-tag__content{ font-size: 150% !important; font-weight: bold !important; }
+.el-button{ font-size: 120%; width: 120px; height: 33px; }
 </style>

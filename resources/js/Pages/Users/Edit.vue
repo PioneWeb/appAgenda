@@ -131,6 +131,7 @@
                         </el-col>
                         <el-divider></el-divider>
                     </el-row>
+                </el-form>
 
                     <el-row :gutter="30" class="mb-5">
 
@@ -151,21 +152,22 @@
                             </el-form-item>
 
                             <el-form-item v-if="utente.user_type_id === 3" prop="a" label="medico">
-                                <el-button v-for="item in utente.medico" type="danger" plain disabled size="large">{{ item.name }}</el-button>
+                                <el-button style="height: 24px !important;" v-for="item in utente.medico" type="danger" plain disabled size="large">{{ item.name }}</el-button>
                             </el-form-item>
 
                             <el-form-item v-if="utente.user_type_id === 4" prop="a" label="segretaria di ">
-                                <el-button v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
+                                <el-button style="height: 24px !important;" v-for="item in utente.medico" type="primary" plain disabled size="large">{{ item.name }}</el-button>
                             </el-form-item>
                         </el-col>
 
 
-                        <el-col :span="12">
+                        <el-col v-if="utente.user_type_id === 2" :span="12">
                             <h1>Lista ambulatori utilizzati
-                                <a href="#"
-                                   class="float-right rounded-md bg-green-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                                <button v-if="this.difference.length > 0" href="#"
+                                   class="float-right rounded-md bg-blue-200 px-3.5 py-2.5 text-sm font-semibold shadow-sm border-blue-700
+                                   hover:bg-blue-500 hover:text-white text-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                                    @click="associaCliMed()"
-                                >Associa ambulatorio</a>
+                                >Associa ambulatorio</button>
                             </h1>
                             <el-form-item v-if="utente.user_type_id === 2" prop="a">
                                 <el-table :data="utente.clinics" stripe style="width: 100%">
@@ -175,7 +177,7 @@
                                     <el-table-column prop="telefono" label="Telefono" />
                                     <el-table-column label="..." width="70">
                                         <template #default="scope">
-                                            <el-button style="font-weight: normal; width: 40px !important;" type="danger" plain size="small" :icon="DeleteFilled" @click="eliminaAmbulatorio(scope.row)"></el-button>
+                                            <el-button style="font-weight: normal; width: 24px !important; height: 24px !important; border-radius: 50%;" type="danger" plain size="small" :icon="DeleteFilled" @click="eliminaAmbulatorio(scope.row)"></el-button>
                                         </template>
                                     </el-table-column>
                                 </el-table>
@@ -187,17 +189,15 @@
 
                     <el-row :gutter="30" class="mb-5">
 
-
                     </el-row>
 
-                </el-form>
 
             </div>
         </div>
 
-        <el-dialog v-model="dialogFormVisible" title="Scegli il tipo di utente">
+        <el-dialog v-model="dialogFormVisible" title="Scegli il tipo di utente" width="450">
             <el-form :model="form">
-                <el-form-item label="Zones" :label-width="250">
+                <el-form-item label="Tito">
                     <el-select v-model="form.tipo" placeholder="Seleziona il tipo di utente">
                         <el-option v-for="tipo in tipiProp" :label="tipo.descrizione" :value="tipo.id" />
                     </el-select>
@@ -213,18 +213,18 @@
             </template>
         </el-dialog>
 
-        <el-dialog v-model="dialogClinic" title="Associa Medico Ambulatorio">
+        <el-dialog v-model="dialogClinic" title="Associa Medico Ambulatorio" width="450">
             <el-form :model="formCli">
-                <el-form-item label="Ambulatori" :label-width="250">
-                    <el-select v-model="formCli.tipo" placeholder="Seleziona l'ambulatorio">
-                        <el-option v-for="cli in utente.clinics" :label="cli.nome" :value="cli.id" />
+                <el-form-item label="Ambulatori">
+                    <el-select v-model="formCli.id" placeholder="Seleziona l'ambulatorio">
+                        <el-option v-for="cli in difference" :label="cli.nome" :value="cli.id" />
                     </el-select>
                 </el-form-item>
             </el-form>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogClinic = false">Annulla</el-button>
-                <el-button type="primary" @click="">
+                <el-button @click="dialogClinic = false; ElMessage({ type: 'info', message: 'Operazione annullata' });">Annulla</el-button>
+                <el-button type="primary" @click="associaAmbulatorio">
                   Conferma
                 </el-button>
               </span>
@@ -240,6 +240,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import CardHeader from "../../Components/CardHeader.vue";
 import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete, Close, Check} from '@element-plus/icons-vue';
 import InfoCard from "../../Components/InfoCard.vue";
+import {ElMessage} from "element-plus";
 </script>
 
 <script>
@@ -252,6 +253,7 @@ export default {
         aziendeProp: Object,
         teamProp: Object,
         tipiProp: Object,
+        ambulatoriProp: Object,
         idAzienda: null
     },
     data() {
@@ -259,10 +261,12 @@ export default {
             utente: {...this.utenteProp},
             aziende: {...this.aziendeProp},
             team: {...this.teamProp},
+            ambulatori: {...this.ambulatoriProp},
             tastiEditUtente: [
                 { id: 2, name: 'Salva', type: "success", icon:Edit, click: this.save },
                 { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }
             ],
+            difference: [],
             dialogClinic: false,
             formCli: {
                 id: null
@@ -304,14 +308,40 @@ export default {
 
             });
             }).catch(() => {
-                ElMessage({
-                    type: 'info',
-                    message: 'Operazione annullata'
-                });
+                ElMessage({ type: 'info', message: 'Operazione annullata' });
             });
         },
         associaCliMed(){
             this.dialogClinic = true;
+        },
+        associaAmbulatorio(){
+            this.dialogClinic = false;
+            ElMessageBox.confirm(
+                "Attenzione stai per associare l'ambulatorio a questo medico",
+                'Attenzione',
+                {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Annulla',
+                    type: 'warning',
+                }
+            ).then(() => {
+                axios.get(this.route("clinics.associate", {
+                    id: this.formCli.id,
+                    doctor: this.utente.id
+                })).then(response => {
+                    ElMessage({
+                        type: 'success',
+                        message: 'Ambulatorio eliminato con successo',
+                    });
+                    this.$inertia.get(route('users.edit', response.data.id));
+                });
+
+            }).catch(() => {
+                ElMessage({
+                    type: 'info',
+                    message: 'Operazione annullata'
+                });
+            })
         },
         salvaTipoUtente(){
             this.utente.user_type_id = this.form.tipo;
@@ -370,13 +400,11 @@ export default {
                     id: row.id,
                     doctor: this.utente.id
                 })).then(response => {
-                    console.log(response);
                     ElMessage({
                         type: 'success',
                         message: 'Ambulatorio eliminato con successo',
                     });
                     this.$inertia.get(route('users.edit', response.data.id));
-
                 });
             }).catch(() => {
                 ElMessage({
@@ -388,6 +416,21 @@ export default {
     },
     mounted() {
         this.form.tipo = this.utente.user_type_id;
+        const a = Object.values(this.ambulatori);
+        const b = Object.values(this.utente.clinics);
+        for (const item of a) {
+            let found = false;
+            for (const element of b) {
+                if (Object.keys(item).every((key) => item[key] === element[key])) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                this.difference.push(item);
+            }
+        }
+
     }
 }
 </script>
@@ -396,7 +439,7 @@ export default {
 
 h1{ font-size: 130% !important; font-weight: bold !important; margin-bottom: 20px; }
 
-.el-button{ font-size: 120%; width: 200px; height: 33px; }
+.el-button{ font-size: 120%; width: 120px; height: 33px; }
 
 :global(h2#card-usage ~ .example .example-showcase) {
      background-color: var(--el-fill-color) !important;

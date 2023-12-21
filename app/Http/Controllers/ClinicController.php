@@ -31,6 +31,23 @@ class ClinicController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        if(!$user->can("user.list")) {
+            abort(403,"Non disponi dei permessi necessari!");
+        }
+        /** @var Clinics $query */
+        $query = Clinics::query()->where('id',$id)->with(['team'])->first();
+        return Inertia::render('Clinics/Edit', [
+            "ambulatorioProp" => $query,
+        ]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function paginate(Request $request)
@@ -146,23 +163,6 @@ class ClinicController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        /** @var User $user */
-        $user = auth()->user();
-        if(!$user->can("user.list")) {
-            abort(403,"Non disponi dei permessi necessari!");
-        }
-            /** @var Clinics $query */
-            $query = Clinics::query()->where('id',$id)->with(["doctor"])->first();
-            return Inertia::render('Clinics/Edit', [
-                "ambulatorioProp" => $query,
-            ]);
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, clinic $clinic)
@@ -188,6 +188,11 @@ class ClinicController extends Controller
         if(!$user->can("user.list")) {
             abort(403,"Non disponi dei permessi necessari!");
         }
+        DoctorClinics::create(['clinic_id' => $id, 'doctor_id' => $doctor]);
+
+        return response()->json([
+            "id" => $doctor
+        ]);
     }
 
     /**

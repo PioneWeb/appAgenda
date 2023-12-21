@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DoctorClinics extends Model
+class TeamClinics extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'doctor_id',
-        'clinic_id',
+        "team_id",
+        "clinic_id",
     ];
 
     public function clinic(){
         return $this->hasOne(Clinics::class,"id","clinic_id");
     }
 
-    public function doctor(){
-        return $this->hasOne(User::class,"id","doctor_id");
+    public function team(){
+        return $this->hasOne(Team::class,"id","team_id");
     }
 }
