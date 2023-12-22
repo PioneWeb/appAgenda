@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('team_clinics', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('team_id')->nullable()->references("id")->on("team");
-            $table->foreignId('clinic_id')->nullable()->references("id")->on("clinics");
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('team_clinics')) {
+            Schema::create('team_clinics', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('team_id')->nullable()->references("id")->on("team");
+                $table->foreignId('clinic_id')->nullable()->references("id")->on("clinics");
+                $table->timestamps();
+            });
+        }
     }
 
     /**

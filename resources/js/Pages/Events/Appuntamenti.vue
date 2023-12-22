@@ -254,7 +254,7 @@ import 'moment/locale/it'
 import moment from "moment";
 
 export default {
-    name: "Test",
+    name: "Appuntamenti",
     props: {
         ambulatori: Object,
         medici: Object,
@@ -398,7 +398,16 @@ export default {
             this.get_days_for_calendar()
         },
         controlla_medico(){
+            //TODO: controllare se il medico ha l'ambulatorio selezionato
             this.filter.medico = this.medico;
+
+            axios.get(route("clinics.search", {
+                'id': this.medico,
+            })).then(result => {
+                this.ambulatori = result.data;
+            });
+
+            console.log('AMB',this.ambulatori)
             this.get_days_for_calendar()
         },
         controlla_ambulatorio(id){

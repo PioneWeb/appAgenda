@@ -82,9 +82,9 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
                     <el-row :gutter="30" class="mb-5">
 
                         <el-col :span="24">
-                            <h1>Lista ambulatori utilizzati</h1>
+                            <h1>Lista Medici ambulatorio</h1>
                             <el-form-item prop="a">
-                                <el-table :data="ambulatorio.doctor" stripe style="width: 100%">
+                                <el-table :data="medici" stripe style="width: 100%">
                                     <el-table-column prop="name" label="Nome" />
                                     <el-table-column prop="indirizzo" label="Indirizzo" />
                                     <el-table-column prop="localita" label="Località" />

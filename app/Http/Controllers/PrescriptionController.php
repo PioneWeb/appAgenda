@@ -50,17 +50,24 @@ class PrescriptionController extends Controller
 //        }
 
         /** @var Prescription $query */
+        $search = $request->input("search");
         $query = Prescription::with(['doctor','patient']);
 
         // RICERCHE CORRELATE
-        if(!empty($search = $request->input("search"))) {
-            $query->where(function($query2) use ($search) {
-                $query2->where("email","like",'%'.$search.'%')
-                    ->orWhere("name", "like", '%'.$search.'%');
-            });
-        }
 
-        // PAGINAZIONE
+        if(!empty($search)) {
+            $query->where(function($query2) use ($search) {
+                $query2->where("farmaci","like",'%'.$search.'%')
+                    ->orWhere("motivo", "like", '%'.$search.'%');
+                $query2->orWhereHas('doctor', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                });
+                $query2->orWhereHas('patient', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                });
+            });
+
+        }
         return $query->paginate($request->input("pageSize"));
 
     }

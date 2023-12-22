@@ -29,7 +29,7 @@ class EventController extends Controller
         /** @var Clinics $ambulatori */
         $ambulatori = Clinics::all('id','nome');
         /** @var User $medici */
-        $medici = User::select('id','name')->where('user_type_id',2)->get();
+        $medici = User::select('id','name')->where('user_type_id',2)->with('clinics:clinics.id,clinics.nome')->get();
         /** @var User $pazienti */
         $pazienti = User::select('id','name')->where('user_type_id',3)->get();
 
@@ -55,7 +55,7 @@ class EventController extends Controller
             /** @var Clinics $ambulatori */
             $ambulatori = Clinics::all('id','nome');
             /** @var User $medici */
-            $medici = User::select('id','name')->where('user_type_id',2)->get();
+            $medici = User::select('id','name')->where('user_type_id',2)->with(['clinics:clinics.id,clinics.nome'])->get();
             /** @var Event $appuntamenti */
             $appuntamenti = Event::all();
         }else {

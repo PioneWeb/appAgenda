@@ -27,6 +27,7 @@ export default {
     name: "cardHeader",
     emits:["search"],
     props: {
+        modelValue: String,
         title: String,
         icon: String,
         tasti: Array,
@@ -37,7 +38,12 @@ export default {
     },
     data() {
         return {
-            search: null
+            search: this.modelValue
+        }
+    },
+    watch: {
+        modelValue(val) {
+            this.search = val;
         }
     },
     mounted() {

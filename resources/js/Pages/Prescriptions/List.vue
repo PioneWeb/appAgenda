@@ -10,7 +10,7 @@ import {CirclePlus, DeleteFilled, Edit, Printer, Setting, Delete} from '@element
 
         <div class="py-6 px-4">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg pb-4">
-                <card-header :title="$t('Prescriptions')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
+                <card-header v-model="search" :title="$t('Prescriptions')" :icon="Edit" :tasti="tasti" @search="this.searchTable"></card-header>
 
                 <el-table :data="ricette" stripe style="width: 100%" @row-click="handleClick" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" />
@@ -117,7 +117,7 @@ export default {
         },
         paginate() {
             this.tableLoading = true;
-            this.SessionStorage.setItem('ricette_list_search', JSON.stringify(this.search));
+            this.SessionStorage.setItem('ricette_list_search', this.search);
             this.SessionStorage.setItem('ricette_list_order', this.sortingOrder);
             this.SessionStorage.setItem('ricette_list_column', this.sortingColumn);
             this.SessionStorage.setItem('ricette_list_page', this.currentPage, true);
@@ -129,6 +129,7 @@ export default {
                 order: this.sortingOrder,
                 search: this.search,
             }).then( result => {
+                console.log(result.data.data)
                 this.ricette = result.data.data;
                 this.total = result.data.total
             });
@@ -147,7 +148,7 @@ export default {
         },
     },
     mounted() {
-        this.search = this.SessionStorage.getItem('ricette_list_search', this.search,true);
+        this.search = this.SessionStorage.getItem('ricette_list_search', this.search,false);
         this.sortingOrder = this.SessionStorage.getItem('ricette_list_order', this.sortingOrder,false);
         this.sortingColumn = this.SessionStorage.getItem('ricette_list_column', this.sortingColumn,false);
         this.currentPage = this.SessionStorage.getItem('ricette_list_page', this.currentPage, true);

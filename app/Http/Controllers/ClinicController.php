@@ -29,6 +29,25 @@ class ClinicController extends Controller
             "ambulatori" => $ambulatori,
         ]);
     }
+    /**
+     * Display a listing of the resource.
+     */
+    public function search($id)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+//        if(!$user->can("company.list")) {
+//            abort(403,"Non disponi dei permessi necessari!");
+//        }
+        /** @var Clinics $query */
+        $ambulatori = Clinics::query('id','nome')->with('DoctorClinics')->whereHas('DoctorClinics', function ($ambulatori) use ($id) {
+            $ambulatori->where('doctor_id', $id);
+        })->get();
+
+        return Inertia::render('Clinics/List', [
+            "ambulatori" => $ambulatori,
+        ]);
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -40,10 +59,17 @@ class ClinicController extends Controller
         if(!$user->can("user.list")) {
             abort(403,"Non disponi dei permessi necessari!");
         }
+        /** @var DoctorClinics $dclinic */
+        $dclinic = DoctorClinics::where("clinic_id",$id)->get(['doctor_id']);
+
+        /** @var User $medici */
+        $medici = User::where('user_type_id',2)->whereIn('id',$dclinic)->get(['id','name','indirizzo','localita','cap','provincia','telefono']);
+
         /** @var Clinics $query */
         $query = Clinics::query()->where('id',$id)->with(['team'])->first();
         return Inertia::render('Clinics/Edit', [
             "ambulatorioProp" => $query,
+            "medici" => $medici
         ]);
     }
 

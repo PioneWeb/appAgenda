@@ -83,7 +83,6 @@ export default {
             orari: [],
             tasti: [
                 { id: 1, name: 'Nuovo', type: "info", icon:CirclePlus, click: this.create },
-                { id: 2, name: 'Prescrivi', type: "success", icon:Edit, click: this.prescrivi },
                 { id: 3, name: 'Stampa', type: "primary", icon:Printer },
                 { id: 4, name: 'Elimina', type: "danger", icon:DeleteFilled }
             ],
